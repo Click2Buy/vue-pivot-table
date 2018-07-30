@@ -1,0 +1,38 @@
+{
+  "name": "vue-pivot-table",
+  "description": "A vue component for pivot table",
+  "version": "0.0.0",
+  "author": "Clic2Buy",
+  "license": "MIT",
+  "main": "dist/vue-pivot-table.js",
+  "scripts": {
+    "dev": "webpack-dev-server --progress",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+  },
+  "dependencies": {
+    "vue": "^2.5.11",
+    "vuedraggable": "^2.16.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.46",
+    "@babel/plugin-transform-runtime": "^7.0.0-beta.46",
+    "@babel/preset-env": "^7.0.0-beta.46",
+    "@babel/runtime": "^7.0.0-beta.46",
+    "autoprefixer": "^9.0.1",
+    "babel-loader": "^8.0.0-beta.2",
+    "bootstrap": "^4.1.2",
+    "cross-env": "^5.2.0",
+    "css-loader": "^0.28.7",
+    "friendly-errors-webpack-plugin": "^1.7.0",
+    "html-webpack-plugin": "^3.2.0",
+    "node-sass": "^4.9.2",
+    "postcss-loader": "^2.1.6",
+    "sass-loader": "^7.0.3",
+    "vue-loader": "^15.2.6",
+    "vue-template-compiler": "^2.5.16",
+    "webpack": "^4.16.2",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5",
+    "webpack-merge": "^4.1.3"
+  }
+}
