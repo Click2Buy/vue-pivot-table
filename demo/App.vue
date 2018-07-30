@@ -1,6 +1,8 @@
 <template>
   <div id="app" class="container mt-5">
-    <pivot :data="data" :fields="fields" :rows="rows" :cols="cols" />
+    <h1 class="border-bottom pb-2 mb-4">Vue pivot table demo</h1>
+
+    <pivot :data="data" :fields="fields" :rows="rows" :cols="cols" :reducer="reducer" :value-filter="valueFilter" />
   </div>
 </template>
 
@@ -14,9 +16,15 @@ export default {
   data: () => {
     return {
       data: data,
-      fields: ['Name'],
-      rows: ['Province', 'Party'],
-      cols: ['Age', 'Gender']
+      fields: [],
+      rows: ['country', 'gender'],
+      cols: ['year'],
+      reducer: function(sum, item) {
+        return sum + item.count
+      },
+      valueFilter: function(value) {
+        return value.toLocaleString()
+      }
     }
   }
 }
