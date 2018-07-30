@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h1 class="mb-4">Vue pivot table demo</h1>
-
     <!-- Available fields -->
     <div class="card mb-4">
       <div class="card-body">
@@ -35,7 +33,7 @@
       </div>
     </div>
 
-    <div class="row grid-x">
+    <div class="row flex-nowrap grid-x">
       <!-- Vertical fields -->
       <div class="col left-col">
         <div class="card">
@@ -50,8 +48,8 @@
       </div>
 
       <!-- Table zone -->
-      <div class="col">
-        <pivot-table :data="data" :rows="rows" :cols="cols" />
+      <div class="col table-responsive">
+        <pivot-table :data="data" :rows="rows" :cols="cols" :reducer="reducer" :value-filter="valueFilter" />
       </div>
     </div>
   </div>
@@ -64,13 +62,14 @@ import Draggable from 'vuedraggable'
 export default {
   name: 'vue-pivot',
   components: { PivotTable, Draggable },
-  props: ['data', 'fields', 'rows', 'cols']
+  props: ['data', 'fields', 'rows', 'cols', 'reducer', 'valueFilter']
 }
 </script>
 
 <style lang="scss" scoped>
 /* Left column width */
 .left-col {
+  min-width: 200px;
   max-width: 200px;
 }
 
