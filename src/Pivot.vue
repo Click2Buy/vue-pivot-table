@@ -6,7 +6,7 @@
         <h5 class="card-title">
           Available fields
         </h5>
-        <draggable v-model="fields" class="d-flex flex-row grid-x-sm drag-area" :options="{ group: 'fields' }">
+        <draggable v-model="fields" class="d-inline-flex flex-row drag-area" :options="{ group: 'fields' }">
           <div v-for="field in fields" :key="field">
             <div class="btn btn-secondary">{{ field }}</div>
           </div>
@@ -21,30 +21,22 @@
 
       <!-- Horizontal fields -->
       <div class="col">
-        <div class="card">
-          <div class="card-body">
-            <draggable v-model="cols" class="d-flex flex-row grid-x-sm drag-area" :options="{ group: 'fields' }">
-              <div v-for="field in cols" :key="field">
-                <div class="btn btn-secondary">{{ field }}</div>
-              </div>
-            </draggable>
+        <draggable v-model="cols" class="d-flex flex-row drag-area" :options="{ group: 'fields' }">
+          <div v-for="field in cols" :key="field">
+            <div class="btn btn-secondary">{{ field }}</div>
           </div>
-        </div>
+        </draggable>
       </div>
     </div>
 
     <div class="row flex-nowrap grid-x">
       <!-- Vertical fields -->
       <div class="col left-col">
-        <div class="card">
-          <div class="card-body">
-            <draggable v-model="rows" class="d-flex flex-column align-items-start grid-y-sm drag-area" :options="{ group: 'fields' }">
-              <div v-for="field in rows" :key="field">
-                <div class="btn btn-secondary">{{ field }}</div>
-              </div>
-            </draggable>
+        <draggable v-model="rows" class="d-flex flex-column align-items-start drag-area" :options="{ group: 'fields' }">
+          <div v-for="field in rows" :key="field">
+            <div class="btn btn-secondary">{{ field }}</div>
           </div>
-        </div>
+        </draggable>
       </div>
 
       <!-- Table zone -->
@@ -81,30 +73,15 @@ export default {
   }
 }
 
-.grid-y {
-  margin: -0.75rem 0;
-  > * {
-    padding: 0.75rem 0;
-  }
-}
-
-.grid-x-sm {
-  margin: 0 -0.25rem;
-  > * {
-    padding: 0 0.25rem;
-  }
-}
-
-.grid-y-sm {
-  margin: -0.25rem 0;
-  > * {
-    padding: 0.25rem 0;
-  }
-}
-
-/* Make empty drag area usable */
+/* Drag area */
 .drag-area {
-  min-width: 1rem;
-  min-height: 1rem;
+  min-width: 10rem;
+  min-height: 4.5rem;
+  border: 1px dashed #ccc;
+  padding: 0.75rem;
+
+  > div {
+    margin: 0.25rem;
+  }
 }
 </style>
