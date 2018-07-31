@@ -2,14 +2,18 @@
   <div class="table-responsive">
     <table class="table table-bordered">
       <thead>
-        <tr v-for="(col, colIndex) in cols" :key="col">
+        <tr v-for="(col, colIndex) in cols" :key="col.key">
           <th v-if="colIndex === 0" :colspan="rows.length" :rowspan="cols.length"></th>
-          <th v-for="(colValue, colValueIndex) in colValues" :key="JSON.stringify(colValue)" :colspan="colspanSize(colValues, colIndex, colValueIndex)" v-if="colspanSize(colValues, colIndex, colValueIndex) !== 0">{{ colValue[col] }}</th>
+          <th v-for="(colValue, colValueIndex) in colValues" :key="JSON.stringify(colValue)" :colspan="colspanSize(colValues, colIndex, colValueIndex)" v-if="colspanSize(colValues, colIndex, colValueIndex) !== 0">
+            {{ colValue[col.key] }}
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(rowValue, rowValueIndex) in rowValues" :key="JSON.stringify(rowValue)">
-          <td v-for="(row, rowIndex) in rows" :key="row" :rowspan="rowspanSize(rowValues, rowIndex, rowValueIndex)" v-if="rowspanSize(rowValues, rowIndex, rowValueIndex) !== 0" class="font-weight-bold">{{ rowValue[row] }}</td>
+          <td v-for="(row, rowIndex) in rows" :key="row.key" :rowspan="rowspanSize(rowValues, rowIndex, rowValueIndex)" v-if="rowspanSize(rowValues, rowIndex, rowValueIndex) !== 0" class="font-weight-bold">
+            {{ rowValue[row.key] }}
+          </td>
           <td v-for="colValue in colValues" :key="JSON.stringify(colValue)" class="text-right">
             {{ value(colValue, rowValue) }}
           </td>
@@ -22,15 +26,12 @@
 <script>
 export default {
   props: ['data', 'rows', 'cols', 'reducer', 'valueFilter'],
-  data: () => {
-    return {}
-  },
   computed: {
     colValues: function() {
       const colValues = []
 
       const extractColValuesRecursive = (depth, filters) => {
-        const field = this.cols[depth]
+        const field = this.cols[depth].key
         const values = [...new Set(this.filteredData(filters).map(item => item[field]))] // Use item._id[field] ?
 
         values.forEach(value => {
@@ -55,7 +56,7 @@ export default {
       const rowValues = []
 
       const extractRowValuesRecursive = (depth, filters) => {
-        const field = this.rows[depth]
+        const field = this.rows[depth].key
         const values = [...new Set(this.filteredData(filters).map(item => item[field]))] // Use item._id[field] ?
 
         values.forEach(value => {
@@ -98,7 +99,7 @@ export default {
     },
     // Get colspan size
     colspanSize: function(colValues, colIndex, colValueIndex) {
-      const col = this.cols[colIndex]
+      const col = this.cols[colIndex].key
       
       // If left value === current value
       // and top value === 0 (= still in the same top bracket)
@@ -124,7 +125,7 @@ export default {
     },
     // Get rowspan size
     rowspanSize: function(rowValues, rowIndex, rowValueIndex) {
-      const row = this.rows[rowIndex]
+      const row = this.rows[rowIndex].key
       
       // If left value === current value
       // and top value === 0 (= still in the same top bracket)

@@ -6,9 +6,9 @@
         <h5 class="card-title">
           Available fields
         </h5>
-        <draggable v-model="fields" class="d-inline-flex flex-row drag-area" :options="{ group: 'fields' }">
-          <div v-for="field in fields" :key="field">
-            <div class="btn btn-secondary">{{ field }}</div>
+        <draggable v-model="internal.fields" class="d-inline-flex flex-row drag-area" :options="{ group: 'fields' }">
+          <div v-for="field in internal.fields" :key="field.key">
+            <div class="btn btn-secondary">{{ field.label }}</div>
           </div>
         </draggable>
       </div>
@@ -21,9 +21,9 @@
 
       <!-- Horizontal fields -->
       <div class="col">
-        <draggable v-model="cols" class="d-flex flex-row drag-area" :options="{ group: 'fields' }">
-          <div v-for="field in cols" :key="field">
-            <div class="btn btn-secondary">{{ field }}</div>
+        <draggable v-model="internal.cols" class="d-flex flex-row drag-area" :options="{ group: 'fields' }">
+          <div v-for="field in internal.cols" :key="field.key">
+            <div class="btn btn-secondary">{{ field.label }}</div>
           </div>
         </draggable>
       </div>
@@ -32,16 +32,16 @@
     <div class="row flex-nowrap grid-x">
       <!-- Vertical fields -->
       <div class="col left-col">
-        <draggable v-model="rows" class="d-flex flex-column align-items-start drag-area" :options="{ group: 'fields' }">
-          <div v-for="field in rows" :key="field">
-            <div class="btn btn-secondary">{{ field }}</div>
+        <draggable v-model="internal.rows" class="d-flex flex-column align-items-start drag-area" :options="{ group: 'fields' }">
+          <div v-for="field in internal.rows" :key="field.key">
+            <div class="btn btn-secondary">{{ field.label }}</div>
           </div>
         </draggable>
       </div>
 
       <!-- Table zone -->
       <div class="col table-responsive">
-        <pivot-table :data="data" :rows="rows" :cols="cols" :reducer="reducer" :value-filter="valueFilter" />
+        <pivot-table :data="data" :rows="internal.rows" :cols="internal.cols" :reducer="reducer" :value-filter="valueFilter" />
       </div>
     </div>
   </div>
@@ -54,7 +54,16 @@ import Draggable from 'vuedraggable'
 export default {
   name: 'vue-pivot',
   components: { PivotTable, Draggable },
-  props: ['data', 'fields', 'rows', 'cols', 'reducer', 'valueFilter']
+  props: ['data', 'fields', 'rows', 'cols', 'reducer', 'valueFilter'],
+  data: function() {
+    return {
+      internal: {
+        fields: this.fields,
+        rows: this.rows,
+        cols: this.cols
+      }
+    }
+  }
 }
 </script>
 
@@ -82,6 +91,10 @@ export default {
 
   > div {
     margin: 0.25rem;
+  }
+
+  * {
+    cursor: move !important;
   }
 }
 </style>

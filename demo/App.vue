@@ -17,8 +17,17 @@ export default {
     return {
       data: data,
       fields: [],
-      rows: ['country', 'gender'],
-      cols: ['year'],
+      rows: [{
+        key: 'country',
+        label: 'Country'
+      }, {
+        key: 'gender',
+        label: 'Gender'
+      }],
+      cols: [{
+        key: 'year',
+        label: 'Year'
+      }],
       reducer: function(sum, item) {
         return sum + item.count
       },
