@@ -3,7 +3,7 @@
     <table class="table table-bordered">
       <thead>
         <tr v-for="(col, colIndex) in cols" :key="col.key">
-          <th v-if="colIndex === 0" :colspan="rows.length" :rowspan="cols.length"></th>
+          <th v-if="colIndex === 0 && rows.length > 0" :colspan="rows.length" :rowspan="cols.length"></th>
           <th v-for="(colValue, colValueIndex) in colValues" :key="JSON.stringify(colValue)" :colspan="colspanSize(colValues, colIndex, colValueIndex)" v-if="colspanSize(colValues, colIndex, colValueIndex) !== 0">
             {{ colValue[col.key] }}
           </th>
@@ -48,7 +48,11 @@ export default {
         })
       }
 
-      extractColValuesRecursive(0, {})
+      if (this.cols.length > 0) {
+        extractColValuesRecursive(0, {})
+      } else {
+        colValues.push({})
+      }
 
       return colValues
     },
@@ -73,7 +77,11 @@ export default {
         })
       }
 
-      extractRowValuesRecursive(0, {})
+      if (this.rows.length > 0) {
+        extractRowValuesRecursive(0, {})
+      } else {
+        rowValues.push({})
+      }
 
       return rowValues
     }
