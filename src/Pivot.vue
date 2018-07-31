@@ -1,21 +1,33 @@
 <template>
   <div>
     <!-- Available fields -->
-    <div class="card mb-4">
+    <div class="card mb-4" v-if="showSettings">
       <div class="card-body">
-        <h5 class="card-title">
-          Available fields
-        </h5>
-        <draggable v-model="internal.fields" class="d-inline-flex flex-row drag-area" :options="{ group: 'fields' }">
-          <div v-for="field in internal.fields" :key="field.key">
-            <div class="btn btn-secondary">{{ field.label }}</div>
+        <div class="row grid-x justify-content-between align-items-start">
+          <div>
+            <draggable v-model="internal.fields" class="d-inline-flex flex-row drag-area" :options="{ group: 'fields' }">
+              <div v-for="field in internal.fields" :key="field.key">
+                <div class="btn btn-secondary">{{ field.label }}</div>
+              </div>
+            </draggable>
           </div>
-        </draggable>
+          <div>
+            <button class="btn btn-outline-primary" @click="toggleShowSettings">
+              Hide settings
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
+    <div class="mb-4 text-right" v-else>
+      <button class="btn btn-outline-primary" @click="toggleShowSettings">
+        Show settings
+      </button>
+    </div>
+
     <!-- Pivot zone -->
-    <div class="row grid-x mb-4">
+    <div class="row grid-x mb-4" v-if="showSettings">
       <!-- Top left zone -->
       <div class="col left-col"></div>
 
@@ -23,7 +35,7 @@
       <div class="col">
         <draggable v-model="internal.cols" class="d-flex flex-row drag-area" :options="{ group: 'fields' }">
           <div v-for="field in internal.cols" :key="field.key">
-            <div class="btn btn-secondary">{{ field.label }}</div>
+            <div class="btn btn-primary">{{ field.label }}</div>
           </div>
         </draggable>
       </div>
@@ -31,10 +43,10 @@
 
     <div class="row flex-nowrap grid-x">
       <!-- Vertical fields -->
-      <div class="col left-col">
+      <div class="col left-col" v-if="showSettings">
         <draggable v-model="internal.rows" class="d-flex flex-column align-items-start drag-area" :options="{ group: 'fields' }">
           <div v-for="field in internal.rows" :key="field.key">
-            <div class="btn btn-secondary">{{ field.label }}</div>
+            <div class="btn btn-primary">{{ field.label }}</div>
           </div>
         </draggable>
       </div>
@@ -61,7 +73,13 @@ export default {
         fields: this.fields,
         rows: this.rows,
         cols: this.cols
-      }
+      },
+      showSettings: true
+    }
+  },
+  methods: {
+    toggleShowSettings: function() {
+      this.showSettings = !this.showSettings
     }
   }
 }
