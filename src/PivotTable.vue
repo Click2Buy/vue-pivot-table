@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import naturalSort from 'javascript-natural-sort'
+
 export default {
   props: ['data', 'rows', 'cols', 'reducer', 'valueFilter'],
   computed: {
@@ -32,7 +34,7 @@ export default {
 
       const extractColValuesRecursive = (depth, filters) => {
         const field = this.cols[depth].key
-        const values = [...new Set(this.filteredData(filters).map(item => item[field]))] // Use item._id[field] ?
+        const values = [...new Set(this.filteredData(filters).map(item => item[field]))].sort(naturalSort) // TODO: allow custom sort // Use item._id[field] ?
 
         values.forEach(value => {
           // Build new filter hash
@@ -61,7 +63,7 @@ export default {
 
       const extractRowValuesRecursive = (depth, filters) => {
         const field = this.rows[depth].key
-        const values = [...new Set(this.filteredData(filters).map(item => item[field]))] // Use item._id[field] ?
+        const values = [...new Set(this.filteredData(filters).map(item => item[field]))].sort(naturalSort) // TODO: allow custom sort // Use item._id[field] ?
 
         values.forEach(value => {
           // Build new filter hash

@@ -4,6 +4,10 @@
   "version": "0.0.0",
   "author": "Clic2Buy",
   "license": "MIT",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/MarketConnect/vue-pivot-table"
+  },
   "main": "dist/vue-pivot-table.js",
   "scripts": {
     "dev": "webpack-dev-server --progress",
@@ -25,6 +29,7 @@
     "css-loader": "^0.28.7",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "^3.2.0",
+    "javascript-natural-sort": "^0.7.1",
     "node-sass": "^4.9.2",
     "postcss-loader": "^2.1.6",
     "sass-loader": "^7.0.3",
