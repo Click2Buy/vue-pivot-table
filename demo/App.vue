@@ -39,6 +39,7 @@ export default {
 }
 </script>
 
-<style>
-@import '~bootstrap/dist/css/bootstrap.min.css';
+<style lang="scss">
+$enable-rounded: false;
+@import '~bootstrap/scss/bootstrap.scss';
 </style>
