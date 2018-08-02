@@ -34,7 +34,8 @@ export default {
 
       const extractColValuesRecursive = (depth, filters) => {
         const getter = this.cols[depth].getter
-        const values = [...new Set(this.filteredData({ colFilters: filters }).map(item => getter(item)))].sort(naturalSort) // TODO: allow custom sort
+        const sort = this.cols[depth].sort || naturalSort
+        const values = [...new Set(this.filteredData({ colFilters: filters }).map(item => getter(item)))].sort(sort)
 
         values.forEach(value => {
           // Build new filter hash
@@ -63,7 +64,8 @@ export default {
 
       const extractRowValuesRecursive = (depth, filters) => {
         const getter = this.rows[depth].getter
-        const values = [...new Set(this.filteredData({ rowFilters: filters }).map(item => getter(item)))].sort(naturalSort) // TODO: allow custom sort
+        const sort = this.rows[depth].sort || naturalSort
+        const values = [...new Set(this.filteredData({ rowFilters: filters }).map(item => getter(item)))].sort(sort)
 
         values.forEach(value => {
           // Build new filter hash

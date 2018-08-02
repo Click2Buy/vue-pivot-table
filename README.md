@@ -69,6 +69,7 @@ Prop | Type | Default | Description
 Each element in the arrays `fields`, `rows` or `cols` should be an Object with this format:
 - `label` (`String`): text to display in the draggable button
 - `getter` (`function`): Function to apply on an element of `data` to get the field value
+- `sort` (`function`, optional): Function to sort fields in the pivot table header ; if no value is provided, [javascript-natural-sort](https://github.com/Bill4Time/javascript-natural-sort) will be used
 
 ## Build
 
