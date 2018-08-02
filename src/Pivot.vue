@@ -66,7 +66,32 @@ import Draggable from 'vuedraggable'
 export default {
   name: 'vue-pivot',
   components: { PivotTable, Draggable },
-  props: ['data', 'fields', 'rows', 'cols', 'reducer', 'valueFormatter'],
+  props: {
+    data: {
+      type: Array,
+      default: []
+    },
+    fields: {
+      type: Array,
+      default: []
+    },
+    rows: {
+      type: Array,
+      default: []
+    },
+    cols: {
+      type: Array,
+      default: []
+    },
+    reducer: {
+      type: Function,
+      default: (sum, item) => sum + 1
+    },
+    valueFormatter: {
+      type: Function,
+      default: value => value.toLocaleString()
+    }
+  },
   data: function() {
     return {
       internal: {
