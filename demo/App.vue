@@ -2,7 +2,9 @@
   <div id="app" class="container mt-5">
     <h1 class="border-bottom pb-2 mb-4">Vue pivot table demo</h1>
 
-    <pivot :data="data" :fields="fields" :rows="rows" :cols="cols" :reducer="reducer" :value-filter="valueFilter" />
+    <div class="mb-5">
+      <pivot :data="data" :fields="fields" :rows="rows" :cols="cols" :reducer="reducer" :value-filter="valueFilter" />
+    </div>
   </div>
 </template>
 
@@ -17,16 +19,16 @@ export default {
     return {
       data: data,
       fields: [],
+      cols: [{
+        getter: item => item.year,
+        label: 'Year'
+      }],
       rows: [{
-        key: 'country',
+        getter: item => item.country,
         label: 'Country'
       }, {
-        key: 'gender',
+        getter: item => item.gender,
         label: 'Gender'
-      }],
-      cols: [{
-        key: 'year',
-        label: 'Year'
       }],
       reducer: function(sum, item) {
         return sum + item.count
