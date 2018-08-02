@@ -53,7 +53,7 @@
 
       <!-- Table zone -->
       <div class="col table-responsive">
-        <pivot-table :data="data" :rows="internal.rows" :cols="internal.cols" :reducer="reducer" :value-filter="valueFilter" />
+        <pivot-table :data="data" :rows="internal.rows" :cols="internal.cols" :reducer="reducer" :value-formatter="valueFormatter" />
       </div>
     </div>
   </div>
@@ -66,7 +66,7 @@ import Draggable from 'vuedraggable'
 export default {
   name: 'vue-pivot',
   components: { PivotTable, Draggable },
-  props: ['data', 'fields', 'rows', 'cols', 'reducer', 'valueFilter'],
+  props: ['data', 'fields', 'rows', 'cols', 'reducer', 'valueFormatter'],
   data: function() {
     return {
       internal: {

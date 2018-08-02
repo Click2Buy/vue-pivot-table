@@ -27,7 +27,7 @@
 import naturalSort from 'javascript-natural-sort'
 
 export default {
-  props: ['data', 'rows', 'cols', 'reducer', 'valueFilter'],
+  props: ['data', 'rows', 'cols', 'reducer', 'valueFormatter'],
   computed: {
     colValues: function() {
       const colValues = []
@@ -115,7 +115,7 @@ export default {
     },
     // Get sum value for col/row filters
     value: function(colFilters, rowFilters) {
-      return this.valueFilter(this.filteredData({ colFilters: colFilters, rowFilters: rowFilters }).reduce(this.reducer, 0))
+      return this.valueFormatter(this.filteredData({ colFilters: colFilters, rowFilters: rowFilters }).reduce(this.reducer, 0))
     },
     // Get colspan/rowspan size
     spanSize: function(values, index, valueIndex) {      

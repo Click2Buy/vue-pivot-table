@@ -3,7 +3,7 @@
     <h1 class="border-bottom pb-2 mb-4">Vue pivot table demo</h1>
 
     <div class="mb-5">
-      <pivot :data="data" :fields="fields" :rows="rows" :cols="cols" :reducer="reducer" :value-filter="valueFilter" />
+      <pivot :data="data" :fields="fields" :rows="rows" :cols="cols" :reducer="reducer" :value-formatter="valueFormatter" />
     </div>
   </div>
 </template>
@@ -33,7 +33,7 @@ export default {
       reducer: function(sum, item) {
         return sum + item.count
       },
-      valueFilter: function(value) {
+      valueFormatter: function(value) {
         return value.toLocaleString()
       }
     }

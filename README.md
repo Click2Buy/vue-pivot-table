@@ -66,15 +66,15 @@ Prop | Type | Default | Description
 `rows` | `Array` | `[]` | Fields to use as rows by default
 `cols` | `Array` | `[]` | Fields to use as columns by default
 `reducer` | `function` | `(sum, item) => sum + 1` | Function applied to reduce `data` in the pivot table
-`value-filter` | `function` | `value => value.toLocaleString()` | Function applied on values in the pivot table for formatting purposes
+`value-formatter` | `function` | `value => value.toLocaleString()` | Function to format values in the pivot table
 
 #### Field format
 
 Each element in the arrays `fields`, `rows` or `cols` should be an Object with this format:
 - `label` (`String`): text to display in the draggable button
 - `getter` (`function`): Function to apply on an element of `data` to get the field value
-- `sort` (`function`, optional): Function to order fields in the pivot table header ; if no value is provided, [javascript-natural-sort](https://github.com/Bill4Time/javascript-natural-sort) will be used
-- `formatter` (`function`, optional): Function to format headers ; if no value is provided, the value will be displayed raw (as found in data)
+- `sort` (`function`, optional): Function to order fields in the pivot table header ; if no value is provided, [javascript-natural-sort](https://github.com/Bill4Time/javascript-natural-sort) will be applied
+- `formatter` (`function`, optional): Function to format headers ; the function has a value argument ; if no function is provided, the value will be displayed as found in data
 
 ## Build
 
