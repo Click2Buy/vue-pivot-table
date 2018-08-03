@@ -40,7 +40,7 @@ export default {
       reducer: function(sum, item) {
         return sum + 1
       },
-      valueFilter: function(value) {
+      valueFormatter: function(value) {
         return value.toLocaleString()
       }
     }
@@ -52,7 +52,7 @@ export default {
 ### HTML
 
 ```html
-<pivot :data="data" :fields="fields" :rows="rows" :cols="cols" :reducer="reducer" :value-filter="valueFilter" />
+<pivot :data="data" :fields="fields" :rows="rows" :cols="cols" :reducer="reducer" :value-formatter="valueFormatter" />
 ```
 
 ## API
