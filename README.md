@@ -67,6 +67,8 @@ Prop | Type | Default | Description
 `cols` | `Array` | `[]` | Fields to use as columns by default
 `reducer` | `function` | `(sum, item) => sum + 1` | Function applied to reduce `data` in the pivot table
 `value-formatter` | `function` | `value => value.toLocaleString()` | Function to format values in the pivot table
+`hide-settings-text` | `String` | 'Hide settings` | Text for the "hide settings" button
+`show-settings-text` | `String` | 'Show settings` | Text for the "show settings" button
 
 #### Field format
 

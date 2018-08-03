@@ -13,7 +13,7 @@
           </div>
           <div>
             <button class="btn btn-outline-primary" @click="toggleShowSettings">
-              Hide settings
+              {{ hideSettingsText }}
             </button>
           </div>
         </div>
@@ -22,7 +22,7 @@
 
     <div class="mb-4 text-right" v-else>
       <button class="btn btn-outline-primary" @click="toggleShowSettings">
-        Show settings
+        {{ showSettingsText }}
       </button>
     </div>
 
@@ -90,6 +90,14 @@ export default {
     valueFormatter: {
       type: Function,
       default: value => value.toLocaleString()
+    },
+    hideSettingsText: {
+      type: String,
+      default: 'Hide settings'
+    },
+    showSettingsText: {
+      type: String,
+      default: 'Show settings'
     }
   },
   data: function() {
