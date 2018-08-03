@@ -76,7 +76,17 @@ Each element in the arrays `fields`, `rows` or `cols` should be an Object with t
 - `label` (`String`): text to display in the draggable button
 - `getter` (`function`): Function to apply on an element of `data` to get the field value
 - `sort` (`function`, optional): Function to order fields in the pivot table header ; if no value is provided, [javascript-natural-sort](https://github.com/Bill4Time/javascript-natural-sort) will be applied
-- `formatter` (`function`, optional): Function to format headers ; the function has a value argument ; if no function is provided, the value will be displayed as found in data
+- `slotName` (`String`, optional): Name of the slot to use for formatting in the pivot table header ; if no slot name is provided, the value will be displayed as found in data
+
+#### Slot format
+
+To use slots as formatters for field headers, you must define them in the `<pivot>` tags.
+
+```html
+<template slot="my-field-slot-name" slot-scope="{ value }">{{ value }}</template>
+```
+
+The `slot` attribute must match the `slotName` previously set in your field. The `slot-scope` should not be changed in order to access the `value` in the template.
 
 ## Build
 

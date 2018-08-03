@@ -53,7 +53,8 @@
 
       <!-- Table zone -->
       <div class="col table-responsive">
-        <pivot-table :data="data" :rows="internal.rows" :cols="internal.cols" :reducer="reducer" :value-formatter="valueFormatter" />
+        <!-- Waiting for https://github.com/vuejs/vue/pull/7765 to work (v-bind attr) -->
+        <pivot-table :data="data" :rows="internal.rows" :cols="internal.cols" :reducer="reducer" :value-formatter="valueFormatter" v-bind="{ $scopedSlots }" />
       </div>
     </div>
   </div>

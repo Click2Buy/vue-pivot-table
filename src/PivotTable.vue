@@ -5,14 +5,24 @@
         <tr v-for="(col, colIndex) in cols" :key="col.key">
           <th v-if="colIndex === 0 && rows.length > 0" :colspan="rows.length" :rowspan="cols.length"></th>
           <th v-for="(colValue, colValueIndex) in colValues" :key="JSON.stringify(colValue)" :colspan="spanSize(colValues, colIndex, colValueIndex)" v-if="spanSize(colValues, colIndex, colValueIndex) !== 0">
-            {{ format(col.formatter, colValue[colIndex]) }}
+            <slot v-if="col.slotName" :name="col.slotName" v-bind:value="colValue[colIndex]">
+              Undefined slot "{{ col.slotName }}"
+            </slot>
+            <template v-else>
+              {{ colValue[colIndex] }}
+            </template>
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(rowValue, rowValueIndex) in rowValues" :key="JSON.stringify(rowValue)">
           <td v-for="(row, rowIndex) in rows" :key="row.key" :rowspan="spanSize(rowValues, rowIndex, rowValueIndex)" v-if="spanSize(rowValues, rowIndex, rowValueIndex) !== 0" class="font-weight-bold">
-            {{ format(row.formatter, rowValue[rowIndex]) }}
+            <slot v-if="row.slotName" :name="row.slotName" v-bind:value="rowValue[rowIndex]">
+              Undefined slot "{{ row.slotName }}"
+            </slot>
+            <template v-else>
+              {{ rowValue[rowIndex] }}
+            </template>
           </td>
           <td v-for="colValue in colValues" :key="JSON.stringify(colValue)" class="text-right">
             {{ value(colValue, rowValue) }}
@@ -140,10 +150,6 @@ export default {
       }
 
       return size
-    },
-    // Format with an optional function
-    format: function(formatter, value) {
-      return formatter ? formatter(value) : value
     }
   }
 }
