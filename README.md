@@ -1,7 +1,7 @@
 # vue-pivot-table
 A vue component for pivot table
 
-TODO: screenshot
+![vue-pivot-table screenshot](https://raw.githubusercontent.com/MarketConnect/vue-pivot-table/master/screenshot.png)
 
 TODO: codepen demo link
 
