@@ -4,18 +4,18 @@
       <thead>
         <tr v-for="(colField, colFieldIndex) in colFields" :key="colField.key">
           <th v-if="colFieldIndex === 0 && rowFields.length > 0" :colspan="rowFields.length" :rowspan="colFields.length"></th>
-          <th v-for="(colValue, colValueIndex) in colValues" :key="JSON.stringify(colValue)" :colspan="spanSize(colValues, colFieldIndex, colValueIndex)" v-if="spanSize(colValues, colFieldIndex, colValueIndex) !== 0">
-            {{ format(colField.formatter, colValue[colFieldIndex]) }}
+          <th v-for="(col, colIndex) in cols" :key="JSON.stringify(col)" :colspan="spanSize(cols, colFieldIndex, colIndex)" v-if="spanSize(cols, colFieldIndex, colIndex) !== 0">
+            {{ format(colField.formatter, col[colFieldIndex]) }}
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(rowValue, rowValueIndex) in rowValues" :key="JSON.stringify(rowValue)">
-          <td v-for="(rowField, rowFieldIndex) in rowFields" :key="rowField.key" :rowspan="spanSize(rowValues, rowFieldIndex, rowValueIndex)" v-if="spanSize(rowValues, rowFieldIndex, rowValueIndex) !== 0" class="font-weight-bold">
-            {{ format(rowField.formatter, rowValue[rowFieldIndex]) }}
+        <tr v-for="(row, rowIndex) in rows" :key="JSON.stringify(row)">
+          <td v-for="(rowField, rowFieldIndex) in rowFields" :key="rowField.key" :rowspan="spanSize(rows, rowFieldIndex, rowIndex)" v-if="spanSize(rows, rowFieldIndex, rowIndex) !== 0" class="font-weight-bold">
+            {{ format(rowField.formatter, row[rowFieldIndex]) }}
           </td>
-          <td v-for="colValue in colValues" :key="JSON.stringify(colValue)" class="text-right">
-            {{ value(colValue, rowValue) }}
+          <td v-for="col in cols" :key="JSON.stringify(col)" class="text-right">
+            {{ value(col, row) }}
           </td>
         </tr>
       </tbody>
@@ -29,10 +29,10 @@ import naturalSort from 'javascript-natural-sort'
 export default {
   props: ['data', 'rowFields', 'colFields', 'reducer', 'valueFormatter'],
   computed: {
-    colValues: function() {
-      const colValues = []
+    cols: function() {
+      const cols = []
 
-      const extractColValuesRecursive = (depth, filters) => {
+      const extractColsRecursive = (depth, filters) => {
         const getter = this.colFields[depth].getter
         const sort = this.colFields[depth].sort || naturalSort
         const values = [...new Set(this.filteredData({ colFilters: filters }).map(item => getter(item)))].sort(sort)
@@ -44,25 +44,25 @@ export default {
 
           // Recursive call
           if (depth + 1 < this.colFields.length) {
-            extractColValuesRecursive(depth + 1, valueFilters)
+            extractColsRecursive(depth + 1, valueFilters)
           } else {
-            colValues.push(valueFilters)
+            cols.push(valueFilters)
           }
         })
       }
 
       if (this.colFields.length > 0) {
-        extractColValuesRecursive(0, {})
+        extractColsRecursive(0, {})
       } else {
-        colValues.push({})
+        cols.push({})
       }
 
-      return colValues
+      return cols
     },
-    rowValues: function() {
-      const rowValues = []
+    rows: function() {
+      const rows = []
 
-      const extractRowValuesRecursive = (depth, filters) => {
+      const extractRowsRecursive = (depth, filters) => {
         const getter = this.rowFields[depth].getter
         const sort = this.rowFields[depth].sort || naturalSort
         const values = [...new Set(this.filteredData({ rowFilters: filters }).map(item => getter(item)))].sort(sort)
@@ -74,20 +74,20 @@ export default {
 
           // Recursive call
           if (depth + 1 < this.rowFields.length) {
-            extractRowValuesRecursive(depth + 1, valueFilters)
+            extractRowsRecursive(depth + 1, valueFilters)
           } else {
-            rowValues.push(valueFilters)
+            rows.push(valueFilters)
           }
         })
       }
 
       if (this.rowFields.length > 0) {
-        extractRowValuesRecursive(0, {})
+        extractRowsRecursive(0, {})
       } else {
-        rowValues.push({})
+        rows.push({})
       }
 
-      return rowValues
+      return rows
     }
   },
   methods: {
@@ -118,13 +118,13 @@ export default {
       return this.valueFormatter(this.filteredData({ colFilters: colFilters, rowFilters: rowFilters }).reduce(this.reducer, 0))
     },
     // Get colspan/rowspan size
-    spanSize: function(values, index, valueIndex) {      
+    spanSize: function(values, fieldIndex, valueIndex) {      
       // If left value === current value
       // and top value === 0 (= still in the same top bracket)
       // The left td will take care of the display
       if (valueIndex > 0 &&
-        values[valueIndex - 1][index] === values[valueIndex][index] &&
-        (index === 0 || (this.spanSize(values, index - 1, valueIndex) === 0))) {
+        values[valueIndex - 1][fieldIndex] === values[valueIndex][fieldIndex] &&
+        (fieldIndex === 0 || (this.spanSize(values, fieldIndex - 1, valueIndex) === 0))) {
         return 0
       }
 
@@ -133,8 +133,8 @@ export default {
       let size = 1
       let i = valueIndex
       while (i + 1 < values.length &&
-        values[i + 1][index] === values[i][index] &&
-        (index === 0 || (i + 1 < values.length && this.spanSize(values, index - 1, i + 1) === 0))) {
+        values[i + 1][fieldIndex] === values[i][fieldIndex] &&
+        (fieldIndex === 0 || (i + 1 < values.length && this.spanSize(values, fieldIndex - 1, i + 1) === 0))) {
         i++
         size++
       }
