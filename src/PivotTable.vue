@@ -15,7 +15,7 @@
             {{ format(rowField.formatter, row[rowFieldIndex]) }}
           </td>
           <td v-for="col in cols" :key="JSON.stringify(col)" class="text-right">
-            {{ value(col, row) }}
+            {{ format(valueFormatter, value(col, row)) }}
           </td>
         </tr>
       </tbody>
@@ -115,7 +115,7 @@ export default {
     },
     // Get sum value for col/row filters
     value: function(colFilters, rowFilters) {
-      return this.valueFormatter(this.filteredData({ colFilters: colFilters, rowFilters: rowFilters }).reduce(this.reducer, 0))
+      return this.filteredData({ colFilters: colFilters, rowFilters: rowFilters }).reduce(this.reducer, 0)
     },
     // Get colspan/rowspan size
     spanSize: function(values, fieldIndex, valueIndex) {      
