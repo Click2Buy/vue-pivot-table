@@ -33,8 +33,8 @@
 
       <!-- Horizontal fields -->
       <div class="col">
-        <draggable v-model="internal.cols" class="d-flex flex-row drag-area" :options="{ group: 'fields' }">
-          <div v-for="field in internal.cols" :key="field.key">
+        <draggable v-model="internal.colFields" class="d-flex flex-row drag-area" :options="{ group: 'fields' }">
+          <div v-for="field in internal.colFields" :key="field.key">
             <div class="btn btn-primary">{{ field.label }}</div>
           </div>
         </draggable>
@@ -44,8 +44,8 @@
     <div class="row flex-nowrap grid-x">
       <!-- Vertical fields -->
       <div class="col left-col" v-if="showSettings">
-        <draggable v-model="internal.rows" class="d-flex flex-column align-items-start drag-area" :options="{ group: 'fields' }">
-          <div v-for="field in internal.rows" :key="field.key">
+        <draggable v-model="internal.rowFields" class="d-flex flex-column align-items-start drag-area" :options="{ group: 'fields' }">
+          <div v-for="field in internal.rowFields" :key="field.key">
             <div class="btn btn-primary">{{ field.label }}</div>
           </div>
         </draggable>
@@ -53,7 +53,7 @@
 
       <!-- Table zone -->
       <div class="col table-responsive">
-        <pivot-table :data="data" :rows="internal.rows" :cols="internal.cols" :reducer="reducer" :value-formatter="valueFormatter" />
+        <pivot-table :data="data" :rowFields="internal.rowFields" :colFields="internal.colFields" :reducer="reducer" :value-formatter="valueFormatter" />
       </div>
     </div>
   </div>
@@ -75,11 +75,11 @@ export default {
       type: Array,
       default: []
     },
-    rows: {
+    rowFields: {
       type: Array,
       default: []
     },
-    cols: {
+    colFields: {
       type: Array,
       default: []
     },
@@ -104,8 +104,8 @@ export default {
     return {
       internal: {
         fields: this.fields,
-        rows: this.rows,
-        cols: this.cols
+        rowFields: this.rowFields,
+        colFields: this.colFields
       },
       showSettings: true
     }

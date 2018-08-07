@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "author": "Clic2Buy",
   "license": "MIT",
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/MarketConnect/vue-pivot-table"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MarketConnect/vue-pivot-table"
   },
   "main": "dist/vue-pivot-table.js",
   "scripts": {

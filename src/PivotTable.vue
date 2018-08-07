@@ -2,17 +2,17 @@
   <div class="table-responsive">
     <table class="table table-bordered">
       <thead>
-        <tr v-for="(col, colIndex) in cols" :key="col.key">
-          <th v-if="colIndex === 0 && rows.length > 0" :colspan="rows.length" :rowspan="cols.length"></th>
-          <th v-for="(colValue, colValueIndex) in colValues" :key="JSON.stringify(colValue)" :colspan="spanSize(colValues, colIndex, colValueIndex)" v-if="spanSize(colValues, colIndex, colValueIndex) !== 0">
-            {{ format(col.formatter, colValue[colIndex]) }}
+        <tr v-for="(colField, colFieldIndex) in colFields" :key="colField.key">
+          <th v-if="colFieldIndex === 0 && rowFields.length > 0" :colspan="rowFields.length" :rowspan="colFields.length"></th>
+          <th v-for="(colValue, colValueIndex) in colValues" :key="JSON.stringify(colValue)" :colspan="spanSize(colValues, colFieldIndex, colValueIndex)" v-if="spanSize(colValues, colFieldIndex, colValueIndex) !== 0">
+            {{ format(colField.formatter, colValue[colFieldIndex]) }}
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(rowValue, rowValueIndex) in rowValues" :key="JSON.stringify(rowValue)">
-          <td v-for="(row, rowIndex) in rows" :key="row.key" :rowspan="spanSize(rowValues, rowIndex, rowValueIndex)" v-if="spanSize(rowValues, rowIndex, rowValueIndex) !== 0" class="font-weight-bold">
-            {{ format(row.formatter, rowValue[rowIndex]) }}
+          <td v-for="(rowField, rowFieldIndex) in rowFields" :key="rowField.key" :rowspan="spanSize(rowValues, rowFieldIndex, rowValueIndex)" v-if="spanSize(rowValues, rowFieldIndex, rowValueIndex) !== 0" class="font-weight-bold">
+            {{ format(rowField.formatter, rowValue[rowFieldIndex]) }}
           </td>
           <td v-for="colValue in colValues" :key="JSON.stringify(colValue)" class="text-right">
             {{ value(colValue, rowValue) }}
@@ -27,14 +27,14 @@
 import naturalSort from 'javascript-natural-sort'
 
 export default {
-  props: ['data', 'rows', 'cols', 'reducer', 'valueFormatter'],
+  props: ['data', 'rowFields', 'colFields', 'reducer', 'valueFormatter'],
   computed: {
     colValues: function() {
       const colValues = []
 
       const extractColValuesRecursive = (depth, filters) => {
-        const getter = this.cols[depth].getter
-        const sort = this.cols[depth].sort || naturalSort
+        const getter = this.colFields[depth].getter
+        const sort = this.colFields[depth].sort || naturalSort
         const values = [...new Set(this.filteredData({ colFilters: filters }).map(item => getter(item)))].sort(sort)
 
         values.forEach(value => {
@@ -43,7 +43,7 @@ export default {
           valueFilters[depth] = value
 
           // Recursive call
-          if (depth + 1 < this.cols.length) {
+          if (depth + 1 < this.colFields.length) {
             extractColValuesRecursive(depth + 1, valueFilters)
           } else {
             colValues.push(valueFilters)
@@ -51,7 +51,7 @@ export default {
         })
       }
 
-      if (this.cols.length > 0) {
+      if (this.colFields.length > 0) {
         extractColValuesRecursive(0, {})
       } else {
         colValues.push({})
@@ -63,8 +63,8 @@ export default {
       const rowValues = []
 
       const extractRowValuesRecursive = (depth, filters) => {
-        const getter = this.rows[depth].getter
-        const sort = this.rows[depth].sort || naturalSort
+        const getter = this.rowFields[depth].getter
+        const sort = this.rowFields[depth].sort || naturalSort
         const values = [...new Set(this.filteredData({ rowFilters: filters }).map(item => getter(item)))].sort(sort)
 
         values.forEach(value => {
@@ -73,7 +73,7 @@ export default {
           valueFilters[depth] = value
 
           // Recursive call
-          if (depth + 1 < this.rows.length) {
+          if (depth + 1 < this.rowFields.length) {
             extractRowValuesRecursive(depth + 1, valueFilters)
           } else {
             rowValues.push(valueFilters)
@@ -81,7 +81,7 @@ export default {
         })
       }
 
-      if (this.rows.length > 0) {
+      if (this.rowFields.length > 0) {
         extractRowValuesRecursive(0, {})
       } else {
         rowValues.push({})
@@ -97,14 +97,14 @@ export default {
         let keep = true
 
         for (const [depth, value] of Object.entries(colFilters)) {
-          const getter = this.cols[depth].getter
+          const getter = this.colFields[depth].getter
           if (getter(item) !== value) {
             keep = false
           }
         }
 
         for (const [depth, value] of Object.entries(rowFilters)) {
-          const getter = this.rows[depth].getter
+          const getter = this.rowFields[depth].getter
           if (getter(item) !== value) {
             keep = false
           }

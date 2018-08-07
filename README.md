@@ -26,11 +26,11 @@ export default {
     return {
       data: [{ x: 0, y: 0, z: 0 }, { x: 1, y: 1, z: 1 }],
       fields: [],
-      cols: [{
+      colFields: [{
         getter: item => item.x,
         label: 'X'
       }],
-      rows: [{
+      rowFields: [{
         getter: item => item.y,
         label: 'Y'
       }, {
@@ -52,7 +52,7 @@ export default {
 ### HTML
 
 ```html
-<pivot :data="data" :fields="fields" :rows="rows" :cols="cols" :reducer="reducer" :value-formatter="valueFormatter" />
+<pivot :data="data" :fields="fields" :row-fields="rowFields" :col-fields="colFields" :reducer="reducer" :value-formatter="valueFormatter" />
 ```
 
 ## API
@@ -63,8 +63,8 @@ Prop | Type | Default | Description
 -----|------|---------|------------
 `data` | `Array` | `[]` | Dataset to use in the pivot ; each element should be an object
 `fields` | `Array` | `[]` | Fields to display in the "Available fields" zone
-`rows` | `Array` | `[]` | Fields to use as rows by default
-`cols` | `Array` | `[]` | Fields to use as columns by default
+`row-fields` | `Array` | `[]` | Fields to use as rows by default
+`col-fields` | `Array` | `[]` | Fields to use as columns by default
 `reducer` | `function` | `(sum, item) => sum + 1` | Function applied to reduce `data` in the pivot table
 `value-formatter` | `function` | `value => value.toLocaleString()` | Function to format values in the pivot table
 `hide-settings-text` | `String` | 'Hide settings` | Text for the "hide settings" button
@@ -72,7 +72,7 @@ Prop | Type | Default | Description
 
 #### Field format
 
-Each element in the arrays `fields`, `rows` or `cols` should be an Object with this format:
+Each element in the arrays `fields`, `rowFields` or `colFields` should be an Object with this format:
 - `label` (`String`): text to display in the draggable button
 - `getter` (`function`): Function to apply on an element of `data` to get the field value
 - `sort` (`function`, optional): Function to order fields in the pivot table header ; if no value is provided, [javascript-natural-sort](https://github.com/Bill4Time/javascript-natural-sort) will be applied

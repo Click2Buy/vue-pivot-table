@@ -3,7 +3,7 @@
     <h1 class="border-bottom pb-2 mb-4">Vue pivot table demo</h1>
 
     <div class="mb-5">
-      <pivot :data="data" :fields="fields" :rows="rows" :cols="cols" :reducer="reducer" :value-formatter="valueFormatter" />
+      <pivot :data="data" :fields="fields" :row-fields="rowFields" :col-fields="colFields" :reducer="reducer" :value-formatter="valueFormatter" />
     </div>
   </div>
 </template>
@@ -19,11 +19,11 @@ export default {
     return {
       data: data,
       fields: [],
-      cols: [{
+      colFields: [{
         getter: item => item.year,
         label: 'Year'
       }],
-      rows: [{
+      rowFields: [{
         getter: item => item.country,
         label: 'Country'
       }, {
