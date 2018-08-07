@@ -24,7 +24,7 @@ export default {
   // Configure pivot
   data: () => {
     return {
-      data: [{ x: 0, y: 0, z: 0 }, { x: 1, y: 1, z: 1 }],
+      data: Object.freeze([{ x: 0, y: 0, z: 0 }, { x: 1, y: 1, z: 1 }]),
       fields: [],
       colFields: [{
         getter: item => item.x,
@@ -77,6 +77,12 @@ Each element in the arrays `fields`, `rowFields` or `colFields` should be an Obj
 - `getter` (`function`): Function to apply on an element of `data` to get the field value
 - `sort` (`function`, optional): Function to order fields in the pivot table header ; if no value is provided, [javascript-natural-sort](https://github.com/Bill4Time/javascript-natural-sort) will be applied
 - `formatter` (`function`, optional): Function to format headers ; the function has a value argument ; if no function is provided, the value will be displayed as found in data
+
+#### Large datasets
+
+If you plan on using this component with large datasets, we strongly advise you to use `Object.freeze` on your `data` object.
+
+See https://vuejs.org/v2/guide/instance.html#Data-and-Methods.
 
 ## Build
 
