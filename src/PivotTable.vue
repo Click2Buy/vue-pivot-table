@@ -15,7 +15,7 @@
             {{ format(rowField.formatter, row[rowFieldIndex]) }}
           </td>
           <td v-for="col in cols" :key="JSON.stringify(col)" class="text-right">
-            {{ format(valueFormatter, value(col, row)) }}
+            {{ format(valueFormatter, values[JSON.stringify({ col, row })]) }}
           </td>
         </tr>
       </tbody>
@@ -28,6 +28,11 @@ import naturalSort from 'javascript-natural-sort'
 
 export default {
   props: ['data', 'rowFields', 'colFields', 'reducer', 'valueFormatter'],
+  data: function() {
+    return {
+      values: {} // Alas vue does not support js Map
+    }
+  },
   computed: {
     cols: function() {
       const cols = []
@@ -35,7 +40,7 @@ export default {
       const extractColsRecursive = (depth, filters) => {
         const getter = this.colFields[depth].getter
         const sort = this.colFields[depth].sort || naturalSort
-        const values = [...new Set(this.filteredData({ colFilters: filters }).map(item => getter(item)))].sort(sort)
+        const values = [...new Set(this.filteredData({ data: this.data, colFilters: filters }).map(item => getter(item)))].sort(sort)
 
         values.forEach(value => {
           // Build new filter hash
@@ -65,7 +70,7 @@ export default {
       const extractRowsRecursive = (depth, filters) => {
         const getter = this.rowFields[depth].getter
         const sort = this.rowFields[depth].sort || naturalSort
-        const values = [...new Set(this.filteredData({ rowFilters: filters }).map(item => getter(item)))].sort(sort)
+        const values = [...new Set(this.filteredData({ data: this.data, rowFilters: filters }).map(item => getter(item)))].sort(sort)
 
         values.forEach(value => {
           // Build new filter hash
@@ -88,34 +93,48 @@ export default {
       }
 
       return rows
+    },
+    // Compound property for watch single callback
+    colsAndRows: function() {
+      return [this.cols, this.rows]
     }
   },
   methods: {
     // Get data filtered
-    filteredData: function({ colFilters = {}, rowFilters = {} }) {
-      return this.data.filter(item => {
+    filteredData: function({ data = [], colFilters = {}, rowFilters = {} }) {
+      // Prepare getters
+      const colGetters = {}, rowGetters = {}
+
+      for (const depth in colFilters) {
+        colGetters[depth] = this.colFields[depth].getter
+      }
+
+      for (const depth in rowFilters) {
+        rowGetters[depth] = this.rowFields[depth].getter
+      }
+
+      // Filter data with getters
+      return data.filter(item => {
         let keep = true
 
-        for (const [depth, value] of Object.entries(colFilters)) {
-          const getter = this.colFields[depth].getter
-          if (getter(item) !== value) {
+        for (const depth in colFilters) {
+          if (colGetters[depth](item) !== colFilters[depth]) {
             keep = false
+            break
           }
         }
 
-        for (const [depth, value] of Object.entries(rowFilters)) {
-          const getter = this.rowFields[depth].getter
-          if (getter(item) !== value) {
-            keep = false
+        if (keep) {
+          for (const depth in rowFilters) {
+            if (rowGetters[depth](item) !== rowFilters[depth]) {
+              keep = false
+              break
+            }
           }
         }
 
         return keep
       })
-    },
-    // Get sum value for col/row filters
-    value: function(colFilters, rowFilters) {
-      return this.filteredData({ colFilters: colFilters, rowFilters: rowFilters }).reduce(this.reducer, 0)
     },
     // Get colspan/rowspan size
     spanSize: function(values, fieldIndex, valueIndex) {      
@@ -144,7 +163,32 @@ export default {
     // Format with an optional function
     format: function(formatter, value) {
       return formatter ? formatter(value) : value
+    },
+    // Called when cols/rows have changed => recompute values
+    computeValues: function() {
+      // Remove old values
+      this.values = {}
+
+      // Compute new values
+      this.rows.forEach(row => {
+        const rowData = this.filteredData({ data: this.data, rowFilters: row })
+        this.cols.forEach(col => {
+          const data = this.filteredData({ data: rowData, colFilters: col })
+
+          const key = JSON.stringify({ col, row })
+          const value = data.reduce(this.reducer, 0)
+          this.values[key] = value
+        })
+      })
     }
+  },
+  watch: {
+    colsAndRows: function() {
+      this.computeValues()
+    }
+  },
+  created: function() {
+    this.computeValues()
   }
 }
 </script>
