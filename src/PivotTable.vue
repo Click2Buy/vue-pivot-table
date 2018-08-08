@@ -165,7 +165,7 @@ export default {
       return formatter ? formatter(value) : value
     },
     // Called when cols/rows have changed => recompute values
-    colsOrRowsUpdated: function() {
+    computeValues: function() {
       // Remove old values
       this.values = {}
 
@@ -184,11 +184,11 @@ export default {
   },
   watch: {
     colsAndRows: function() {
-      this.colsOrRowsUpdated()
+      this.computeValues()
     }
   },
   created: function() {
-    this.colsOrRowsUpdated()
+    this.computeValues()
   }
 }
 </script>
