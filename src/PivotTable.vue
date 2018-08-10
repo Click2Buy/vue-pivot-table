@@ -5,17 +5,28 @@
         <tr v-for="(colField, colFieldIndex) in colFields" :key="colField.key">
           <th v-if="colFieldIndex === 0 && rowFields.length > 0" :colspan="rowFields.length" :rowspan="colFields.length"></th>
           <th v-for="(col, colIndex) in cols" :key="JSON.stringify(col)" :colspan="spanSize(cols, colFieldIndex, colIndex)" v-if="spanSize(cols, colFieldIndex, colIndex) !== 0">
-            {{ format(colField.formatter, col[colFieldIndex]) }}
+            <slot v-if="colField.headerSlotName" :name="colField.headerSlotName" v-bind:value="col[colFieldIndex]">
+              Undefined slot "{{ colField.headerSlotName }}"
+            </slot>
+            <template v-else>
+              {{ col[colFieldIndex] }}
+            </template>
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(row, rowIndex) in rows" :key="JSON.stringify(row)">
           <td v-for="(rowField, rowFieldIndex) in rowFields" :key="rowField.key" :rowspan="spanSize(rows, rowFieldIndex, rowIndex)" v-if="spanSize(rows, rowFieldIndex, rowIndex) !== 0" class="font-weight-bold">
-            {{ format(rowField.formatter, row[rowFieldIndex]) }}
+            <slot v-if="rowField.headerSlotName" :name="rowField.headerSlotName" v-bind:value="row[rowFieldIndex]">
+              Undefined slot "{{ rowField.headerSlotName }}"
+            </slot>
+            <template v-else>
+              {{ row[rowFieldIndex] }}
+            </template>
           </td>
           <td v-for="col in cols" :key="JSON.stringify(col)" class="text-right">
-            {{ format(valueFormatter, values[JSON.stringify({ col, row })]) }}
+            <slot v-if="$scopedSlots.value" name="value" v-bind:value="values[JSON.stringify({ col, row })]" />
+            <template v-else>{{ values[JSON.stringify({ col, row })] }}</template>
           </td>
         </tr>
       </tbody>
@@ -27,7 +38,7 @@
 import naturalSort from 'javascript-natural-sort'
 
 export default {
-  props: ['data', 'rowFields', 'colFields', 'reducer', 'valueFormatter'],
+  props: ['data', 'rowFields', 'colFields', 'reducer'],
   data: function() {
     return {
       values: {} // Alas vue does not support js Map
@@ -159,10 +170,6 @@ export default {
       }
 
       return size
-    },
-    // Format with an optional function
-    format: function(formatter, value) {
-      return formatter ? formatter(value) : value
     },
     // Called when cols/rows have changed => recompute values
     computeValues: function() {

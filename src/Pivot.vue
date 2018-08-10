@@ -53,7 +53,12 @@
 
       <!-- Table zone -->
       <div class="col table-responsive">
-        <pivot-table :data="data" :rowFields="internal.rowFields" :colFields="internal.colFields" :reducer="reducer" :value-formatter="valueFormatter" />
+        <pivot-table :data="data" :rowFields="internal.rowFields" :colFields="internal.colFields" :reducer="reducer">
+          <!-- pass down scoped slots -->
+          <template v-for="(slot, slotName) in $scopedSlots" :slot="slotName" slot-scope="{ value }">
+            <slot :name="slotName" v-bind="{ value }"></slot>
+          </template>
+        </pivot-table>
       </div>
     </div>
   </div>
@@ -86,10 +91,6 @@ export default {
     reducer: {
       type: Function,
       default: (sum, item) => sum + 1
-    },
-    valueFormatter: {
-      type: Function,
-      default: value => value.toLocaleString()
     },
     hideSettingsText: {
       type: String,

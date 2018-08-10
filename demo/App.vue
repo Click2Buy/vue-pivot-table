@@ -3,7 +3,11 @@
     <h1 class="border-bottom pb-2 mb-4">Vue pivot table demo</h1>
 
     <div class="mb-5">
-      <pivot :data="data" :fields="fields" :row-fields="rowFields" :col-fields="colFields" :reducer="reducer" :value-formatter="valueFormatter" />
+      <pivot :data="data" :fields="fields" :row-fields="rowFields" :col-fields="colFields" :reducer="reducer">
+        <template slot="value" slot-scope="{ value }">
+          {{ value.toLocaleString() }}
+        </template>
+      </pivot>
     </div>
   </div>
 </template>
@@ -32,9 +36,6 @@ export default {
       }],
       reducer: function(sum, item) {
         return sum + item.count
-      },
-      valueFormatter: function(value) {
-        return value.toLocaleString()
       }
     }
   }
