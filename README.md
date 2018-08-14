@@ -117,6 +117,9 @@ npm run dev
 
 # Build js lib
 npm run build
+
+# Build js lib for browser usage
+npm run build:browser
 ```
 
 ## Thanks

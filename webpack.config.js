@@ -105,7 +105,7 @@ module.exports = env => {
     if (!env.browser) {
       const prodConfig = {
         mode: 'production',
-        entry: './src/PivotTable.vue',
+        entry: './src/Pivot.vue',
         output: {
           path: path.resolve(__dirname, './dist'),
           filename: 'vue-pivot-table.js',
@@ -117,12 +117,12 @@ module.exports = env => {
     } else {
       const prodBrowserConfig = {
         mode: 'production',
-        entry: './src/PivotTable.vue',
+        entry: './src/Pivot.vue',
         output: {
           path: path.resolve(__dirname, './dist'),
           filename: 'vue-pivot-table.browser.js',
           libraryTarget: 'window',
-          library: 'VuePivotTable'
+          library: 'VuePivot'
         }
       }
     
