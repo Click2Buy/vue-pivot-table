@@ -11,7 +11,8 @@
   "main": "dist/vue-pivot-table.js",
   "scripts": {
     "dev": "webpack-dev-server --progress",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "build": "webpack --env.prod --progress --hide-modules",
+    "build:browser": "webpack --env.prod --env.browser --progress --hide-modules"
   },
   "dependencies": {
     "vue": "^2.5.11",
@@ -25,7 +26,6 @@
     "autoprefixer": "^9.0.1",
     "babel-loader": "^8.0.0-beta.4",
     "bootstrap": "^4.1.2",
-    "cross-env": "^5.2.0",
     "css-loader": "^0.28.7",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "^3.2.0",

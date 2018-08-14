@@ -5,7 +5,7 @@ const { VueLoaderPlugin } = require('vue-loader')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 
-let config = {
+const baseConfig = {
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
@@ -69,49 +69,64 @@ let config = {
   ]
 }
 
-if (process.env.NODE_ENV !== 'production') {
-  const devConfig = {
-    mode: 'development',
-    entry: './demo/main.js',
-    output: {
-      filename: 'main.js',
-      path: path.resolve(__dirname, 'dist')
-    },
-    devServer: {
-      hot: true,
-      open: true,
-      overlay: {
-        warnings: false,
-        errors: true
+module.exports = env => {
+  if (!env) {
+    const devConfig = {
+      mode: 'development',
+      entry: './demo/main.js',
+      output: {
+        filename: 'main.js',
+        path: path.resolve(__dirname, 'dist')
       },
-      quiet: true
-    },
-    plugins: [
-      new webpack.NamedModulesPlugin(),
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoEmitOnErrorsPlugin(),
-      new HtmlWebpackPlugin({
-        filename: 'index.html',
-        template: 'index.html',
-        inject: true
-      }),
-      new FriendlyErrorsPlugin()
-    ]
-  }
+      devServer: {
+        hot: true,
+        open: true,
+        overlay: {
+          warnings: false,
+          errors: true
+        },
+        quiet: true
+      },
+      plugins: [
+        new webpack.NamedModulesPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
+        new HtmlWebpackPlugin({
+          filename: 'index.html',
+          template: 'index.html',
+          inject: true
+        }),
+        new FriendlyErrorsPlugin()
+      ]
+    }
 
-  config = merge(config, devConfig)
-} else {
-  const prodConfig = {
-    mode: 'production',
-    entry: './src/PivotTable.vue',
-    output: {
-      path: path.resolve(__dirname, './dist'),
-      filename: 'vue-pivot-table.js',
-      libraryTarget: 'umd'
+    return merge(baseConfig, devConfig)
+  } else {
+    if (!env.browser) {
+      const prodConfig = {
+        mode: 'production',
+        entry: './src/PivotTable.vue',
+        output: {
+          path: path.resolve(__dirname, './dist'),
+          filename: 'vue-pivot-table.js',
+          libraryTarget: 'umd'
+        }
+      }
+    
+      return merge(baseConfig, prodConfig)
+    } else {
+      const prodBrowserConfig = {
+        mode: 'production',
+        entry: './src/PivotTable.vue',
+        output: {
+          path: path.resolve(__dirname, './dist'),
+          filename: 'vue-pivot-table.browser.js',
+          libraryTarget: 'window',
+          library: 'VuePivotTable'
+        }
+      }
+    
+      return merge(baseConfig, prodBrowserConfig)
     }
   }
-
-  config = merge(config, prodConfig)
 }
-
-module.exports = config
