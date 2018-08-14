@@ -25,8 +25,13 @@
             </template>
           </td>
           <td v-for="col in cols" :key="JSON.stringify(col)" class="text-right">
-            <slot v-if="$scopedSlots.value" name="value" v-bind:value="values[JSON.stringify({ col, row })]" />
-            <template v-else>{{ values[JSON.stringify({ col, row })] }}</template>
+            <template v-if="valuesLoading">
+              Loading...
+            </template>
+            <template v-else>
+              <slot v-if="$scopedSlots.value" name="value" v-bind:value="values[JSON.stringify({ col, row })]" />
+              <template v-else>{{ values[JSON.stringify({ col, row })] }}</template>
+            </template>
           </td>
         </tr>
       </tbody>
@@ -41,6 +46,7 @@ export default {
   props: ['data', 'rowFields', 'colFields', 'reducer'],
   data: function() {
     return {
+      valuesLoading: false,
       values: {} // Alas vue does not support js Map
     }
   },
@@ -175,18 +181,24 @@ export default {
     computeValues: function() {
       // Remove old values
       this.values = {}
-
+      this.valuesLoading = true
+      
       // Compute new values
-      this.rows.forEach(row => {
-        const rowData = this.filteredData({ data: this.data, rowFilters: row })
-        this.cols.forEach(col => {
-          const data = this.filteredData({ data: rowData, colFilters: col })
+      const asyncCompute = () => {  
+        this.rows.forEach(row => {
+          const rowData = this.filteredData({ data: this.data, rowFilters: row })
+          this.cols.forEach(col => {
+            const data = this.filteredData({ data: rowData, colFilters: col })
 
-          const key = JSON.stringify({ col, row })
-          const value = data.reduce(this.reducer, 0)
-          this.values[key] = value
+            const key = JSON.stringify({ col, row })
+            const value = data.reduce(this.reducer, 0)
+            this.values[key] = value
+          })
         })
-      })
+        this.valuesLoading = false
+      }
+
+      setTimeout(() => { asyncCompute() }, 0)
     }
   },
   watch: {
