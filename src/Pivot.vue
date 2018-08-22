@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Top row -->
-    <div v-if="showSettings" class="row grid-x flex-nowrap mb-3">
+    <div v-if="showSettings" class="row grid-x flex-nowrap mb-4">
       <div class="col left-col">
         <button class="btn btn-outline-primary" @click="toggleShowSettings">
           {{ hideSettingsText }}
@@ -18,13 +18,13 @@
       </div>
     </div>
 
-    <div class="mb-3" v-else>
+    <div class="mb-4" v-else>
       <button class="btn btn-outline-primary" @click="toggleShowSettings">
         {{ showSettingsText }}
       </button>
     </div>
 
-    <div class="row grid-x mb-3" v-if="showSettings">
+    <div class="row grid-x mb-4" v-if="showSettings">
       <!-- Top left zone - TODO: renderer select menu -->
       <div class="col left-col"></div>
 
@@ -125,9 +125,9 @@ export default {
 
 /* Grid with even gutters */
 .grid-x {
-  margin: 0 -0.5rem;
+  margin: 0 -0.75rem;
   > * {
-    padding: 0 0.5rem;
+    padding: 0 0.75rem;
   }
 }
 
@@ -139,7 +139,7 @@ export default {
   padding: 0.5rem;
 
   > div {
-    margin: 0.25rem;
+    margin: 0.5rem;
   }
 
   * {
