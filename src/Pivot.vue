@@ -12,7 +12,7 @@
       <div class="col">
         <draggable v-model="internal.fields" class="d-flex flex-row drag-area flex-wrap" :options="{ group: 'fields' }">
           <div v-for="field in internal.fields" :key="field.key">
-            <div class="btn btn-secondary">{{ field.label }}</div>
+            <div class="btn btn-draggable btn-secondary">{{ field.label }}</div>
           </div>
         </draggable>
       </div>
@@ -32,7 +32,7 @@
       <div class="col">
         <draggable v-model="internal.colFields" class="d-flex flex-row drag-area" :options="{ group: 'fields' }">
           <div v-for="field in internal.colFields" :key="field.key">
-            <div class="btn btn-primary">{{ field.label }}</div>
+            <div class="btn btn-draggable btn-primary">{{ field.label }}</div>
           </div>
         </draggable>
       </div>
@@ -43,7 +43,7 @@
       <div class="col left-col" v-if="showSettings">
         <draggable v-model="internal.rowFields" class="d-flex flex-column align-items-start drag-area" :options="{ group: 'fields' }">
           <div v-for="field in internal.rowFields" :key="field.key">
-            <div class="btn btn-primary">{{ field.label }}</div>
+            <div class="btn btn-draggable btn-primary">{{ field.label }}</div>
           </div>
         </draggable>
       </div>
@@ -145,5 +145,11 @@ export default {
   * {
     cursor: move !important;
   }
+}
+
+/* Draggable buttons */
+.btn-draggable {
+  white-space: normal;
+  text-align: left;
 }
 </style>
