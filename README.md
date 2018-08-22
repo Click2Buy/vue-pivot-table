@@ -115,11 +115,8 @@ npm install
 # Serve with hot reload at localhost:8080
 npm run dev
 
-# Build js lib
+# Build js libraries in dist folder
 npm run build
-
-# Build js lib for browser usage
-npm run build:browser
 ```
 
 ## Thanks

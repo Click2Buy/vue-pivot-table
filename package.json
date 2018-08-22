@@ -11,7 +11,8 @@
   "main": "dist/vue-pivot-table.js",
   "scripts": {
     "dev": "webpack-dev-server --progress",
-    "build": "webpack --env.prod --progress --hide-modules",
+    "build": "npm run build:lib & npm run build:browser",
+    "build:lib": "webpack --env.prod --progress --hide-modules",
     "build:browser": "webpack --env.prod --env.browser --progress --hide-modules"
   },
   "dependencies": {

@@ -134,7 +134,7 @@ export default {
 /* Drag area */
 .drag-area {
   min-width: 10rem;
-  min-height: 4rem;
+  min-height: 4.5rem;
   border: 1px dashed #ccc;
   padding: 0.5rem;
 
