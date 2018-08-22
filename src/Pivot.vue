@@ -1,34 +1,31 @@
 <template>
   <div>
-    <!-- Available fields -->
-    <div class="card mb-4" v-if="showSettings">
-      <div class="card-body">
-        <div class="row grid-x justify-content-between align-items-start">
-          <div>
-            <draggable v-model="internal.fields" class="d-inline-flex flex-row drag-area" :options="{ group: 'fields' }">
-              <div v-for="field in internal.fields" :key="field.key">
-                <div class="btn btn-secondary">{{ field.label }}</div>
-              </div>
-            </draggable>
+    <!-- Top row -->
+    <div v-if="showSettings" class="row grid-x flex-nowrap mb-3">
+      <div class="col left-col">
+        <button class="btn btn-outline-primary" @click="toggleShowSettings">
+          {{ hideSettingsText }}
+        </button>
+      </div>
+
+      <!-- Disabled fields -->
+      <div class="col">
+        <draggable v-model="internal.fields" class="d-flex flex-row drag-area flex-wrap" :options="{ group: 'fields' }">
+          <div v-for="field in internal.fields" :key="field.key">
+            <div class="btn btn-secondary">{{ field.label }}</div>
           </div>
-          <div>
-            <button class="btn btn-outline-primary" @click="toggleShowSettings">
-              {{ hideSettingsText }}
-            </button>
-          </div>
-        </div>
+        </draggable>
       </div>
     </div>
 
-    <div class="mb-4 text-right" v-else>
+    <div class="mb-3" v-else>
       <button class="btn btn-outline-primary" @click="toggleShowSettings">
         {{ showSettingsText }}
       </button>
     </div>
 
-    <!-- Pivot zone -->
-    <div class="row grid-x mb-4" v-if="showSettings">
-      <!-- Top left zone -->
+    <div class="row grid-x mb-3" v-if="showSettings">
+      <!-- Top left zone - TODO: renderer select menu -->
       <div class="col left-col"></div>
 
       <!-- Horizontal fields -->
@@ -51,7 +48,7 @@
         </draggable>
       </div>
 
-      <!-- Table zone -->
+      <!-- Table -->
       <div class="col table-responsive">
         <pivot-table :data="data" :rowFields="internal.rowFields" :colFields="internal.colFields" :reducer="reducer">
           <!-- pass down scoped slots -->
@@ -128,18 +125,18 @@ export default {
 
 /* Grid with even gutters */
 .grid-x {
-  margin: 0 -0.75rem;
+  margin: 0 -0.5rem;
   > * {
-    padding: 0 0.75rem;
+    padding: 0 0.5rem;
   }
 }
 
 /* Drag area */
 .drag-area {
   min-width: 10rem;
-  min-height: 4.5rem;
+  min-height: 4rem;
   border: 1px dashed #ccc;
-  padding: 0.75rem;
+  padding: 0.5rem;
 
   > div {
     margin: 0.25rem;
