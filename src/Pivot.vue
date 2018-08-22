@@ -10,9 +10,12 @@
 
       <!-- Disabled fields -->
       <div class="col">
-        <draggable v-model="internal.fields" class="d-flex flex-row drag-area flex-wrap" :options="{ group: 'fields' }">
+        <draggable v-model="internal.fields" class="d-flex flex-row drag-area flex-wrap" :class="dragAreaClass" :options="{ group: 'fields' }" @start="start" @end="end">
           <div v-for="field in internal.fields" :key="field.key">
-            <div class="btn btn-draggable btn-secondary">{{ field.label }}</div>
+            <div class="btn btn-draggable btn-secondary">
+              <svg aria-hidden="true" data-prefix="fas" data-icon="grip-vertical" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 512" class="svg-inline--fa fa-grip-vertical fa-w-10"><path fill="currentColor" d="M64 208c26.5 0 48 21.5 48 48s-21.5 48-48 48-48-21.5-48-48 21.5-48 48-48zM16 104c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48zm0 304c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48z M204 208c26.5 0 48 21.5 48 48s-21.5 48 -48 48 -48 -21.5 -48 -48 21.5 -48 48 -48zM156 104c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48zm0 304c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48z" class=""></path></svg>
+              {{ field.label }}
+            </div>
           </div>
         </draggable>
       </div>
@@ -30,9 +33,12 @@
 
       <!-- Horizontal fields -->
       <div class="col">
-        <draggable v-model="internal.colFields" class="d-flex flex-row drag-area" :options="{ group: 'fields' }">
+        <draggable v-model="internal.colFields" class="d-flex flex-row drag-area" :class="dragAreaClass" :options="{ group: 'fields' }" @start="start" @end="end">
           <div v-for="field in internal.colFields" :key="field.key">
-            <div class="btn btn-draggable btn-primary">{{ field.label }}</div>
+            <div class="btn btn-draggable btn-primary">
+              <svg aria-hidden="true" data-prefix="fas" data-icon="grip-vertical" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 512" class="svg-inline--fa fa-grip-vertical fa-w-10"><path fill="currentColor" d="M64 208c26.5 0 48 21.5 48 48s-21.5 48-48 48-48-21.5-48-48 21.5-48 48-48zM16 104c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48zm0 304c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48z M204 208c26.5 0 48 21.5 48 48s-21.5 48 -48 48 -48 -21.5 -48 -48 21.5 -48 48 -48zM156 104c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48zm0 304c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48z" class=""></path></svg>
+              {{ field.label }}
+            </div>
           </div>
         </draggable>
       </div>
@@ -41,9 +47,12 @@
     <div class="row flex-nowrap grid-x">
       <!-- Vertical fields -->
       <div class="col left-col" v-if="showSettings">
-        <draggable v-model="internal.rowFields" class="d-flex flex-column align-items-start drag-area" :options="{ group: 'fields' }">
+        <draggable v-model="internal.rowFields" class="d-flex flex-column align-items-start drag-area" :class="dragAreaClass" :options="{ group: 'fields' }" @start="start" @end="end">
           <div v-for="field in internal.rowFields" :key="field.key">
-            <div class="btn btn-draggable btn-primary">{{ field.label }}</div>
+            <div class="btn btn-draggable btn-primary">
+              <svg aria-hidden="true" data-prefix="fas" data-icon="grip-vertical" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 512" class="svg-inline--fa fa-grip-vertical fa-w-10"><path fill="currentColor" d="M64 208c26.5 0 48 21.5 48 48s-21.5 48-48 48-48-21.5-48-48 21.5-48 48-48zM16 104c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48zm0 304c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48z M204 208c26.5 0 48 21.5 48 48s-21.5 48 -48 48 -48 -21.5 -48 -48 21.5 -48 48 -48zM156 104c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48zm0 304c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48z" class=""></path></svg>
+              {{ field.label }}
+            </div>
           </div>
         </draggable>
       </div>
@@ -105,12 +114,24 @@ export default {
         rowFields: this.rowFields,
         colFields: this.colFields
       },
+      dragging: false,
       showSettings: true
+    }
+  },
+  computed: {
+    dragAreaClass: function() {
+      return this.dragging ? 'drag-area-highlight' : null
     }
   },
   methods: {
     toggleShowSettings: function() {
       this.showSettings = !this.showSettings
+    },
+    start: function() {
+      this.dragging = true
+    },
+    end: function() {
+      this.dragging = false
     }
   }
 }
@@ -131,12 +152,13 @@ export default {
   }
 }
 
-/* Drag area */
+/* Drag & drop stuff */
 .drag-area {
   min-width: 10rem;
   min-height: 4.5rem;
   border: 1px dashed #ccc;
   padding: 0.5rem;
+  transition: background-color 0.5s;
 
   > div {
     margin: 0.5rem;
@@ -145,6 +167,27 @@ export default {
   * {
     cursor: move !important;
   }
+}
+
+.drag-area-highlight {
+  background-color: #f3f3f3;
+}
+
+.sortable-ghost {
+  opacity: 0.4;
+}
+
+/* Handle icon (mix of grip-vertical & ellipsis-v) */
+.svg-inline--fa.fa-w-10 {
+  width: 0.625em;
+}
+
+.svg-inline--fa {
+  display: inline-block;
+  font-size: inherit;
+  height: 1em;
+  overflow: visible;
+  vertical-align: -.125em;
 }
 
 /* Draggable buttons */

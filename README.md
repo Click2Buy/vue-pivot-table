@@ -124,3 +124,4 @@ npm run build
 - https://github.com/plotly/react-pivottable
 - https://github.com/nicolaskruchten/pivottable
 - https://dhtmlx.com/docs/products/dhtmlxPivot/
+- https://www.fontawesome.com/
