@@ -10,6 +10,7 @@
 
       <!-- Disabled fields -->
       <div class="col">
+        <div class="drag-area-label">{{ availableFieldsLabelText }}</div>
         <draggable v-model="internal.fields" class="d-flex flex-row drag-area flex-wrap" :class="dragAreaClass" :options="{ group: 'fields' }" @start="start" @end="end">
           <div v-for="field in internal.fields" :key="field.key">
             <div class="btn btn-draggable btn-secondary">
@@ -33,6 +34,7 @@
 
       <!-- Horizontal fields -->
       <div class="col">
+        <div class="drag-area-label">{{ colsLabelText }}</div>
         <draggable v-model="internal.colFields" :options="{ group: 'fields' }" @start="start" @end="end" class="d-flex flex-row drag-area border-primary" :class="dragAreaClass">
           <div v-for="field in internal.colFields" :key="field.key">
             <div class="btn btn-draggable btn-primary">
@@ -47,6 +49,7 @@
     <div class="row flex-nowrap grid-x">
       <!-- Vertical fields -->
       <div class="col left-col" v-if="showSettings">
+        <div class="drag-area-label">{{ rowsLabelText }}</div>
         <draggable v-model="internal.rowFields" :options="{ group: 'fields' }" @start="start" @end="end" class="d-flex flex-column align-items-start drag-area border-primary" :class="dragAreaClass">
           <div v-for="field in internal.rowFields" :key="field.key">
             <div class="btn btn-draggable btn-primary">
@@ -97,6 +100,18 @@ export default {
     reducer: {
       type: Function,
       default: (sum, item) => sum + 1
+    },
+    availableFieldsLabelText: {
+      type: String,
+      default: 'Available fields'
+    },
+    colsLabelText: {
+      type: String,
+      default: 'Columns'
+    },
+    rowsLabelText: {
+      type: String,
+      default: 'Rows'
     },
     hideSettingsText: {
       type: String,
@@ -155,7 +170,7 @@ export default {
 /* Drag & drop stuff */
 .drag-area {
   min-width: 10rem;
-  min-height: 4.5rem;
+  min-height: 6.5rem;
   border: 1px dashed #ccc;
   padding: 0.5rem;
   transition: background-color 0.4s;
@@ -167,10 +182,17 @@ export default {
   * {
     cursor: move !important;
   }
+
+  padding-top: 2.5rem;
 }
 
 .drag-area-highlight {
   background-color: #f3f3f3;
+}
+
+.drag-area-label {
+  position: absolute;
+  padding: 0.75rem 1rem;
 }
 
 .sortable-ghost {

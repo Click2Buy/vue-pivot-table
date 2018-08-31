@@ -65,6 +65,9 @@ Prop | Type | Default | Description
 `row-fields` | `Array` | `[]` | Fields to use as rows by default
 `col-fields` | `Array` | `[]` | Fields to use as columns by default
 `reducer` | `function` | `(sum, item) => sum + 1` | Function applied to reduce `data` in the pivot table
+`available-fields-label-text` | `String` | `'Available fields'` | Text for available fields drag area zone
+`cols-label-text` | `String` | `'Columns'` | Text for the columns drag area zone
+`rows-label-text` | `String` | `'Rows'` | Text for the rows drag area zone
 `hide-settings-text` | `String` | `'Hide settings'` | Text for the "hide settings" button
 `show-settings-text` | `String` | `'Show settings'` | Text for the "show settings" button
 
