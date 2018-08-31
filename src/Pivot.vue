@@ -33,7 +33,7 @@
 
       <!-- Horizontal fields -->
       <div class="col">
-        <draggable v-model="internal.colFields" class="d-flex flex-row drag-area" :class="dragAreaClass" :options="{ group: 'fields' }" @start="start" @end="end">
+        <draggable v-model="internal.colFields" :options="{ group: 'fields' }" @start="start" @end="end" class="d-flex flex-row drag-area border-primary" :class="dragAreaClass">
           <div v-for="field in internal.colFields" :key="field.key">
             <div class="btn btn-draggable btn-primary">
               <svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 512" class="svg-inline--fa fa-grip-vertical fa-w-10"><path fill="currentColor" d="M64 208c26.5 0 48 21.5 48 48s-21.5 48-48 48-48-21.5-48-48 21.5-48 48-48zM16 104c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48zm0 304c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48z M204 208c26.5 0 48 21.5 48 48s-21.5 48 -48 48 -48 -21.5 -48 -48 21.5 -48 48 -48zM156 104c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48zm0 304c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48z" class=""></path></svg>
@@ -47,7 +47,7 @@
     <div class="row flex-nowrap grid-x">
       <!-- Vertical fields -->
       <div class="col left-col" v-if="showSettings">
-        <draggable v-model="internal.rowFields" class="d-flex flex-column align-items-start drag-area" :class="dragAreaClass" :options="{ group: 'fields' }" @start="start" @end="end">
+        <draggable v-model="internal.rowFields" :options="{ group: 'fields' }" @start="start" @end="end" class="d-flex flex-column align-items-start drag-area border-primary" :class="dragAreaClass">
           <div v-for="field in internal.rowFields" :key="field.key">
             <div class="btn btn-draggable btn-primary">
               <svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 512" class="svg-inline--fa fa-grip-vertical fa-w-10"><path fill="currentColor" d="M64 208c26.5 0 48 21.5 48 48s-21.5 48-48 48-48-21.5-48-48 21.5-48 48-48zM16 104c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48zm0 304c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48z M204 208c26.5 0 48 21.5 48 48s-21.5 48 -48 48 -48 -21.5 -48 -48 21.5 -48 48 -48zM156 104c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48zm0 304c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48z" class=""></path></svg>
