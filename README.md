@@ -70,6 +70,7 @@ Prop | Type | Default | Description
 `rows-label-text` | `String` | `'Rows'` | Text for the rows drag area zone
 `hide-settings-text` | `String` | `'Hide settings'` | Text for the "hide settings" button
 `show-settings-text` | `String` | `'Show settings'` | Text for the "show settings" button
+`no-data-warning-text` | `String` | `'No data to display.'` | Text to display when `data` is empty
 
 #### Field format
 

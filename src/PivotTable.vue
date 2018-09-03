@@ -1,6 +1,9 @@
 <template>
   <div class="table-responsive">
-    <table class="table table-bordered">
+    <div v-if="data.length === 0" class="alert alert-warning" role="alert">
+      {{ noDataWarningText }}
+    </div>
+    <table v-else class="table table-bordered">
       <thead>
         <tr v-for="(colField, colFieldIndex) in colFields" :key="colField.key">
           <th v-if="colFieldIndex === 0 && rowFields.length > 0" :colspan="rowFields.length" :rowspan="colFields.length"></th>
@@ -38,7 +41,7 @@
 import naturalSort from 'javascript-natural-sort'
 
 export default {
-  props: ['data', 'rowFields', 'colFields', 'reducer'],
+  props: ['data', 'rowFields', 'colFields', 'reducer', 'noDataWarningText'],
   data: function() {
     return {
       values: {} // Alas vue does not support js Map
