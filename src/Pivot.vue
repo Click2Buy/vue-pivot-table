@@ -62,7 +62,7 @@
 
       <!-- Table -->
       <div class="col table-responsive">
-        <pivot-table :data="data" :rowFields="internal.rowFields" :colFields="internal.colFields" :reducer="reducer" :no-data-warning-text="noDataWarningText">
+        <pivot-table :data="data" :row-fields="internal.rowFields" :col-fields="internal.colFields" :reducer="reducer" :no-data-warning-text="noDataWarningText">
           <!-- pass down scoped slots -->
           <template v-for="(slot, slotName) in $scopedSlots" :slot="slotName" slot-scope="{ value }">
             <slot :name="slotName" v-bind="{ value }"></slot>
@@ -100,6 +100,10 @@ export default {
     reducer: {
       type: Function,
       default: (sum, item) => sum + 1
+    },
+    defaultShowSettings: {
+      type: Boolean,
+      default: true
     },
     availableFieldsLabelText: {
       type: String,
@@ -152,6 +156,9 @@ export default {
     end: function() {
       this.dragging = false
     }
+  },
+  created: function() {
+    this.showSettings = this.defaultShowSettings
   }
 }
 </script>
