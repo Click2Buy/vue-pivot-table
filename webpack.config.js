@@ -117,7 +117,7 @@ module.exports = env => {
     } else {
       const prodBrowserConfig = {
         mode: 'production',
-        entry: './src/Pivot.vue',
+        entry: './src/browser.js',
         output: {
           path: path.resolve(__dirname, './dist'),
           filename: 'vue-pivot-table.browser.js',

@@ -19,6 +19,8 @@ While the `Pivot` component provides the full experience, the `PivotTable` can b
 
 ### Javascript
 
+#### Webpack
+
 ```js
 // Import the needed component - not published yet on npm!
 import Pivot from '@marketconnect/vue-pivot-table'
@@ -49,6 +51,12 @@ export default {
   }
   ...
 }
+```
+
+#### Browser
+
+```js
+Vue.use(VuePivot)
 ```
 
 ### HTML
