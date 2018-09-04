@@ -42,6 +42,28 @@ import naturalSort from 'javascript-natural-sort'
 
 export default {
   props: ['data', 'rowFields', 'colFields', 'reducer', 'noDataWarningText'],
+  props: {
+    data: {
+      type: Array,
+      default: []
+    },
+    rowFields: {
+      type: Array,
+      default: []
+    },
+    colFields: {
+      type: Array,
+      default: []
+    },
+    reducer: {
+      type: Function,
+      default: (sum, item) => sum + 1
+    },
+    noDataWarningText: {
+      type: String,
+      default: 'No data to display.'
+    }
+  },
   data: function() {
     return {
       values: {} // Alas vue does not support js Map
