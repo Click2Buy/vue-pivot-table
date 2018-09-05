@@ -162,6 +162,7 @@ npm run build
 ## Thanks
 
 - [FontAwesome](https://www.fontawesome.com/) ([license](https://fontawesome.com/license))
+- [Vue.Draggable](https://github.com/SortableJS/Vue.Draggable)
 - https://github.com/plotly/react-pivottable
 - https://github.com/nicolaskruchten/pivottable
 - https://dhtmlx.com/docs/products/dhtmlxPivot/
