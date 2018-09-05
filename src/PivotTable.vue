@@ -1,6 +1,11 @@
 <template>
   <div class="table-responsive">
-    <div v-if="data.length === 0" class="alert alert-warning" role="alert">
+    <template v-if="isDataLoading">
+      <slot name="loading">
+        Loading...
+      </slot>
+    </template>
+    <div v-else-if="data.length === 0" class="alert alert-warning" role="alert">
       {{ noDataWarningText }}
     </div>
     <table v-else class="table table-bordered">
@@ -62,6 +67,10 @@ export default {
     noDataWarningText: {
       type: String,
       default: 'No data to display.'
+    },
+    isDataLoading: {
+      type: Boolean,
+      default: false
     }
   },
   data: function() {

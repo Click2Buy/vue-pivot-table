@@ -62,10 +62,13 @@
 
       <!-- Table -->
       <div class="col table-responsive">
-        <pivot-table :data="data" :row-fields="internal.rowFields" :col-fields="internal.colFields" :reducer="reducer" :no-data-warning-text="noDataWarningText">
+        <pivot-table :data="data" :row-fields="internal.rowFields" :col-fields="internal.colFields" :reducer="reducer" :no-data-warning-text="noDataWarningText" :is-data-loading="isDataLoading">
           <!-- pass down scoped slots -->
           <template v-for="(slot, slotName) in $scopedSlots" :slot="slotName" slot-scope="{ value }">
             <slot :name="slotName" v-bind="{ value }"></slot>
+          </template>
+          <template slot="loading">
+            <slot name="loading"></slot>
           </template>
         </pivot-table>
       </div>
@@ -128,6 +131,10 @@ export default {
     noDataWarningText: {
       type: String,
       default: 'No data to display.'
+    },
+    isDataLoading: {
+      type: Boolean,
+      default: false
     }
   },
   data: function() {

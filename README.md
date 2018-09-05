@@ -89,6 +89,7 @@ Prop | Type | Default | Description
 `col-fields` | `Array` | `[]` | Fields to use as columns by default
 `reducer` | `function` | `(sum, item) => sum + 1` | Function applied to reduce `data` in the pivot table
 `no-data-warning-text` | `String` | `'No data to display.'` | Text to display when `data` is empty
+`is-data-loading` | `Boolean` | `false` | Display a loading content instead of the table when the value is `true` (see slots for customization)
 
 #### `Pivot` only
 
@@ -111,9 +112,9 @@ Each element in the arrays `fields`, `colFields` or `rowFields` should be an Obj
 
 ### Slots
 
-All the pivot table data display can be formatted with slots, configured in the `<pivot>` or `<pivot-table>` tag.
+#### Table headers scoped slots
 
-#### Field headers
+Pivot table headers can be customized with scoped slots:
 
 ```html
 <template slot="my-field-header-slot-name" slot-scope="{ value }">{{ value }}</template>
@@ -121,21 +122,27 @@ All the pivot table data display can be formatted with slots, configured in the 
 
 The `slot` attribute must match the `slotName` previously set on your field prop.
 
-The `slot-scope` should not be changed in order to access the `value` in the template.
+#### `value` scoped slot
 
-#### Values
+Pivot table values can be customized with the `value` scoped slot:
 
 ```html
 <template slot="value" slot-scope="{ value }">{{ value.toLocaleString }}</template>
 ```
 
-The `slot` attribute must be set to `value`.
+#### `loading` slot
 
-The `slot-scope` should not be changed in order to access the `value` in the template.
+If the `data` prop is loaded asynchronously, a loading feedback can be displayed by setting the `data-is-loading` prop to `true`. The default feedback is the text "Loading...".
+
+It can be customized with the `loading` slot:
+
+```html
+<template slot="loading">Loading data, please wait...</template>
+```
 
 ### Large datasets
 
-If you plan on using this component with large datasets, we strongly advise you to apply `Object.freeze` on your `data` object.
+If this component is used with large datasets, consider applying `Object.freeze` on your `data` object to avoid useless change tracking on each data element.
 
 See https://vuejs.org/v2/guide/instance.html#Data-and-Methods.
 
@@ -154,7 +161,7 @@ npm run build
 
 ## Thanks
 
+- [FontAwesome](https://www.fontawesome.com/) ([license](https://fontawesome.com/license))
 - https://github.com/plotly/react-pivottable
 - https://github.com/nicolaskruchten/pivottable
 - https://dhtmlx.com/docs/products/dhtmlxPivot/
-- https://www.fontawesome.com/
