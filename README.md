@@ -3,7 +3,7 @@ A vue component for pivot table
 
 ![vue-pivot-table screenshot](https://raw.githubusercontent.com/MarketConnect/vue-pivot-table/master/screenshot.png)
 
-TODO: jsfiddle demo link
+[Live demo (jsfiddle)](https://jsfiddle.net/Owumaro/ezhp9fuc/)
 
 ## Install
 
