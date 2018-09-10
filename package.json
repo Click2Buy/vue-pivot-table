@@ -1,7 +1,7 @@
 {
-  "name": "vue-pivot-table",
+  "name": "@marketconnect/vue-pivot-table",
   "description": "A vue component for pivot table",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Clic2Buy",
   "license": "MIT",
   "repository": {
@@ -25,20 +25,20 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/runtime": "^7.0.0",
     "autoprefixer": "^9.0.1",
-    "babel-loader": "^8.0.0-beta.4",
+    "babel-loader": "^8.0.2",
     "bootstrap": "^4.1.2",
     "css-loader": "^0.28.7",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "^3.2.0",
     "javascript-natural-sort": "^0.7.1",
-    "node-sass": "^4.9.2",
+    "node-sass": "^4.9.3",
     "postcss-loader": "^2.1.6",
     "sass-loader": "^7.0.3",
     "vue-loader": "^15.2.6",
     "vue-template-compiler": "^2.5.16",
     "webpack": "^4.16.2",
     "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.5",
+    "webpack-dev-server": "^3.1.8",
     "webpack-merge": "^4.1.3"
   }
 }
