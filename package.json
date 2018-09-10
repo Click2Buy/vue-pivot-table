@@ -1,8 +1,9 @@
 {
   "name": "@marketconnect/vue-pivot-table",
   "description": "A vue component for pivot table",
+  "private": false,
   "version": "0.0.1",
-  "author": "Clic2Buy",
+  "author": "MarketConnect",
   "license": "MIT",
   "repository": {
     "type": "git",

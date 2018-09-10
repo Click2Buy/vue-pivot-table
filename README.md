@@ -7,7 +7,7 @@ A vue component for pivot table
 
 ## Install
 
-TODO: publish on npm & add `npm i --save` command
+`npm install --save @marketconnect/vue-pivot-table`
 
 ## Usage
 
@@ -22,7 +22,7 @@ While the `Pivot` component provides the full experience, the `PivotTable` can b
 #### Webpack
 
 ```js
-// Import the needed component - not published yet on npm!
+// Import the needed component(s)
 import Pivot from '@marketconnect/vue-pivot-table'
 import PivotTable from '@marketconnect/vue-pivot-table'
 
