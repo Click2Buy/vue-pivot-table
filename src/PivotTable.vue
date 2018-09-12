@@ -9,35 +9,73 @@
       {{ noDataWarningText }}
     </div>
     <table v-else class="table table-bordered">
+      
+      <!-- Table header -->
       <thead>
-        <tr v-for="(colField, colFieldIndex) in colFields" :key="colField.key">
-          <th v-if="colFieldIndex === 0 && rowFields.length > 0" :colspan="rowFields.length" :rowspan="colFields.length"></th>
+        <tr v-for="(colField, colFieldIndex) in colFields" :key="colField.key" v-if="colField.showHeader === undefined || colField.showHeader">
+          <!-- Top left dead zone -->
+          <th v-if="colFieldIndex === firstColFieldHeaderIndex && rowHeaderSize > 0" :colspan="rowHeaderSize" :rowspan="colHeaderSize"></th>
+          <!-- Column headers -->
           <th v-for="(col, colIndex) in cols" :key="JSON.stringify(col)" :colspan="spanSize(cols, colFieldIndex, colIndex)" v-if="spanSize(cols, colFieldIndex, colIndex) !== 0">
             <slot v-if="colField.headerSlotName" :name="colField.headerSlotName" v-bind:value="col[colFieldIndex]">
-              Undefined slot "{{ colField.headerSlotName }}"
+              Missing slot <code>{{ colField.headerSlotName }}</code>
             </slot>
             <template v-else>
               {{ col[colFieldIndex] }}
             </template>
           </th>
+          <!-- Top right dead zone -->
+          <th v-if="colFieldIndex === firstColFieldHeaderIndex && rowFooterSize > 0" :colspan="rowFooterSize" :rowspan="colFooterSize"></th>
         </tr>
       </thead>
+
+      <!-- Table body -->
       <tbody>
         <tr v-for="(row, rowIndex) in rows" :key="JSON.stringify(row)">
-          <td v-for="(rowField, rowFieldIndex) in rowFields" :key="rowField.key" :rowspan="spanSize(rows, rowFieldIndex, rowIndex)" v-if="spanSize(rows, rowFieldIndex, rowIndex) !== 0" class="font-weight-bold">
+          <!-- Row headers -->
+          <th v-for="(rowField, rowFieldIndex) in rowFields" :key="rowField.key" :rowspan="spanSize(rows, rowFieldIndex, rowIndex)"  v-if="(rowField.showHeader === undefined || rowField.showHeader) && spanSize(rows, rowFieldIndex, rowIndex) !== 0">
             <slot v-if="rowField.headerSlotName" :name="rowField.headerSlotName" v-bind:value="row[rowFieldIndex]">
-              Undefined slot "{{ rowField.headerSlotName }}"
+              Missing slot <code>{{ rowField.headerSlotName }}</code>
             </slot>
             <template v-else>
               {{ row[rowFieldIndex] }}
             </template>
-          </td>
+          </th>
+          <!-- Values -->
           <td v-for="col in cols" :key="JSON.stringify(col)" class="text-right">
             <slot v-if="$scopedSlots.value" name="value" v-bind:value="values[JSON.stringify({ col, row })]" />
             <template v-else>{{ values[JSON.stringify({ col, row })] }}</template>
           </td>
+          <!-- Row footers (if slots are provided) -->
+          <th v-for="(rowField, rowFieldIndex) in rowFieldsReverse" :key="rowField.key" :rowspan="spanSize(rows, rowFields.length - rowFieldIndex - 1, rowIndex)" v-if="rowField.showFooter && spanSize(rows, rowFields.length - 1 - rowFieldIndex, rowIndex) !== 0">
+            <slot v-if="rowField.footerSlotName" :name="rowField.footerSlotName" v-bind:value="row[rowFields.length - rowFieldIndex - 1]">
+              Missing slot <code>{{ rowField.footerSlotName }}</code>
+            </slot>
+            <template v-else>
+              {{ row[rowFields.length - rowFieldIndex - 1] }}
+            </template>
+          </th>
         </tr>
       </tbody>
+
+      <!-- Table footer -->
+      <tfoot>
+        <tr v-for="(colField, colFieldIndex) in colFieldsReverse" :key="colField.key" v-if="colField.showFooter">
+          <!-- Bottom left dead zone -->
+          <th v-if="colFieldIndex === firstColFieldFooterIndex && rowHeaderSize > 0" :colspan="rowHeaderSize" :rowspan="colHeaderSize"></th>
+          <!-- Column footers -->
+          <th v-for="(col, colIndex) in cols" :key="JSON.stringify(col)" :colspan="spanSize(cols, colFields.length - colFieldIndex - 1, colIndex)" v-if="spanSize(cols, colFields.length - colFieldIndex - 1, colIndex) !== 0">
+            <slot v-if="colField.footerSlotName" :name="colField.footerSlotName" v-bind:value="col[colFields.length - colFieldIndex - 1]">
+              Missing slot <code>{{ colField.footerSlotName }}</code>
+            </slot>
+            <template v-else>
+              {{ col[colFields.length - colFieldIndex - 1] }}
+            </template>
+          </th>
+          <!-- Bottom right dead zone -->
+          <th v-if="colFieldIndex === firstColFieldFooterIndex && rowFooterSize > 0" :colspan="rowFooterSize" :rowspan="colFooterSize"></th>
+        </tr>
+      </tfoot>
     </table>
   </div>
 </template>
@@ -142,6 +180,37 @@ export default {
     // Compound property for watch single callback
     colsAndRows: function() {
       return [this.cols, this.rows]
+    },
+    // Reversed props for footer iterators
+    colFieldsReverse: function() {
+      return this.colFields.slice().reverse()
+    },
+    rowFieldsReverse: function() {
+      return this.rowFields.slice().reverse()
+    },
+    // Number of col header rows
+    colHeaderSize: function() {
+      return this.colFields.filter(colField => colField.showHeader === undefined || colField.showHeader).length
+    },
+    // Number of col footer rows
+    colFooterSize: function() {
+      return this.colFields.filter(colField => colField.showFooter).length
+    },
+    // Number of row header columns
+    rowHeaderSize: function() {
+      return this.rowFields.filter(rowField => rowField.showHeader === undefined || rowField.showHeader).length
+    },
+    // Number of row footer columns
+    rowFooterSize: function() {
+      return this.rowFields.filter(rowField => rowField.showFooter).length
+    },
+    // Index of the first column field header to show - used for table header dead zones
+    firstColFieldHeaderIndex: function() {
+      return this.colFields.findIndex(colField => colField.showHeader === undefined || colField.showHeader)
+    },
+    // Index of the first column field footer to show - used for table footer dead zones
+    firstColFieldFooterIndex: function() {
+      return this.colFieldsReverse.findIndex(colField => colField.showFooter)
     }
   },
   methods: {
