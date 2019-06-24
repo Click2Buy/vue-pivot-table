@@ -17,6 +17,7 @@
     "build:browser": "webpack --env.prod --env.browser --progress --hide-modules"
   },
   "dependencies": {
+    "thenby": "^1.3.0",
     "vue": "^2.5.11",
     "vuedraggable": "^2.16.0"
   },
