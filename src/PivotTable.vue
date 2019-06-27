@@ -13,7 +13,7 @@
       <!-- Table header -->
       <thead>
         <tr
-          v-for="(colField, colFieldIndex) in colFields"
+          v-for="(colField, colFieldIndex) in allColumns"
           :key="`head-${JSON.stringify(colField)}`"
           v-if="colField.showHeader === undefined || colField.showHeader"
           >
@@ -131,7 +131,7 @@ import { firstBy } from 'thenby'
 import naturalSort from 'javascript-natural-sort'
 
 export default {
-  props: ['data', 'rowFields', 'colFields', 'reducer', 'noDataWarningText'],
+  props: ['data', 'rowFields', 'colFields', 'reducers', 'noDataWarningText'],
   props: {
     data: {
       type: Array,
@@ -145,9 +145,14 @@ export default {
       type: Array,
       default: []
     },
-    reducer: {
-      type: Function,
-      default: (sum, item) => sum + 1
+    reducers: {
+      type: Array,
+      default() {
+        return [{
+          title: 'Count',
+          aggregate: (value, item) => value + 1
+        }]
+      },
     },
     noDataWarningText: {
       type: String,
@@ -166,6 +171,9 @@ export default {
     }
   },
   computed: {
+    allColumns: function () {
+      return this.colFields.concat([{'reducer': 'reducer'}]);
+    },
     // Sort cols/rows using a composed function built with thenBy.js
     sortedCols: function() {
       let composedSortFunction
@@ -202,25 +210,26 @@ export default {
     rowFieldsReverse: function() {
       return this.rowFields.slice().reverse()
     },
-    // Number of col header rows
-    colHeaderSize: function() {
-      return this.colFields.filter(colField => colField.showHeader === undefined || colField.showHeader).length
+    // Number of col header rows (+1 for reducer title)
+    colHeaderSize: function () {
+      return this.colFields.filter(colField => colField.showHeader === undefined || colField.showHeader).length + 1
     },
     // Number of col footer rows
-    colFooterSize: function() {
+    colFooterSize: function () {
       return this.colFields.filter(colField => colField.showFooter).length
     },
     // Number of row header columns
-    rowHeaderSize: function() {
+    rowHeaderSize: function () {
       return this.rowFields.filter(rowField => rowField.showHeader === undefined || rowField.showHeader).length
     },
     // Number of row footer columns
-    rowFooterSize: function() {
+    rowFooterSize: function () {
       return this.rowFields.filter(rowField => rowField.showFooter).length
     },
     // Index of the first column field header to show - used for table header dead zones
-    firstColFieldHeaderIndex: function() {
-      return this.colFields.findIndex(colField => colField.showHeader === undefined || colField.showHeader)
+    firstColFieldHeaderIndex: function () {
+      return 0;
+      //return this.colFields.findIndex(colField => colField.showHeader === undefined || colField.showHeader)
     },
     // Index of the first column field footer to show - used for table footer dead zones
     firstColFieldFooterIndex: function() {
@@ -257,42 +266,52 @@ export default {
       return size
     },
     // Called when fields have changed => recompute cols/rows/values
-    computeData: function() {
+    computeData: function () {
       const cols = []
       const rows = []
       const valuesHashTable = new HashTable()
 
       this.data.forEach(item => {
-        // Update cols/rows
-        const colKey = {}
-        this.colFields.forEach((field, index) => {
-          colKey[`col-${index}`] = field.getter(item)
-        })
+        for (let i = 0; i < this.reducers.length; ++i) {
+          // Update cols/rows
+          const colKey = {}
+          this.colFields.forEach((field, index) => {
+            colKey[`col-${index}`] = field.getter(item)
+          });
 
-        if (!cols.some(col => {
-          return this.colFields.every((colField, index) => col[`col-${index}`] === colKey[`col-${index}`])
-        })) {
-          cols.push(colKey)
+          colKey[`col-${this.colFields.length}`] = this.reducers[i].title;
+
+          if (!cols.some(col => {
+            return this.colFields.every((colField, index) => col[`col-${index}`] === colKey[`col-${index}`]) && col[`col-${this.colFields.length}`] === this.reducers[i].title;
+          })) {
+            cols.push(colKey);
+          }
+
+          // if(cols[`col-${this.colFields.length}`] !== this.reducers[i].title){
+          //   console.log(colKey);
+          // }
+
+          const rowKey = {}
+          this.rowFields.forEach((field, index) => {
+            rowKey[`row-${index}`] = field.getter(item)
+          })
+
+          if (!rows.some(row => {
+            return this.rowFields.every((rowField, index) => row[`row-${index}`] === rowKey[`row-${index}`])
+          })) {
+            rows.push(rowKey)
+          }
+
+          // Update valuesHashTable
+          const key = {...colKey, ...rowKey}
+
+          const previousValue = valuesHashTable.get(key) || null;
+
+          valuesHashTable.set(key, this.reducers[i].aggregate(previousValue, item))
         }
-
-        const rowKey = {}
-        this.rowFields.forEach((field, index) => {
-          rowKey[`row-${index}`] = field.getter(item)
-        })
-
-        if (!rows.some(row => {
-          return this.rowFields.every((rowField, index) => row[`row-${index}`] === rowKey[`row-${index}`])
-        })) {
-          rows.push(rowKey)
-        }
-
-        // Update valuesHashTable
-        const key = { ...colKey, ...rowKey }
-
-        const previousValue = valuesHashTable.get(key) || 0
-
-        valuesHashTable.set(key, this.reducer(previousValue, item))
       })
+
+      console.log(cols);
 
       this.cols = cols
       this.rows = rows
@@ -300,14 +319,14 @@ export default {
     }
   },
   watch: {
-    fields: function() {
+    fields: function () {
       this.computeData()
     },
-    data: function() {
+    data: function () {
       this.computeData()
     }
   },
-  created: function() {
+  created: function () {
     this.computeData()
   }
 }

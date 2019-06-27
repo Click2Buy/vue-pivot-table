@@ -10,7 +10,7 @@
         :fields="fields"
         :row-fields="rowFields"
         :col-fields="colFields"
-        :reducer="reducer"
+        :reducers="reducers"
         :default-show-settings="defaultShowSettings"
       >
         <template slot="value" slot-scope="{ value }">
@@ -25,13 +25,13 @@
     </div>
 
     <h2 class="border-bottom pb-2 mb-4">PivotTable <small>(standalone)</small></h2>
-    
+
     <div class="mb-5">
       <pivot-table
         :data="asyncData"
         :row-fields="rowFields"
         :col-fields="colFields"
-        :reducer="reducer"
+        :reducers="reducers"
         :default-show-settings="defaultShowSettings"
         :is-data-loading="isDataLoading"
       >
@@ -79,7 +79,39 @@ export default {
         getter: item => item.year,
         label: 'Year'
       }],
-      reducer: (sum, item) => sum + item.count,
+      reducers: [
+        {
+          title: 'Sum',
+          aggregate: (value, item) => (value || 0) + item.count,
+        },
+        {
+          title: 'Count',
+          aggregate: (value, item) => (value || 0) + 1,
+        },
+        {
+          title: 'Min',
+          aggregate: (value, item) => {
+            if (value == null)
+              return item.count;
+
+            if (item.count < value)
+              return item.count;
+            else
+              return value;
+          },
+        },
+        {
+          title: 'Max',
+          aggregate: (value, item) => {
+            if (value == null)
+              return item.count;
+
+            if (item.count > value)
+              return item.count;
+            else
+              return value;
+          },
+        }],
       defaultShowSettings: true,
       isDataLoading: false
     }
