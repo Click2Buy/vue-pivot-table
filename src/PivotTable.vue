@@ -12,37 +12,35 @@
 
       <!-- Table header -->
       <thead>
-        <tr
-          v-for="(colField, colFieldIndex) in allColumns"
-          :key="`head-${JSON.stringify(colField)}`"
-          v-if="colField.showHeader === undefined || colField.showHeader"
-          >
+        <tr v-for="(colField, colFieldIndex) in allColumns"
+            :key="`head-${JSON.stringify(colField)}`"
+            v-if="colField.showHeader === undefined || colField.showHeader">
+
           <!-- Top left dead zone -->
-          <th
-            v-if="colFieldIndex === firstColFieldHeaderIndex && rowHeaderSize > 0"
-            :colspan="rowHeaderSize"
-            :rowspan="colHeaderSize"
-            ></th>
+          <th v-if="colFieldIndex === firstColFieldHeaderIndex && rowHeaderSize > 0"
+              :colspan="rowHeaderSize"
+              :rowspan="colHeaderSize">
+          </th>
           <!-- Column headers -->
-          <th
-            v-for="(col, colIndex) in sortedCols"
-            :key="JSON.stringify(col)"
-            :colspan="spanSize('col', sortedCols, colIndex, colFieldIndex)"
-            v-if="spanSize('col', sortedCols, colIndex, colFieldIndex) !== 0"
-            >
+          <th v-for="(col, colIndex) in sortedCols"
+              :key="JSON.stringify(col)"
+              :colspan="spanSize('col', sortedCols, colIndex, colFieldIndex)"
+              v-if="spanSize('col', sortedCols, colIndex, colFieldIndex) !== 0">
+
             <slot v-if="colField.headerSlotName" :name="colField.headerSlotName" v-bind:value="col[`col-${colFieldIndex}`]">
               Missing slot <code>{{ colField.headerSlotName }}</code>
             </slot>
+
             <template v-else>
               {{ col[`col-${colFieldIndex}`] }}
             </template>
+
           </th>
           <!-- Top right dead zone -->
-          <th
-            v-if="colFieldIndex === firstColFieldHeaderIndex && rowFooterSize > 0"
-            :colspan="rowFooterSize"
-            :rowspan="colFooterSize"
-            ></th>
+          <th v-if="colFieldIndex === firstColFieldHeaderIndex && rowFooterSize > 0"
+              :colspan="rowFooterSize"
+              :rowspan="colFooterSize">
+          </th>
         </tr>
       </thead>
 
@@ -50,26 +48,27 @@
       <tbody>
         <tr v-for="(row, rowIndex) in sortedRows" :key="JSON.stringify(row)">
           <!-- Row headers -->
-          <th
-            v-for="(rowField, rowFieldIndex) in rowFields"
-            :key="`head-${JSON.stringify(rowField)}`"
-            :rowspan="spanSize('row', sortedRows, rowIndex, rowFieldIndex)"
-            v-if="(rowField.showHeader === undefined || rowField.showHeader) && spanSize('row', sortedRows, rowIndex, rowFieldIndex) !== 0"
-            >
+          <th v-for="(rowField, rowFieldIndex) in rowFields"
+              :key="`head-${JSON.stringify(rowField)}`"
+              :rowspan="spanSize('row', sortedRows, rowIndex, rowFieldIndex)"
+              v-if="(rowField.showHeader === undefined || rowField.showHeader) && spanSize('row', sortedRows, rowIndex, rowFieldIndex) !== 0">
+
             <slot v-if="rowField.headerSlotName" :name="rowField.headerSlotName" v-bind:value="row[`row-${rowFieldIndex}`]">
               Missing slot <code>{{ rowField.headerSlotName }}</code>
             </slot>
+
             <template v-else>
               {{ row[`row-${rowFieldIndex}`] }}
             </template>
+
           </th>
           <!-- Values -->
           <td
             v-for="col in sortedCols"
             :key="JSON.stringify(col)"
             class="text-right"
-            >
-            <slot v-if="$scopedSlots.value" name="value" v-bind:value="value(row, col)" />
+          >
+            <slot v-if="$scopedSlots.value" name="value" v-bind:value="value(row, col)"/>
             <template v-else>{{ value(row, col) }}</template>
           </td>
           <!-- Row footers (if slots are provided) -->
@@ -78,7 +77,7 @@
             :key="`foot-${JSON.stringify(rowField)}`"
             :rowspan="spanSize('row', rows, rowIndex, rowFields.length - rowFieldIndex - 1)"
             v-if="rowField.showFooter && spanSize('row', rows, rowIndex, rowFields.length - rowFieldIndex - 1) !== 0"
-            >
+          >
             <slot v-if="rowField.footerSlotName" :name="rowField.footerSlotName" v-bind:value="row[`row-${rowFields.length - rowFieldIndex - 1}`]">
               Missing slot <code>{{ rowField.footerSlotName }}</code>
             </slot>
@@ -118,7 +117,7 @@
             v-if="colFieldIndex === firstColFieldFooterIndex && rowFooterSize > 0"
             :colspan="rowFooterSize"
             :rowspan="colFooterSize"
-            ></th>
+          ></th>
         </tr>
       </tfoot>
     </table>
@@ -127,11 +126,11 @@
 
 <script>
 import HashTable from './HashTable'
-import { firstBy } from 'thenby'
+import {firstBy} from 'thenby'
 import naturalSort from 'javascript-natural-sort'
 
 export default {
-  props: ['data', 'rowFields', 'colFields', 'reducers', 'noDataWarningText'],
+  props: ['data', 'rowFields', 'colFields', 'valueFields', 'noDataWarningText'],
   props: {
     data: {
       type: Array,
@@ -145,14 +144,9 @@ export default {
       type: Array,
       default: []
     },
-    reducers: {
+    valueFields: {
       type: Array,
-      default() {
-        return [{
-          title: 'Count',
-          aggregate: (value, item) => value + 1
-        }]
-      },
+      default: () => [],
     },
     noDataWarningText: {
       type: String,
@@ -163,7 +157,7 @@ export default {
       default: false
     }
   },
-  data: function() {
+  data: function () {
     return {
       valuesHashTable: null,
       cols: null,
@@ -175,39 +169,39 @@ export default {
       return this.colFields.concat([{'reducer': 'reducer'}]);
     },
     // Sort cols/rows using a composed function built with thenBy.js
-    sortedCols: function() {
+    sortedCols: function () {
       let composedSortFunction
       this.colFields.forEach((colField, colFieldIndex) => {
         if (colFieldIndex === 0) {
-          composedSortFunction = firstBy('col-0', { cmp: colField.sort || naturalSort })
+          composedSortFunction = firstBy('col-0', {cmp: colField.sort || naturalSort})
         } else {
-          composedSortFunction = composedSortFunction.thenBy(`col-${colFieldIndex}`, { cmp: colField.sort || naturalSort })
+          composedSortFunction = composedSortFunction.thenBy(`col-${colFieldIndex}`, {cmp: colField.sort || naturalSort})
         }
       })
 
       return [...this.cols].sort(composedSortFunction)
     },
-    sortedRows: function() {
+    sortedRows: function () {
       let composedSortFunction
       this.rowFields.forEach((rowField, rowFieldIndex) => {
         if (rowFieldIndex === 0) {
-          composedSortFunction = firstBy('row-0', { cmp: rowField.sort || naturalSort })
+          composedSortFunction = firstBy('row-0', {cmp: rowField.sort || naturalSort})
         } else {
-          composedSortFunction = composedSortFunction.thenBy(`row-${rowFieldIndex}`, { cmp: rowField.sort || naturalSort })
+          composedSortFunction = composedSortFunction.thenBy(`row-${rowFieldIndex}`, {cmp: rowField.sort || naturalSort})
         }
       })
 
       return [...this.rows].sort(composedSortFunction)
     },
     // Compound property for watch single callback
-    fields: function() {
+    fields: function () {
       return [this.colFields, this.rowFields]
     },
     // Reversed props for footer iterators
-    colFieldsReverse: function() {
+    colFieldsReverse: function () {
       return this.colFields.slice().reverse()
     },
-    rowFieldsReverse: function() {
+    rowFieldsReverse: function () {
       return this.rowFields.slice().reverse()
     },
     // Number of col header rows (+1 for reducer title)
@@ -232,17 +226,17 @@ export default {
       //return this.colFields.findIndex(colField => colField.showHeader === undefined || colField.showHeader)
     },
     // Index of the first column field footer to show - used for table footer dead zones
-    firstColFieldFooterIndex: function() {
+    firstColFieldFooterIndex: function () {
       return this.colFieldsReverse.findIndex(colField => colField.showFooter)
     }
   },
   methods: {
     // Get value from valuesHashTable
-    value: function(row, col) {
+    value: function (row, col) {
       return this.valuesHashTable.get({...row, ...col}) || 0
     },
     // Get colspan/rowspan size
-    spanSize: function(type, values, valueIndex, fieldIndex) {
+    spanSize: function (type, values, valueIndex, fieldIndex) {
       // If left value === current value
       // and top value === 0 (= still in the same top bracket)
       // The left td will take care of the display
@@ -257,8 +251,8 @@ export default {
       let size = 1
       let i = valueIndex
       while (i + 1 < values.length &&
-        values[i + 1][`${type}-${fieldIndex}`] === values[i][`${type}-${fieldIndex}`] &&
-        (fieldIndex === 0 || (i + 1 < values.length && this.spanSize(type, values, i + 1, fieldIndex - 1) === 0))) {
+      values[i + 1][`${type}-${fieldIndex}`] === values[i][`${type}-${fieldIndex}`] &&
+      (fieldIndex === 0 || (i + 1 < values.length && this.spanSize(type, values, i + 1, fieldIndex - 1) === 0))) {
         i++
         size++
       }
@@ -267,34 +261,30 @@ export default {
     },
     // Called when fields have changed => recompute cols/rows/values
     computeData: function () {
-      const cols = []
-      const rows = []
-      const valuesHashTable = new HashTable()
+      const cols = [];
+      const rows = [];
+      const valuesHashTable = new HashTable();
 
       this.data.forEach(item => {
-        for (let i = 0; i < this.reducers.length; ++i) {
+        this.valueFields.forEach(valueField => {
           // Update cols/rows
           const colKey = {}
           this.colFields.forEach((field, index) => {
             colKey[`col-${index}`] = field.getter(item)
           });
 
-          colKey[`col-${this.colFields.length}`] = this.reducers[i].title;
+          colKey[`col-${this.colFields.length}`] = valueField.title;
 
           if (!cols.some(col => {
-            return this.colFields.every((colField, index) => col[`col-${index}`] === colKey[`col-${index}`]) && col[`col-${this.colFields.length}`] === this.reducers[i].title;
+            return this.colFields.every((colField, index) => col[`col-${index}`] === colKey[`col-${index}`]) && col[`col-${this.colFields.length}`] === valueField.title;
           })) {
             cols.push(colKey);
           }
 
-          // if(cols[`col-${this.colFields.length}`] !== this.reducers[i].title){
-          //   console.log(colKey);
-          // }
-
-          const rowKey = {}
+          const rowKey = {};
           this.rowFields.forEach((field, index) => {
             rowKey[`row-${index}`] = field.getter(item)
-          })
+          });
 
           if (!rows.some(row => {
             return this.rowFields.every((rowField, index) => row[`row-${index}`] === rowKey[`row-${index}`])
@@ -303,19 +293,77 @@ export default {
           }
 
           // Update valuesHashTable
-          const key = {...colKey, ...rowKey}
+          const key = {...colKey, ...rowKey};
 
           const previousValue = valuesHashTable.get(key) || null;
 
-          valuesHashTable.set(key, this.reducers[i].aggregate(previousValue, item))
-        }
-      })
+          if (valueField.aggregate == null || valueField.aggregate.function == null) {
+            if (valueField.type != null) {
+              if (valueField.type === 'count') {
+                if (valueField.aggregate == null)
+                  valueField.aggregate = {};
 
-      console.log(cols);
+                if (valueField.aggregate.function == null) {
+                  valueField.aggregate.function = function (oldValue, item) {
+                    if (item == null)
+                      return oldValue;
 
-      this.cols = cols
-      this.rows = rows
-      this.valuesHashTable = valuesHashTable
+                    return (oldValue || 0) + 1;
+                  }
+                }
+              } else if (valueField.type === 'sum') {
+                if (valueField.aggregate == null)
+                  valueField.aggregate = {};
+
+                if (valueField.aggregate.function == null) {
+                  valueField.aggregate.function = function (oldValue, item) {
+                    if (item == null)
+                      return oldValue;
+
+                    return (oldValue || 0) + valueField.getter(item);
+                  }
+                }
+              } else if (valueField.type === 'min') {
+                if (valueField.aggregate == null)
+                  valueField.aggregate = {};
+
+                if (valueField.aggregate.function == null) {
+                  valueField.aggregate.function = function (oldValue, item) {
+                    if (item == null)
+                      return oldValue;
+
+                    if (oldValue == null || oldValue > valueField.getter(item))
+                      return valueField.getter(item);
+
+                    return oldValue;
+                  }
+                }
+              } else if (valueField.type === 'max') {
+                if (valueField.aggregate == null)
+                  valueField.aggregate = {};
+
+                if (valueField.aggregate.function == null) {
+                  valueField.aggregate.function = function (oldValue, item) {
+                    if (item == null)
+                      return oldValue;
+
+                    if (oldValue == null || oldValue < valueField.getter(item))
+                      return valueField.getter(item);
+
+                    return oldValue;
+                  }
+                }
+              }
+            }
+          }
+
+          valuesHashTable.set(key, valueField.aggregate.function(previousValue, item));
+        });
+      });
+
+      this.cols = cols;
+      this.rows = rows;
+      this.valuesHashTable = valuesHashTable;
     }
   },
   watch: {
@@ -324,6 +372,9 @@ export default {
     },
     data: function () {
       this.computeData()
+    },
+    valueFields: function () {
+      this.computeData();
     }
   },
   created: function () {
