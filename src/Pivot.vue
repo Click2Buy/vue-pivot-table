@@ -105,7 +105,7 @@
                 <template slot="btn">{{ field.title }}</template>
                 <template slot="body">
                   <ul class="dropdown-list">
-                    <li v-for="aggregate in availableFunctions" @click="changeFunction(field, aggregate)">
+                    <li v-for="aggregate in availableFunctions" :key="aggregate.function" @click="changeFunction(field, aggregate)">
                       {{ aggregate.title }}
                     </li>
                   </ul>
@@ -264,10 +264,14 @@ export default {
         {title: 'Max', function: 'max'},
       ],
       dragging: false,
-      showSettings: true
+      showSettings: true,
+      ids: 0,
     }
   },
   computed: {
+    getId(){
+      return this.ids;
+    },
     dragAreaClass: function () {
       return this.dragging ? 'drag-area-highlight' : null
     },
@@ -340,6 +344,7 @@ export default {
     changeFunction: function(field, aggregate){
       field.type = aggregate.function;
       field.title = aggregate.title;
+      this.ids++;
       delete field.aggregate;
       // call computeData
       // watch does not catch nested changes
