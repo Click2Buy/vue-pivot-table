@@ -91,7 +91,7 @@
       asyncData: [],
       fields: [{
         getter: item => item.count,
-        label: 'Count',
+        label: 'Value',
       }],
       rowFields: [{
         getter: item => item.country,

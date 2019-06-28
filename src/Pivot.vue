@@ -105,7 +105,7 @@
                 <template slot="btn">{{ field.title }}</template>
                 <template slot="body">
                   <ul class="dropdown-list">
-                    <li v-for="aggregate in availableFunctions" :key="aggregate.function" @click="changeFunction(field, aggregate)">
+                    <li v-for="aggregate in availableFunctions(field)" :key="aggregate.function" @click="changeFunction(field, aggregate)">
                       {{ aggregate.title }}
                     </li>
                   </ul>
@@ -184,11 +184,11 @@
 </template>
 
 <script>
-import PivotTable from './PivotTable'
-import Draggable from 'vuedraggable'
-import Dropdown from 'bp-vuejs-dropdown';
+  import PivotTable from './PivotTable'
+  import Draggable from 'vuedraggable'
+  import Dropdown from 'bp-vuejs-dropdown';
 
-export default {
+  export default {
   name: 'vue-pivot',
   components: {PivotTable, Draggable, Dropdown},
   props: {
@@ -257,7 +257,7 @@ export default {
         colFields: this.colFields,
         valueFields: this.valueFields,
       },
-      availableFunctions: [
+      allFunctions: [
         {title: 'Count', function: 'count'},
         {title: 'Sum', function: 'sum'},
         {title: 'Min', function: 'min'},
@@ -336,10 +336,19 @@ export default {
       return true;
     },
     clone: function (item) {
-      if (item.type == null) {
-        item.type = 'sum';
-      }
-      return item;
+      let newItem = {
+        label: item.label,
+        getter: item.getter,
+      };
+
+      const func = this.availableFunctions(newItem)[0];
+
+      if (func == null)
+        return null;
+      else
+        newItem.type = func.function;
+
+      return newItem;
     },
     changeFunction: function(field, aggregate){
       field.type = aggregate.function;
@@ -349,6 +358,24 @@ export default {
       // call computeData
       // watch does not catch nested changes
       this.$refs.pivotTable.computeData();
+    },
+    availableFunctions(field){
+      // deep copy
+      let funcs = JSON.parse(JSON.stringify(this.allFunctions));
+
+      for(let i=0; i<this.internal.valueFields.length; ++i) {
+        if (this.internal.valueFields[i].label !== field.label)
+          continue;
+
+        for(let j = 0; j < funcs.length; ++j){
+          if(funcs[j].title === this.internal.valueFields[i].title) {
+            funcs.splice(j, 1);
+            --j;
+          }
+        }
+      }
+
+      return funcs;
     },
     log: function (evt) {
       window.console.log(evt);
