@@ -305,6 +305,23 @@
       return this.internal.valueFields;
     }
   },
+  watch: {
+    hideEmpty() {
+      this.internal.hideEmpty = this.hideEmpty;
+    },
+    fields(){
+      this.internal.fields = this.fields;
+    },
+    rowFields(){
+      this.internal.rowFields = this.rowFields;
+    },
+    colFields(){
+      this.internal.colFields = this.colFields;
+    },
+    valueFields(){
+      this.internal.valueFields = this.valueFields;
+    },
+  },
   methods: {
     toggleShowSettings: function () {
       this.showSettings = !this.showSettings
