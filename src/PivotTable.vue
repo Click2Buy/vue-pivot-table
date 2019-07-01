@@ -130,7 +130,7 @@ import {firstBy} from 'thenby'
 import naturalSort from 'javascript-natural-sort'
 
 export default {
-  props: ['data', 'rowFields', 'colFields', 'valueFields', 'noDataWarningText'],
+  props: ['data', 'rowFields', 'colFields', 'valueFields', 'noDataWarningText', 'hideEmpty'],
   props: {
     data: {
       type: Array,
@@ -155,7 +155,11 @@ export default {
     isDataLoading: {
       type: Boolean,
       default: false
-    }
+    },
+    hideEmpty: {
+      type: Boolean,
+      default: false
+    },
   },
   data: function () {
     return {
@@ -268,23 +272,39 @@ export default {
       this.data.forEach(item => {
         this.valueFields.forEach(valueField => {
           // Update cols/rows
-          const colKey = {}
+          let hide = false;
+
+          const colKey = {};
           this.colFields.forEach((field, index) => {
-            colKey[`col-${index}`] = field.getter(item)
+            let i = field.getter(item);
+            colKey[`col-${index}`] = i;
+            if(i == null)
+              hide = true;
           });
 
-          colKey[`col-${this.colFields.length}`] = valueField.title;
+          if(hide && this.hideEmpty)
+            return;
+
+          const valueTitle = `${valueField.title}(${valueField.label})`;
+
+          colKey[`col-${this.colFields.length}`] = valueTitle;
 
           if (!cols.some(col => {
-            return this.colFields.every((colField, index) => col[`col-${index}`] === colKey[`col-${index}`]) && col[`col-${this.colFields.length}`] === valueField.title;
+            return this.colFields.every((colField, index) => col[`col-${index}`] === colKey[`col-${index}`]) && col[`col-${this.colFields.length}`] === valueTitle;
           })) {
             cols.push(colKey);
           }
 
           const rowKey = {};
           this.rowFields.forEach((field, index) => {
-            rowKey[`row-${index}`] = field.getter(item)
+            let i = field.getter(item);
+            rowKey[`row-${index}`] = i;
+            if(i == null)
+              hide = true;
           });
+          if(hide && this.hideEmpty)
+            return;
+
 
           if (!rows.some(row => {
             return this.rowFields.every((rowField, index) => row[`row-${index}`] === rowKey[`row-${index}`])
@@ -357,7 +377,9 @@ export default {
             }
           }
 
-          valuesHashTable.set(key, valueField.aggregate.function(previousValue, item));
+          const value = valueField.aggregate.function(previousValue, item);
+          if (value != null)
+            valuesHashTable.set(key, value);
         });
       });
 
@@ -374,6 +396,9 @@ export default {
       this.computeData()
     },
     valueFields: function () {
+      this.computeData();
+    },
+    hideEmpty(){
       this.computeData();
     }
   },

@@ -83,7 +83,12 @@
     <!-- Value Fields -->
     <div class="row grid-x mb-4" v-if="showSettings">
       <!-- Top left zone - TODO: renderer select menu -->
-      <div class="col left-col"></div>
+      <div class="col left-col">
+        <label class="form-check-label">
+          <input type="checkbox" v-model="internal.hideEmpty">
+          Hide Empty
+        </label>
+      </div>
       <!-- Horizontal Value fields -->
       <div class="col">
         <div class="drag-area-label">{{ valuesLabelText }}</div>
@@ -169,6 +174,7 @@
                      :value-fields="internal.valueFields"
                      :no-data-warning-text="noDataWarningText"
                      :is-data-loading="isDataLoading"
+                     :hide-empty="internal.hideEmpty"
                      ref="pivotTable">
           <!-- pass down scoped slots -->
           <template v-for="(slot, slotName) in $scopedSlots" :slot="slotName" slot-scope="{ value }">
@@ -247,6 +253,10 @@
     isDataLoading: {
       type: Boolean,
       default: false
+    },
+    hideEmpty: {
+      type: Boolean,
+      default: false,
     }
   },
   data: function () {
@@ -256,6 +266,7 @@
         rowFields: this.rowFields,
         colFields: this.colFields,
         valueFields: this.valueFields,
+        hideEmpty: this.hideEmpty,
       },
       allFunctions: [
         {title: 'Count', function: 'count'},
@@ -269,7 +280,7 @@
     }
   },
   computed: {
-    getId(){
+    getId() {
       return this.ids;
     },
     dragAreaClass: function () {
@@ -350,7 +361,7 @@
 
       return newItem;
     },
-    changeFunction: function(field, aggregate){
+    changeFunction: function (field, aggregate) {
       field.type = aggregate.function;
       field.title = aggregate.title;
       this.ids++;
@@ -359,16 +370,16 @@
       // watch does not catch nested changes
       this.$refs.pivotTable.computeData();
     },
-    availableFunctions(field){
+    availableFunctions(field) {
       // deep copy
       let funcs = JSON.parse(JSON.stringify(this.allFunctions));
 
-      for(let i=0; i<this.internal.valueFields.length; ++i) {
+      for (let i = 0; i < this.internal.valueFields.length; ++i) {
         if (this.internal.valueFields[i].label !== field.label)
           continue;
 
-        for(let j = 0; j < funcs.length; ++j){
-          if(funcs[j].title === this.internal.valueFields[i].title) {
+        for (let j = 0; j < funcs.length; ++j) {
+          if (funcs[j].title === this.internal.valueFields[i].title) {
             funcs.splice(j, 1);
             --j;
           }
@@ -394,18 +405,18 @@
   max-width: 200px;
 }
 
-.dropdown-inline{
+.dropdown-inline {
   cursor: pointer;
   display: inline-block;
 }
 
-.dropdown-list{
+.dropdown-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.dropdown-list:active{
+.dropdown-list:active {
   color: black;
   list-style: none;
   padding: 0;
@@ -417,7 +428,7 @@
   color: black;
 }
 
-.dropdown-list > li:hover{
+.dropdown-list > li:hover {
   background-color: #f0f0f0;
 }
 
