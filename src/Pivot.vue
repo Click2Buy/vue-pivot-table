@@ -53,6 +53,7 @@
                    v-model="internal.colFields"
                    :group="{name: 'fields', pull: pullFunction}"
                    :clone="clone"
+                   :move="moveCheck"
                    class="d-flex flex-row drag-area border-primary"
                    :class="dragAreaClass"
                    @start="start"
@@ -142,6 +143,7 @@
                    class="d-flex flex-column align-items-start drag-area border-primary"
                    :class="dragAreaClass"
                    :clone="clone"
+                   :move="moveCheck"
                    @start="start"
                    @end="end">
           <div v-for="field in internal.rowFields" :key="field.key">
