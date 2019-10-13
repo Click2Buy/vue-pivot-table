@@ -1,17 +1,22 @@
 <template>
   <div>
     <!-- Top row -->
-    <div v-if="showSettings" class="row grid-x flex-nowrap mb-4">
-      <div class="col left-col">
+    <div v-if="showSettings" class="d-flex flex-nowrap gutter mb-3">
+      <div class="left-col">
         <button class="btn btn-outline-primary" @click="toggleShowSettings">
           {{ hideSettingsText }}
         </button>
       </div>
 
-      <!-- Disabled fields -->
-      <div class="col">
-        <div class="drag-area-label">{{ availableFieldsLabelText }}</div>
-        <draggable v-model="internal.fields" class="d-flex flex-row drag-area flex-wrap" :class="dragAreaClass" :options="{ group: 'fields' }" @start="start" @end="end">
+      <!-- Available fields -->
+      <div class="flex-fill drag-area" :class="dragAreaClass">
+        <div class="mb-2">{{ availableFieldsLabelText }}</div>
+        <draggable
+          v-model="internal.fields"
+          class="d-flex flex-row gutter-sm drag-area-zone"
+          group="fields"
+          @start="start"
+          @end="end">
           <div v-for="field in internal.fields" :key="field.key">
             <div class="btn btn-draggable btn-secondary">
               <svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 512" class="svg-inline--fa fa-grip-vertical fa-w-10"><path fill="currentColor" d="M64 208c26.5 0 48 21.5 48 48s-21.5 48-48 48-48-21.5-48-48 21.5-48 48-48zM16 104c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48zm0 304c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48z M204 208c26.5 0 48 21.5 48 48s-21.5 48 -48 48 -48 -21.5 -48 -48 21.5 -48 48 -48zM156 104c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48zm0 304c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48z" class=""></path></svg>
@@ -22,20 +27,25 @@
       </div>
     </div>
 
-    <div class="mb-4" v-else>
+    <div v-else class="mb-3">
       <button class="btn btn-outline-primary" @click="toggleShowSettings">
         {{ showSettingsText }}
       </button>
     </div>
 
-    <div class="row grid-x mb-4" v-if="showSettings">
+    <div class="d-flex gutter mb-3" v-if="showSettings">
       <!-- Top left zone - TODO: renderer select menu -->
-      <div class="col left-col"></div>
+      <div class="left-col"></div>
 
-      <!-- Horizontal fields -->
-      <div class="col">
-        <div class="drag-area-label">{{ colsLabelText }}</div>
-        <draggable v-model="internal.colFields" :options="{ group: 'fields' }" @start="start" @end="end" class="d-flex flex-row drag-area border-primary" :class="dragAreaClass">
+      <!-- Column fields -->
+      <div class="flex-fill drag-area border-primary" :class="dragAreaClass">
+        <div class="mb-2">{{ colsLabelText }}</div>
+        <draggable
+          v-model="internal.colFields"
+          class="d-flex flex-row gutter-sm drag-area-zone"
+          group="fields"
+          @start="start"
+          @end="end">
           <div v-for="field in internal.colFields" :key="field.key">
             <div class="btn btn-draggable btn-primary">
               <svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 512" class="svg-inline--fa fa-grip-vertical fa-w-10"><path fill="currentColor" d="M64 208c26.5 0 48 21.5 48 48s-21.5 48-48 48-48-21.5-48-48 21.5-48 48-48zM16 104c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48zm0 304c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48z M204 208c26.5 0 48 21.5 48 48s-21.5 48 -48 48 -48 -21.5 -48 -48 21.5 -48 48 -48zM156 104c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48zm0 304c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48z" class=""></path></svg>
@@ -46,22 +56,29 @@
       </div>
     </div>
 
-    <div class="row flex-nowrap grid-x">
-      <!-- Vertical fields -->
-      <div class="col left-col" v-if="showSettings">
-        <div class="drag-area-label">{{ rowsLabelText }}</div>
-        <draggable v-model="internal.rowFields" :options="{ group: 'fields' }" @start="start" @end="end" class="d-flex flex-column align-items-start drag-area border-primary" :class="dragAreaClass">
-          <div v-for="field in internal.rowFields" :key="field.key">
-            <div class="btn btn-draggable btn-primary">
-              <svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 512" class="svg-inline--fa fa-grip-vertical fa-w-10"><path fill="currentColor" d="M64 208c26.5 0 48 21.5 48 48s-21.5 48-48 48-48-21.5-48-48 21.5-48 48-48zM16 104c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48zm0 304c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48z M204 208c26.5 0 48 21.5 48 48s-21.5 48 -48 48 -48 -21.5 -48 -48 21.5 -48 48 -48zM156 104c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48zm0 304c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48z" class=""></path></svg>
-              {{ field.label }}
+    <div class="d-flex flex-nowrap gutter">
+      <!-- Row fields -->
+      <div v-if="showSettings" class="left-col">
+        <div class="drag-area border-primary" :class="dragAreaClass">
+          <div class="mb-2">{{ rowsLabelText }}</div>
+          <draggable
+            v-model="internal.rowFields"
+            class="d-flex flex-column align-items-start gutter-sm drag-area-zone"
+            group="fields"
+            @start="start"
+            @end="end">
+            <div v-for="field in internal.rowFields" :key="field.key">
+              <div class="btn btn-draggable btn-primary">
+                <svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 512" class="svg-inline--fa fa-grip-vertical fa-w-10"><path fill="currentColor" d="M64 208c26.5 0 48 21.5 48 48s-21.5 48-48 48-48-21.5-48-48 21.5-48 48-48zM16 104c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48zm0 304c0 26.5 21.5 48 48 48s48-21.5 48-48-21.5-48-48-48-48 21.5-48 48z M204 208c26.5 0 48 21.5 48 48s-21.5 48 -48 48 -48 -21.5 -48 -48 21.5 -48 48 -48zM156 104c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48zm0 304c0 26.5 21.5 48 48 48s48 -21.5 48 -48 -21.5 -48 -48 -48 -48 21.5 -48 48z" class=""></path></svg>
+                {{ field.label }}
+              </div>
             </div>
-          </div>
-        </draggable>
+          </draggable>
+        </div>
       </div>
 
       <!-- Table -->
-      <div class="col table-responsive">
+      <div class="flex-fill" :style="tableWrapperStyle">
         <pivot-table :data="data" :row-fields="internal.rowFields" :col-fields="internal.colFields" :reducer="reducer" :no-data-warning-text="noDataWarningText" :is-data-loading="isDataLoading">
           <!-- pass down scoped slots -->
           <template v-for="(slot, slotName) in $scopedSlots" :slot="slotName" slot-scope="{ value }">
@@ -151,6 +168,10 @@ export default {
   computed: {
     dragAreaClass: function() {
       return this.dragging ? 'drag-area-highlight' : null
+    },
+    tableWrapperStyle: function() {
+      const maxWidth = this.showSettings ? 'calc(100% - 200px - 2rem)' : '100%'
+      return `max-width: ${maxWidth};`
     }
   },
   methods: {
@@ -177,40 +198,53 @@ export default {
   max-width: 200px;
 }
 
-/* Grid with even gutters */
-.grid-x {
-  margin: 0 -0.75rem;
+/* Grid with gutter */
+.gutter, .gutter-y {
+  margin-top: -1rem;
+
   > * {
-    padding: 0 0.75rem;
+    margin-top: 1rem;
+  }
+}
+.gutter-x, .gutter {
+  margin-left: -1rem;
+  > * {
+    margin-left: 1rem;
+  }
+}
+
+.gutter-sm, .gutter-y-sm {
+  margin-top: -.5rem;
+
+  > * {
+    margin-top: .5rem;
+  }
+}
+.gutter-x-sm, .gutter-sm {
+  margin-left: -.5rem;
+  > * {
+    margin-left: .5rem;
   }
 }
 
 /* Drag & drop stuff */
 .drag-area {
-  min-width: 10rem;
-  min-height: 6.5rem;
   border: 1px dashed #ccc;
-  padding: 0.5rem;
+  padding: 0.75rem;
   transition: background-color 0.4s;
 
-  > div {
-    margin: 0.5rem;
+  .drag-area-zone {
+    min-width: 10rem;
+    min-height: 3rem;
   }
 
-  * {
+  .btn-draggable {
     cursor: move !important;
   }
-
-  padding-top: 2.5rem;
 }
 
 .drag-area-highlight {
   background-color: #f3f3f3;
-}
-
-.drag-area-label {
-  position: absolute;
-  padding: 0.75rem 1rem;
 }
 
 .sortable-ghost {
