@@ -324,7 +324,7 @@ export default {
         this.cols = cols
         this.valuesHashTable = valuesHashTable
         this.isDataComputing = false
-      }, 1500)
+      }, 0)
     }
   },
   watch: {
