@@ -12,24 +12,69 @@ A vue component for pivot table
 ## Usage
 
 This project includes 2 components:
-- `PivotTable`: a component creating an aggregation table from data & specific rows/columns
-- `Pivot` : a drag & drop user interface to configure rows/columns of a `PivotTable`
+- `PivotTable`: a component to create an aggregation table from data + row/column settings
+- `Pivot` : a `PivotTable` wrapper with drag & drop user interface to set rows/columns
 
 While the `Pivot` component provides the full experience, the `PivotTable` can be used standalone.
 
-### Javascript
-
-#### Webpack
+## Browser
 
 ```js
-// Import the needed component(s)
-import Pivot from '@marketconnect/vue-pivot-table'
+Vue.use(VuePivot)
+```
+
+## Webpack
+
+### `PivotTable`
+
+#### Javascript
+
+```js
 import PivotTable from '@marketconnect/vue-pivot-table'
 
 export default {
-  // Register the needed component
-  components: { Pivot, PivotTable },
-  
+  components: { PivotTable },
+
+  // Basic data for component props
+  data: () => {
+    return {
+      data: Object.freeze([{ x: 0, y: 0, z: 0 }, { x: 1, y: 1, z: 1 }]),
+      rowFields: [{
+        getter: item => item.y,
+        label: 'Y'
+      }, {
+        getter: item => item.z,
+        label: 'Z'
+      }],
+      colFields: [{
+        getter: item => item.x,
+        label: 'X'
+      }],
+      reducer: (sum, item) => sum + 1
+    }
+  }
+  ...
+}
+```
+
+#### HTML
+
+```html
+<pivot-table :data="data" :row-fields="rowFields" :col-fields="colFields" :reducer="reducer">
+  <!-- Optional slots can be used for formatting table headers and values, see documentation below -->
+</pivot-table>
+```
+
+### `Pivot`
+
+#### Javascript
+
+```js
+import Pivot from '@marketconnect/vue-pivot-table'
+
+export default {
+  components: { Pivot },
+
   // Basic data for component props
   data: () => {
     return {
@@ -53,13 +98,7 @@ export default {
 }
 ```
 
-#### Browser
-
-```js
-Vue.use(VuePivot)
-```
-
-### HTML
+#### HTML
 
 ```html
 <pivot :data="data" :fields="fields" :row-fields="rowFields" :col-fields="colFields" :reducer="reducer">
@@ -67,24 +106,17 @@ Vue.use(VuePivot)
 </pivot>
 ```
 
-Or
-
-```html
-<pivot-table :data="data" :fields="fields" :row-fields="rowFields" :col-fields="colFields" :reducer="reducer">
-  <!-- Optional slots can be used for formatting table headers and values, see documentation below -->
-</pivot-table>
-```
-
 ## API
+
+_Note: internally, the `Pivot` component will pass down its props and slots to its `PivotTable` instance._
 
 ### Props
 
-#### `Pivot` & `PivotTable`
+#### `PivotTable` & `Pivot`
 
 Prop | Type | Default | Description
 -----|------|---------|------------
 `data` | `Array` | `[]` | Dataset to use in the pivot ; each element should be an object
-`fields` | `Array` | `[]` | Fields to display in the "Available fields" zone
 `row-fields` | `Array` | `[]` | Fields to use as rows by default
 `col-fields` | `Array` | `[]` | Fields to use as columns by default
 `reducer` | `function` | `(sum, item) => sum + 1` | Function applied to reduce `data` in the pivot table
@@ -95,6 +127,7 @@ Prop | Type | Default | Description
 
 Prop | Type | Default | Description
 -----|------|---------|------------
+`fields` | `Array` | `[]` | Fields to display in the "Available fields" zone
 `default-show-settings` | `Boolean` | `true` | Show settings at component creation
 `available-fields-label-text` | `String` | `'Available fields'` | Text for available fields drag area
 `rows-label-text` | `String` | `'Rows'` | Text for the rows drag area
@@ -118,33 +151,45 @@ Prop | Type | Description
 
 ### Slots
 
-#### Table headers scoped slots
+#### Table headers
 
-Pivot table headers can be customized with scoped slots:
-
-```html
-<template slot="my-field-header-slot-name" slot-scope="{ value }">{{ value }}</template>
-```
-
-The `slot` attribute must match the `slotName` previously set on your field prop.
-
-#### `value` scoped slot
-
-Pivot table values can be customized with the `value` scoped slot:
+To customize table headers/footers, set a slot name on the field using `headerSlotName`/`footerSlotname`, then use the dynamically created slot:
 
 ```html
-<template slot="value" slot-scope="{ value }">{{ value.toLocaleString }}</template>
+<template v-slot:my-field-header-slot-name="{ value }">{{ value }}</template>
 ```
 
-#### `loading` slot
+#### Cell values
+
+Pivot table cell values can be customized with the `value` scoped slot:
+
+```html
+<template v-slot:value="{ value }">{{ value.toLocaleString }}</template>
+```
+
+Currently this slot is applied to all value cells and does not allow customization based on current rowField/colField (TODO).
+
+#### Loading
 
 If the `data` prop is loaded asynchronously, a loading feedback can be displayed by setting the `data-is-loading` prop to `true`. The default feedback is the text "Loading...".
 
 It can be customized with the `loading` slot:
 
 ```html
-<template slot="loading">Loading data, please wait...</template>
+<template v-slot:loading>Loading data, please wait...</template>
 ```
+
+#### Computing
+
+At the creation of the PivotTable component, and when the `data`/`rowFields`/`colFields` props change, a different loading feedback is displayed to the user. The default feedback is the text "Loading table values...".
+
+It can be customized with the `computing` slot:
+
+```html
+<template v-slot:computing>Loading table values, please wait...</template>
+```
+
+This feedback will be displayed together with the table in its previous state.
 
 ### Large datasets
 
