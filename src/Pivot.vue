@@ -81,12 +81,7 @@
       <div class="flex-fill" :style="tableWrapperStyle">
         <pivot-table :data="data" :row-fields="internal.rowFields" :col-fields="internal.colFields" :reducer="reducer" :no-data-warning-text="noDataWarningText" :is-data-loading="isDataLoading">
           <!-- pass down scoped slots -->
-          <template v-for="(slot, slotName) in $scopedSlots" :slot="slotName" slot-scope="{ value }">
-            <slot :name="slotName" v-bind="{ value }"></slot>
-          </template>
-          <template slot="loading">
-            <slot name="loading"></slot>
-          </template>
+          <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
         </pivot-table>
       </div>
     </div>
