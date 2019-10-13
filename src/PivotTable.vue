@@ -82,7 +82,7 @@
                 :key="JSON.stringify(col)"
                 class="text-right"
                 >
-                <slot v-if="$scopedSlots.value" name="value" v-bind:value="value(row, col)" />
+                <slot v-if="$scopedSlots.value" name="value" :value="value(row, col)" :row="Object.values(row)" :col="Object.values(col)" />
                 <template v-else>{{ value(row, col) }}</template>
               </td>
               <!-- Row footers (if slots are provided) -->

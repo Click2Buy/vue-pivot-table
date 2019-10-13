@@ -164,10 +164,13 @@ To customize table headers/footers, set a slot name on the field using `headerSl
 Pivot table cell values can be customized with the `value` scoped slot:
 
 ```html
-<template v-slot:value="{ value }">{{ value.toLocaleString }}</template>
+<template v-slot:value="{ value, col, row }">{{ value.toLocaleString }}</template>
 ```
 
-Currently this slot is applied to all value cells and does not allow customization based on current rowField/colField (TODO).
+Attributes:
+- `value`: the value of the cell
+- `col`: an Array with the values of the column headers of the cell
+- `row`: an Array with the values of the row headers of the cell
 
 #### Loading
 
