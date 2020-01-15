@@ -175,8 +175,8 @@ export default {
   data: function() {
     return {
       valuesHashTable: null,
-      rows: [],
-      cols: [],
+      rowsFromData: [],
+      colsFromData: [],
       // Note: we don't use the rowFields/colFields props directly to trigger table render when `computeData` has finished
       internalRowFields: this.rowFields,
       internalColFields: this.colFields,
@@ -185,6 +185,54 @@ export default {
     }
   },
   computed: {
+    // Rows
+    rows: function() {
+      let rows = this.rowsFromData
+
+      // Explore rowFields with values attr
+      this.internalRowFields.forEach((field, index) => {
+        //console.log(field.label)
+        if (field.values) {
+          // Remove rows not in the list of values
+          rows = rows.filter(row => field.values.includes(row[`row-${index}`]))
+
+          // Add rows for values not found in data
+          field.values.forEach(value => {
+            if (!rows.some(row => row[`row-${index}`] === value)) {
+              const rowKey = {}
+              rowKey[`row-${index}`] = value
+              rows.push(rowKey)
+            }
+          })
+        }
+      })
+
+      return rows
+    },
+    // Cols
+    cols: function() {
+      let cols = this.colsFromData
+
+      // Explore colFields with values attr
+      this.internalColFields.forEach((field, index) => {
+        //console.log(field.label)
+        if (field.values) {
+          // Remove cols not in the list of values
+          cols = cols.filter(col => field.values.includes(col[`col-${index}`]))
+
+          // Add cols for values not found in data
+          field.values.forEach(value => {
+            if (!cols.some(col => col[`col-${index}`] === value)) {
+              const colKey = {}
+              colKey[`col-${index}`] = value
+              cols.push(colKey)
+            }
+          })
+        }
+      })
+
+      return cols
+    },
     // Sort rows/cols using a composed function built with thenBy.js
     sortedRows: function() {
       let composedSortFunction
@@ -320,8 +368,8 @@ export default {
 
         this.internalRowFields = this.rowFields
         this.internalColFields = this.colFields
-        this.rows = rows
-        this.cols = cols
+        this.rowsFromData = rows
+        this.colsFromData = cols
         this.valuesHashTable = valuesHashTable
         this.isDataComputing = false
       }, 0)
