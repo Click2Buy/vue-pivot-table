@@ -25,57 +25,98 @@
 
           <!-- Table header -->
           <thead>
-            <tr
+            <template
               v-for="(colField, colFieldIndex) in internalColFields"
-              :key="`head-${JSON.stringify(colField)}`"
               v-if="colField.showHeader === undefined || colField.showHeader"
               >
-              <!-- Top left dead zone -->
-              <th
-                v-if="colFieldIndex === firstColFieldHeaderIndex && rowHeaderSize > 0"
-                :colspan="rowHeaderSize"
-                :rowspan="colHeaderSize"
-                ></th>
-              <!-- Column headers -->
-              <th
-                v-for="(col, colIndex) in sortedCols"
-                :key="JSON.stringify(col)"
-                :colspan="spanSize('col', sortedCols, colIndex, colFieldIndex)"
-                v-if="spanSize('col', sortedCols, colIndex, colFieldIndex) !== 0"
-                >
-                <slot v-if="colField.headerSlotName" :name="colField.headerSlotName" v-bind:value="col[`col-${colFieldIndex}`]">
-                  Missing slot <code>{{ colField.headerSlotName }}</code>
-                </slot>
-                <template v-else>
-                  {{ col[`col-${colFieldIndex}`] }}
-                </template>
-              </th>
-              <!-- Top right dead zone -->
-              <th
-                v-if="colFieldIndex === firstColFieldHeaderIndex && rowFooterSize > 0"
-                :colspan="rowFooterSize"
-                :rowspan="colFooterSize"
-                ></th>
-            </tr>
+              <!-- Multiple slots -->
+              <template v-if="colField.headerSlotNames">
+                <tr v-for="(headerSlotName, headerSlotNameIndex) in colField.headerSlotNames">
+                  <!-- Top left dead zone -->
+                  <th
+                    v-if="colFieldIndex === firstColFieldHeaderIndex && rowHeaderSize > 0 && headerSlotNameIndex === 0"
+                    :colspan="rowHeaderSize"
+                    :rowspan="colHeaderSize"
+                    ></th>
+                  <!-- Column headers -->
+                  <th
+                    v-for="(col, colIndex) in sortedCols"
+                    :key="JSON.stringify(col)"
+                    :colspan="spanSize('col', sortedCols, colIndex, colFieldIndex)"
+                    v-if="spanSize('col', sortedCols, colIndex, colFieldIndex) !== 0"
+                    >
+                    <slot :name="headerSlotName" v-bind:value="col[`col-${colFieldIndex}`]">
+                      Missing slot <code>{{ headerSlotName }}</code>
+                    </slot>
+                  </th>
+                  <!-- Top right dead zone -->
+                  <th
+                    v-if="colFieldIndex === firstColFieldHeaderIndex && rowFooterSize > 0 && headerSlotNameIndex === 0"
+                    :colspan="rowFooterSize"
+                    :rowspan="colFooterSize"
+                    ></th>
+                </tr>
+              </template>
+              <!-- Single slot/no slot -->
+              <tr v-else>
+                <!-- Top left dead zone -->
+                <th
+                  v-if="colFieldIndex === firstColFieldHeaderIndex && rowHeaderSize > 0"
+                  :colspan="rowHeaderSize"
+                  :rowspan="colHeaderSize"
+                  ></th>
+                <!-- Column headers -->
+                <th
+                  v-for="(col, colIndex) in sortedCols"
+                  :key="JSON.stringify(col)"
+                  :colspan="spanSize('col', sortedCols, colIndex, colFieldIndex)"
+                  v-if="spanSize('col', sortedCols, colIndex, colFieldIndex) !== 0"
+                  >
+                  <slot v-if="colField.headerSlotName" :name="colField.headerSlotName" v-bind:value="col[`col-${colFieldIndex}`]">
+                    Missing slot <code>{{ colField.headerSlotName }}</code>
+                  </slot>
+                  <template v-else>
+                    {{ col[`col-${colFieldIndex}`] }}
+                  </template>
+                </th>
+                <!-- Top right dead zone -->
+                <th
+                  v-if="colFieldIndex === firstColFieldHeaderIndex && rowFooterSize > 0"
+                  :colspan="rowFooterSize"
+                  :rowspan="colFooterSize"
+                  ></th>
+              </tr>
+            </template>
           </thead>
 
           <!-- Table body -->
           <tbody>
             <tr v-for="(row, rowIndex) in sortedRows" :key="JSON.stringify(row)">
               <!-- Row headers -->
-              <th
+              <template
                 v-for="(rowField, rowFieldIndex) in internalRowFields"
-                :key="`head-${JSON.stringify(rowField)}`"
-                :rowspan="spanSize('row', sortedRows, rowIndex, rowFieldIndex)"
                 v-if="(rowField.showHeader === undefined || rowField.showHeader) && spanSize('row', sortedRows, rowIndex, rowFieldIndex) !== 0"
                 >
-                <slot v-if="rowField.headerSlotName" :name="rowField.headerSlotName" v-bind:value="row[`row-${rowFieldIndex}`]">
-                  Missing slot <code>{{ rowField.headerSlotName }}</code>
-                </slot>
-                <template v-else>
-                  {{ row[`row-${rowFieldIndex}`] }}
+                <!-- Multiple slots -->
+                <template v-if="rowField.headerSlotNames">
+                  <th
+                    v-for="headerSlotName in rowField.headerSlotNames"
+                    :rowspan="spanSize('row', sortedRows, rowIndex, rowFieldIndex)">
+                    <slot :name="headerSlotName" v-bind:value="row[`row-${rowFieldIndex}`]">
+                      Missing slot <code>{{ headerSlotName }}</code>
+                    </slot>
+                  </th>
                 </template>
-              </th>
+                <!-- Single slot/no slot -->
+                <th v-else :rowspan="spanSize('row', sortedRows, rowIndex, rowFieldIndex)">
+                  <slot v-if="rowField.headerSlotName" :name="rowField.headerSlotName" v-bind:value="row[`row-${rowFieldIndex}`]">
+                    Missing slot <code>{{ rowField.headerSlotName }}</code>
+                  </slot>
+                  <template v-else>
+                    {{ row[`row-${rowFieldIndex}`] }}
+                  </template>
+                </th>
+              </template>
               <!-- Values -->
               <td
                 v-for="col in sortedCols"
@@ -86,53 +127,92 @@
                 <template v-else>{{ value(row, col) }}</template>
               </td>
               <!-- Row footers (if slots are provided) -->
-              <th
+              <template
                 v-for="(rowField, rowFieldIndex) in internalRowFieldsReverse"
-                :key="`foot-${JSON.stringify(rowField)}`"
-                :rowspan="spanSize('row', rows, rowIndex, internalRowFields.length - rowFieldIndex - 1)"
                 v-if="rowField.showFooter && spanSize('row', rows, rowIndex, internalRowFields.length - rowFieldIndex - 1) !== 0"
                 >
-                <slot v-if="rowField.footerSlotName" :name="rowField.footerSlotName" v-bind:value="row[`row-${internalRowFields.length - rowFieldIndex - 1}`]">
-                  Missing slot <code>{{ rowField.footerSlotName }}</code>
-                </slot>
-                <template v-else>
-                  {{ row[`row-${internalRowFields.length - rowFieldIndex - 1}`] }}
+                <!-- Multiple slots -->
+                <template v-if="rowField.footerSlotNames">
+                  <th
+                    v-for="footerSlotName in rowField.footerSlotNames"
+                    :rowspan="spanSize('row', rows, rowIndex, internalRowFields.length - rowFieldIndex - 1)">
+                    <slot :name="footerSlotName" v-bind:value="row[`row-${internalRowFields.length - rowFieldIndex - 1}`]">
+                      Missing slot <code>{{ footerSlotName }}</code>
+                    </slot>
+                  </th>
                 </template>
-              </th>
+                <!-- Single slot/no slot -->
+                <th v-else :rowspan="spanSize('row', rows, rowIndex, internalRowFields.length - rowFieldIndex - 1)">
+                  <slot v-if="rowField.footerSlotName" :name="rowField.footerSlotName" v-bind:value="row[`row-${internalRowFields.length - rowFieldIndex - 1}`]">
+                    Missing slot <code>{{ rowField.footerSlotName }}</code>
+                  </slot>
+                  <template v-else>
+                    {{ row[`row-${internalRowFields.length - rowFieldIndex - 1}`] }}
+                  </template>
+                </th>
+              </template>
             </tr>
           </tbody>
 
           <!-- Table footer -->
           <tfoot>
-            <tr
+            <template
               v-for="(colField, colFieldIndex) in internalColFieldsReverse"
-              :key="`foot-${JSON.stringify(colField)}`"
               v-if="colField.showFooter">
-              <!-- Bottom left dead zone -->
-              <th
-                v-if="colFieldIndex === firstColFieldFooterIndex && rowHeaderSize > 0"
-                :colspan="rowHeaderSize"
-                :rowspan="colHeaderSize"></th>
-              <!-- Column footers -->
-              <th
-                v-for="(col, colIndex) in sortedCols"
-                :key="JSON.stringify(col)"
-                :colspan="spanSize('col', sortedCols, colIndex, internalColFields.length - colFieldIndex - 1)"
-                v-if="spanSize('col', sortedCols, colIndex, internalColFields.length - colFieldIndex - 1) !== 0">
-                <slot v-if="colField.footerSlotName" :name="colField.footerSlotName" v-bind:value="col[`col-${internalColFields.length - colFieldIndex - 1}`]">
-                  Missing slot <code>{{ colField.footerSlotName }}</code>
-                </slot>
-                <template v-else>
-                  {{ col[`col-${internalColFields.length - colFieldIndex - 1}`] }}
-                </template>
-              </th>
-              <!-- Bottom right dead zone -->
-              <th
-                v-if="colFieldIndex === firstColFieldFooterIndex && rowFooterSize > 0"
-                :colspan="rowFooterSize"
-                :rowspan="colFooterSize"
-                ></th>
-            </tr>
+              <!-- Multiple slots -->
+              <template v-if="colField.footerSlotNames">
+                <tr v-for="(footerSlotName, footerSlotNameIndex) in colField.footerSlotNames">
+                  <!-- Bottom left dead zone -->
+                  <th
+                    v-if="colFieldIndex === firstColFieldFooterIndex && rowHeaderSize > 0 && footerSlotNameIndex === 0"
+                    :colspan="rowHeaderSize"
+                    :rowspan="colHeaderSize"></th>
+                  <!-- Column footers -->
+                  <th
+                    v-for="(col, colIndex) in sortedCols"
+                    :key="JSON.stringify(col)"
+                    :colspan="spanSize('col', sortedCols, colIndex, internalColFields.length - colFieldIndex - 1)"
+                    v-if="spanSize('col', sortedCols, colIndex, internalColFields.length - colFieldIndex - 1) !== 0">
+                    <slot :name="footerSlotName" v-bind:value="col[`col-${internalColFields.length - colFieldIndex - 1}`]">
+                      Missing slot <code>{{ footerSlotName }}</code>
+                    </slot>
+                  </th>
+                  <!-- Bottom right dead zone -->
+                  <th
+                    v-if="colFieldIndex === firstColFieldFooterIndex && rowFooterSize > 0 && footerSlotNameIndex === 0"
+                    :colspan="rowFooterSize"
+                    :rowspan="colFooterSize"
+                    ></th>
+                </tr>
+              </template>
+              <!-- Single slot/no slot -->
+              <tr v-else>
+                <!-- Bottom left dead zone -->
+                <th
+                  v-if="colFieldIndex === firstColFieldFooterIndex && rowHeaderSize > 0"
+                  :colspan="rowHeaderSize"
+                  :rowspan="colHeaderSize"></th>
+                <!-- Column footers -->
+                <th
+                  v-for="(col, colIndex) in sortedCols"
+                  :key="JSON.stringify(col)"
+                  :colspan="spanSize('col', sortedCols, colIndex, internalColFields.length - colFieldIndex - 1)"
+                  v-if="spanSize('col', sortedCols, colIndex, internalColFields.length - colFieldIndex - 1) !== 0">
+                  <slot v-if="colField.footerSlotName" :name="colField.footerSlotName" v-bind:value="col[`col-${internalColFields.length - colFieldIndex - 1}`]">
+                    Missing slot <code>{{ colField.footerSlotName }}</code>
+                  </slot>
+                  <template v-else>
+                    {{ col[`col-${internalColFields.length - colFieldIndex - 1}`] }}
+                  </template>
+                </th>
+                <!-- Bottom right dead zone -->
+                <th
+                  v-if="colFieldIndex === firstColFieldFooterIndex && rowFooterSize > 0"
+                  :colspan="rowFooterSize"
+                  :rowspan="colFooterSize"
+                  ></th>
+              </tr>
+            </template>
           </tfoot>
         </table>
       </div>
@@ -223,19 +303,43 @@ export default {
     },
     // Number of row header columns
     rowHeaderSize: function() {
-      return this.internalRowFields.filter(rowField => rowField.showHeader === undefined || rowField.showHeader).length
+      return this.internalRowFields.reduce((acc, rowField) => {
+        if (rowField.showHeader === undefined || rowField.showHeader) {
+          if (rowField.headerSlotNames) return acc + rowField.headerSlotNames.length
+          else return acc + 1
+        }
+        else return acc
+      }, 0)
     },
     // Number of row footer columns
     rowFooterSize: function() {
-      return this.internalRowFields.filter(rowField => rowField.showFooter).length
+      return this.internalRowFields.reduce((acc, rowField) => {
+        if (rowField.showFooter) {
+          if (rowField.footerSlotNames) return acc + rowField.footerSlotNames.length
+          else return acc + 1
+        }
+        else return acc
+      }, 0)
     },
     // Number of col header rows
     colHeaderSize: function() {
-      return this.internalColFields.filter(colField => colField.showHeader === undefined || colField.showHeader).length
+      return this.internalColFields.reduce((acc, colField) => {
+        if (colField.showHeader === undefined || colField.showHeader) {
+          if (colField.headerSlotNames) return acc + colField.headerSlotNames.length
+          else return acc + 1
+        }
+        else return acc
+      }, 0)
     },
     // Number of col footer rows
     colFooterSize: function() {
-      return this.internalColFields.filter(colField => colField.showFooter).length
+      return this.internalColFields.reduce((acc, colField) => {
+        if (colField.showFooter) {
+          if (colField.footerSlotNames) return acc + colField.footerSlotNames.length
+          else return acc + 1
+        }
+        else return acc
+      }, 0)
     },
     // Index of the first column field header to show - used for table header dead zones
     firstColFieldHeaderIndex: function() {

@@ -61,6 +61,10 @@ const baseConfig = {
         }, {
           loader: 'sass-loader'
         }]
+      },
+      {
+        test: /\.svg$/,
+        loader: 'svg-url-loader'
       }
     ]
   },

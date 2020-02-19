@@ -146,7 +146,9 @@ Prop | Type | Description
 `sort` | `Function` | Optional - Function to order fields in the pivot table header ; if no value is provided, [javascript-natural-sort](https://github.com/Bill4Time/javascript-natural-sort) will be applied
 `showHeader` | `Boolean` | Optional (default: `true`) - Whether the header should be displayed in the pivot table
 `showFooter` | `Boolean` | Optional (default: `false`) - Whether the footer should be displayed in the pivot table
+`headerSlotNames` | `String Array` | Optional - Names of the slots to use to format the headers in the pivot table
 `headerSlotName` | `String` | Optional - Name of the slot to use to format the header in the pivot table ; if no slot name is provided, the value will be displayed as found in data
+`footerSlotNames` | `String Array` | Optional - Same as above for the footer
 `footerSlotName` | `String` | Optional - Same as above for the footer
 
 ### Slots
@@ -158,6 +160,8 @@ To customize table headers/footers, set a slot name on the field using `headerSl
 ```html
 <template v-slot:my-field-header-slot-name="{ value }">{{ value }}</template>
 ```
+
+You can also set multiple slot names using `headerSlotNames`/`footerSlotNames`. In that case, one row/column (depending if the field is a column/row field) header/footer will be generated for each slot, allowing to display multiple information separately.
 
 #### Cell values
 
