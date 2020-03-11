@@ -8,8 +8,9 @@
       <pivot
         :data="data"
         :fields="fields"
-        :row-fields="rowFields"
-        :col-fields="colFields"
+        :available-field-keys="availableFieldKeys"
+        :row-field-keys="rowFieldKeys"
+        :col-field-keys="colFieldKeys"
         :reducer="reducer"
         :default-show-settings="defaultShowSettings"
       >
@@ -95,7 +96,39 @@ export default {
     return {
       data: data,
       asyncData: [],
-      fields: [],
+
+      // Pivot params
+      fields: [{
+        key: 'country',
+        getter: item => item.country,
+        label: 'Country',
+        headers: [{
+          slotName: 'countryFlagHeader',
+          label: 'Flag',
+          checked: true
+        }, {
+          slotName: 'countryNameHeader',
+          label: 'Name',
+          checked: true
+        }]
+      }, {
+        key: 'gender',
+        getter: item => item.gender,
+        label: 'Gender',
+        headerSlotName: 'genderHeader'
+      }, {
+        key: 'year',
+        getter: item => item.year,
+        label: 'Year'
+      }],
+      availableFieldKeys: [],
+      rowFieldKeys: ['country', 'gender'],
+      colFieldKeys: ['year'],
+      reducer: (sum, item) => sum + item.count,
+      defaultShowSettings: true,
+      isDataLoading: false,
+
+      // Pivot table standalone field params
       rowFields: [{
         getter: item => item.country,
         label: 'Country',
@@ -108,10 +141,7 @@ export default {
       colFields: [{
         getter: item => item.year,
         label: 'Year'
-      }],
-      reducer: (sum, item) => sum + item.count,
-      defaultShowSettings: true,
-      isDataLoading: false
+      }]
     }
   },
   methods: {

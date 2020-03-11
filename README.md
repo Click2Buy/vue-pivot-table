@@ -112,36 +112,23 @@ _Note: internally, the `Pivot` component will pass down its props and slots to i
 
 ### Props
 
-#### `PivotTable` & `Pivot`
+#### `PivotTable`
 
 Prop | Type | Default | Description
 -----|------|---------|------------
 `data` | `Array` | `[]` | Dataset to use in the pivot ; each element should be an object
-`row-fields` | `Array` | `[]` | Fields to use as rows by default
-`col-fields` | `Array` | `[]` | Fields to use as columns by default
+`row-fields` | `Array` | `[]` | Fields to use as rows by default (see [PivotTable field format](#pivottable-field-format))
+`col-fields` | `Array` | `[]` | Fields to use as columns by default (see [PivotTable field format](#pivottable-field-format))
 `reducer` | `function` | `(sum, item) => sum + 1` | Function applied to reduce `data` in the pivot table
 `no-data-warning-text` | `String` | `'No data to display.'` | Text to display when `data` is empty
 `is-data-loading` | `Boolean` | `false` | Display a loading content instead of the table when the value is `true` (see slots for customization)
 
-#### `Pivot` only
+#### PivotTable field format
 
-Prop | Type | Default | Description
------|------|---------|------------
-`fields` | `Array` | `[]` | Fields to display in the "Available fields" zone
-`default-show-settings` | `Boolean` | `true` | Show settings at component creation
-`available-fields-label-text` | `String` | `'Available fields'` | Text for available fields drag area
-`rows-label-text` | `String` | `'Rows'` | Text for the rows drag area
-`cols-label-text` | `String` | `'Columns'` | Text for the columns drag area
-`hide-settings-text` | `String` | `'Hide settings'` | Text for the "hide settings" button
-`show-settings-text` | `String` | `'Show settings'` | Text for the "show settings" button
-
-#### Field format
-
-Each element in the arrays `fields`, `colFields` or `rowFields` should be an Object with this format:
+Each element in the arrays `row-fields` and `col-fields` must be an Object with this format:
 
 Prop | Type | Description
 -----|------|------------
-`label` | `String` | Text to display in the draggable button (`Pivot` only)
 `getter` | `Function` | Function to apply on an element of `data` to get the field value
 `sort` | `Function` | Optional - Function to order fields in the pivot table header ; if no value is provided, [javascript-natural-sort](https://github.com/Bill4Time/javascript-natural-sort) will be applied
 `showHeader` | `Boolean` | Optional (default: `true`) - Whether the header should be displayed in the pivot table
@@ -150,6 +137,55 @@ Prop | Type | Description
 `headerSlotName` | `String` | Optional - Name of the slot to use to format the header in the pivot table ; if no slot name is provided, the value will be displayed as found in data
 `footerSlotNames` | `String Array` | Optional - Same as above for the footer
 `footerSlotName` | `String` | Optional - Same as above for the footer
+
+#### `Pivot`
+
+Prop | Type | Default | Description
+-----|------|---------|------------
+`data` | `Array` | `[]` | Dataset to use in the pivot ; each element should be an object
+`fields` | `Array` | `[]` | Fields definition (see [Pivot field format](#pivot-field-format))
+`available-field-keys` | `Array` | `[]` | Keys of the fields to show as "available" by default
+`row-field-keys` | `Array` | `[]` | Keys of the fields to use as rows by default
+`col-field-keys` | `Array` | `[]` | Keys of the fields to use as columns by default
+`reducer` | `function` | `(sum, item) => sum + 1` | Function applied to reduce `data` in the pivot table
+`no-data-warning-text` | `String` | `'No data to display.'` | Text to display when `data` is empty
+`is-data-loading` | `Boolean` | `false` | Display a loading content instead of the table when the value is `true` (see slots for customization)
+`default-show-settings` | `Boolean` | `true` | Show settings at component creation
+`available-fields-label-text` | `String` | `'Available fields'` | Text for available fields drag area
+`rows-label-text` | `String` | `'Rows'` | Text for the rows drag area
+`cols-label-text` | `String` | `'Columns'` | Text for the columns drag area
+`hide-settings-text` | `String` | `'Hide settings'` | Text for the "hide settings" button
+`show-settings-text` | `String` | `'Show settings'` | Text for the "show settings" button
+
+#### Pivot field format
+
+Each element in the array `fields` must be an Object with this format:
+
+Prop | Type | Description
+-----|------|------------
+`key` | `String` | A unique string value to identify the field
+`label` | `String` | Text to display in the draggable element
+`getter` | `Function` | Function to apply on an element of `data` to get the field value
+`sort` | `Function` | Optional - Function to order fields in the pivot table header ; if no value is provided, [javascript-natural-sort](https://github.com/Bill4Time/javascript-natural-sort) will be applied
+`showHeader` | `Boolean` | Optional (default: `true`) - Whether the header should be displayed in the pivot table
+`showFooter` | `Boolean` | Optional (default: `false`) - Whether the footer should be displayed in the pivot table
+`headerSlotNames` | `String Array` | Optional - Names of the slots to use to format the headers in the pivot table
+`headerSlotName` | `String` | Optional - Name of the slot to use to format the header in the pivot table ; if no slot name is provided, the value will be displayed as found in data
+`footerSlotNames` | `String Array` | Optional - Same as above for the footer
+`footerSlotName` | `String` | Optional - Same as above for the footer
+`headers` | `Array` | Optional - Definition of the headers (see [Headers format](#headers-format))
+
+##### Headers format
+
+Using the `headers` prop allows to display a menu to select headers to display.
+
+Each element in the array `headers` must be an Object with this format:
+
+Prop | Type | Description
+-----|------|------------
+`slotName` | `String` | Name of the slot to use to format the header in the pivot table
+`label` | `String` | Label to display in the menu next to the checkbox
+`checked` | `Boolean` | Default value in the menu for the checkbox
 
 ### Slots
 
