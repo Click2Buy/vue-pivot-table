@@ -34,5 +34,11 @@ export default [
   {"country": "France", "year": 2011, "gender": "male", "count": 30815839},
   {"country": "France", "year": 2011, "gender": "female", "count": 32452566},
   {"country": "France", "year": 2012, "gender": "male", "count": 30948916},
-  {"country": "France", "year": 2012, "gender": "female", "count": 32612882}
+  {"country": "France", "year": 2012, "gender": "female", "count": 32612882},
+  {"country": "Australia", "year": 2010, "gender": "male", "count": 11124254},
+  {"country": "Australia", "year": 2010, "gender": "female", "count": 11218144},
+  {"country": "Australia", "year": 2011, "gender": "male", "count": 11260747},
+  {"country": "Australia", "year": 2011, "gender": "female", "count": 11359807},
+  {"country": "Australia", "year": 2012, "gender": "male", "count": 11280804},
+  {"country": "Australia", "year": 2012, "gender": "female", "count": 11402769}
 ]

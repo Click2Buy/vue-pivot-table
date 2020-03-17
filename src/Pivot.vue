@@ -10,7 +10,7 @@
 
       <!-- Available fields -->
       <div class="flex-fill drag-area" :class="dragAreaClass">
-        <div class="drag-area-title mb-2">{{ availableFieldsLabelText }}</div>
+        <div class="drag-area-title mb-3">{{ availableFieldsLabelText }}</div>
         <draggable
           v-model="internal.availableFieldKeys"
           class="d-flex flex-row gutter-sm drag-area-zone"
@@ -36,7 +36,7 @@
 
       <!-- Column fields -->
       <div class="flex-fill drag-area border-primary" :class="dragAreaClass">
-        <div class="drag-area-title mb-2">{{ colsLabelText }}</div>
+        <div class="drag-area-title mb-3">{{ colsLabelText }}</div>
         <draggable
           v-model="internal.colFieldKeys"
           class="d-flex flex-row gutter-sm drag-area-zone"
@@ -44,7 +44,10 @@
           @start="start"
           @end="end">
           <div v-for="key in internal.colFieldKeys" :key="key" class="field">
-            <field-label :field="fieldFromKey(key)" />
+            <field-label :field="fieldFromKey(key)">
+              <!-- pass down scoped slots -->
+              <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
+            </field-label>
           </div>
         </draggable>
       </div>
@@ -54,7 +57,7 @@
       <!-- Row fields -->
       <div v-if="showSettings" class="left-col">
         <div class="drag-area border-primary" :class="dragAreaClass">
-          <div class="drag-area-title mb-2">{{ rowsLabelText }}</div>
+          <div class="drag-area-title mb-3">{{ rowsLabelText }}</div>
           <draggable
             v-model="internal.rowFieldKeys"
             class="d-flex flex-column align-items-start gutter-sm drag-area-zone"
@@ -62,7 +65,10 @@
             @start="start"
             @end="end">
             <div v-for="key in internal.rowFieldKeys" :key="key" class="field">
-              <field-label :field="fieldFromKey(key)" />
+              <field-label :field="fieldFromKey(key)">
+                <!-- pass down scoped slots -->
+                <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
+              </field-label>
             </div>
           </draggable>
         </div>
@@ -70,7 +76,7 @@
 
       <!-- Table -->
       <div class="flex-fill" :style="tableWrapperStyle">
-        <pivot-table :data="data" :row-fields="rowFields" :col-fields="colFields" :reducer="reducer" :no-data-warning-text="noDataWarningText" :is-data-loading="isDataLoading">
+        <pivot-table :data="filteredData" :row-fields="rowFields" :col-fields="colFields" :reducer="reducer" :no-data-warning-text="noDataWarningText" :is-data-loading="isDataLoading">
           <!-- pass down scoped slots -->
           <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
         </pivot-table>
@@ -83,6 +89,7 @@
 import FieldLabel from './FieldLabel.vue'
 import PivotTable from './PivotTable.vue'
 import Draggable from 'vuedraggable'
+import naturalSort from 'javascript-natural-sort'
 
 export default {
   name: 'vue-pivot',
@@ -146,8 +153,37 @@ export default {
     }
   },
   data: function() {
+    const fields = this.fields
+    const valueFilterableFields = fields.filter(field => field.valueFilter)
+
+    // If at least one field has valueFilter, get values from data
+    if (valueFilterableFields.length > 0) {
+      // Create new set for each field with value filter
+      valueFilterableFields.forEach(field => {
+        field.valuesSet = new Set()
+      })
+
+      // Iterate on data once
+      this.data.forEach(item => {
+        valueFilterableFields.forEach(field => {
+          field.valuesSet.add(field.getter(item))
+        })
+      })
+
+      // Create object with checked boolean for each value
+      valueFilterableFields.forEach(field => {
+        const values = []
+        Array.from(field.valuesSet).sort(field.sort || naturalSort).forEach(value => {
+          values.push({ label: value, checked: true })
+        })
+
+        this.$set(field, 'values', values)
+      })
+    }
+
     return {
       internal: {
+        fields,
         availableFieldKeys: this.availableFieldKeys,
         rowFieldKeys: this.rowFieldKeys,
         colFieldKeys: this.colFieldKeys
@@ -192,6 +228,29 @@ export default {
 
       return colFields
     },
+    filteredData: function() {
+      return this.data.filter(item => {
+        // Remove items with unchecked values from value filters
+        let remove = false
+
+        // TODO: optimize this (stop loop when found? build shared Sets before?)
+        this.internal.fields.forEach(field => {
+          if (field.valueFilter) {
+            const selectedValuesSet = new Set()
+            field.values.forEach(value => {
+              if (value.checked) {
+                selectedValuesSet.add(value.label)
+              }
+            })
+            if (!selectedValuesSet.has(field.getter(item))) {
+              remove = true
+            }
+          }
+        })
+
+        return !remove
+      })
+    },
     // Drag area class
     dragAreaClass: function() {
       return this.dragging ? 'drag-area-highlight' : null
@@ -205,7 +264,7 @@ export default {
   methods: {
     // Get a field from its key
     fieldFromKey: function(key) {
-      return this.fields.find(field => field.key === key)
+      return this.internal.fields.find(field => field.key === key)
     },
     // Toggle settings
     toggleShowSettings: function() {

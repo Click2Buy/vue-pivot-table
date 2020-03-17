@@ -174,6 +174,9 @@ Prop | Type | Description
 `footerSlotNames` | `String Array` | Optional - Same as above for the footer
 `footerSlotName` | `String` | Optional - Same as above for the footer
 `headers` | `Array` | Optional - Definition of the headers (see [Headers format](#headers-format))
+`headerAttributeFilter` | `Boolean` | Optional (default: `false`) - Activate dropdown to filter field header attributes
+`valueFilter` | `Boolean` | Optional (default: `false`) - Activate dropdown to filter field values
+`valueFilterSlotName` | `String` | Optional - Name of the slot to use to format the values in the field values selection dropdown
 
 ##### Headers format
 

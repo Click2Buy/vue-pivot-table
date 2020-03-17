@@ -110,16 +110,21 @@ export default {
           slotName: 'countryNameHeader',
           label: 'Name',
           checked: true
-        }]
+        }],
+        headerAttributeFilter: true,
+        valueFilter: true
       }, {
         key: 'gender',
         getter: item => item.gender,
         label: 'Gender',
-        headerSlotName: 'genderHeader'
+        headerSlotName: 'genderHeader',
+        valueFilter: true,
+        valueFilterSlotName: 'genderHeader'
       }, {
         key: 'year',
         getter: item => item.year,
-        label: 'Year'
+        label: 'Year',
+        valueFilter: true
       }],
       availableFieldKeys: [],
       rowFieldKeys: ['country', 'gender'],
@@ -147,6 +152,8 @@ export default {
   methods: {
     countryCode: function(country) {
       switch (country) {
+        case 'Australia':
+          return 'au'
         case 'China':
           return 'cn'
         case 'France':
