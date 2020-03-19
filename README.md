@@ -9,13 +9,13 @@ A vue component for pivot table
 
 `npm install --save @marketconnect/vue-pivot-table`
 
-## Usage
+## Components
 
-This project includes 2 components:
-- `PivotTable`: a component to create an aggregation table from data + row/column settings
-- `Pivot` : a `PivotTable` wrapper with drag & drop user interface to set rows/columns
+This project provides 2 components:
+- `Pivot`: aggregation table with drag & drop user interface to configure rows/columns
+- `PivotTable`: aggregation table only
 
-While the `Pivot` component provides the full experience, the `PivotTable` can be used standalone.
+While the `Pivot` component provides the full experience, the `PivotTable` can be used standalone if you need only a table.
 
 ## Browser
 
@@ -24,6 +24,50 @@ Vue.use(VuePivot)
 ```
 
 ## Webpack
+
+### `Pivot`
+
+#### Javascript
+
+```js
+import Pivot from '@marketconnect/vue-pivot-table'
+
+export default {
+  components: { Pivot },
+
+  // Basic data for component props
+  data: () => {
+    return {
+      data: Object.freeze([{ x: 0, y: 0, z: 0 }, { x: 1, y: 1, z: 1 }]),
+      fields: [{
+        key: 'x',
+        getter: item => item.x,
+        label: 'X'
+      }, {
+        key: 'y',
+        getter: item => item.y,
+        label: 'Y'
+      }, {
+        key: 'z',
+        getter: item => item.z,
+        label: 'Z'
+      }],
+      rowFieldKeys: ['y', 'z'],
+      colFieldKeys: ['x'],
+      reducer: (sum, item) => sum + 1
+    }
+  }
+  ...
+}
+```
+
+#### HTML
+
+```html
+<pivot :data="data" :fields="fields" :row-field-keys="rowFieldKeys" :col-field-keys="colFieldKeys" :reducer="reducer">
+  <!-- Optional slots can be used for formatting table headers and values, see documentation below -->
+</pivot>
+```
 
 ### `PivotTable`
 
@@ -65,85 +109,16 @@ export default {
 </pivot-table>
 ```
 
-### `Pivot`
-
-#### Javascript
-
-```js
-import Pivot from '@marketconnect/vue-pivot-table'
-
-export default {
-  components: { Pivot },
-
-  // Basic data for component props
-  data: () => {
-    return {
-      data: Object.freeze([{ x: 0, y: 0, z: 0 }, { x: 1, y: 1, z: 1 }]),
-      fields: [],
-      rowFields: [{
-        getter: item => item.y,
-        label: 'Y'
-      }, {
-        getter: item => item.z,
-        label: 'Z'
-      }],
-      colFields: [{
-        getter: item => item.x,
-        label: 'X'
-      }],
-      reducer: (sum, item) => sum + 1
-    }
-  }
-  ...
-}
-```
-
-#### HTML
-
-```html
-<pivot :data="data" :fields="fields" :row-fields="rowFields" :col-fields="colFields" :reducer="reducer">
-  <!-- Optional slots can be used for formatting table headers and values, see documentation below -->
-</pivot>
-```
-
 ## API
 
-_Note: internally, the `Pivot` component will pass down its props and slots to its `PivotTable` instance._
+### `Pivot` component
 
-### Props
+#### Properties
 
-#### `PivotTable`
-
-Prop | Type | Default | Description
------|------|---------|------------
-`data` | `Array` | `[]` | Dataset to use in the pivot ; each element should be an object
-`row-fields` | `Array` | `[]` | Fields to use as rows by default (see [PivotTable field format](#pivottable-field-format))
-`col-fields` | `Array` | `[]` | Fields to use as columns by default (see [PivotTable field format](#pivottable-field-format))
-`reducer` | `function` | `(sum, item) => sum + 1` | Function applied to reduce `data` in the pivot table
-`no-data-warning-text` | `String` | `'No data to display.'` | Text to display when `data` is empty
-`is-data-loading` | `Boolean` | `false` | Display a loading content instead of the table when the value is `true` (see slots for customization)
-
-#### PivotTable field format
-
-Each element in the arrays `row-fields` and `col-fields` must be an Object with this format:
-
-Prop | Type | Description
------|------|------------
-`getter` | `Function` | Function to apply on an element of `data` to get the field value
-`sort` | `Function` | Optional - Function to order fields in the pivot table header ; if no value is provided, [javascript-natural-sort](https://github.com/Bill4Time/javascript-natural-sort) will be applied
-`showHeader` | `Boolean` | Optional (default: `true`) - Whether the header should be displayed in the pivot table
-`showFooter` | `Boolean` | Optional (default: `false`) - Whether the footer should be displayed in the pivot table
-`headerSlotNames` | `String Array` | Optional - Names of the slots to use to format the headers in the pivot table
-`headerSlotName` | `String` | Optional - Name of the slot to use to format the header in the pivot table ; if no slot name is provided, the value will be displayed as found in data
-`footerSlotNames` | `String Array` | Optional - Same as above for the footer
-`footerSlotName` | `String` | Optional - Same as above for the footer
-
-#### `Pivot`
-
-Prop | Type | Default | Description
------|------|---------|------------
-`data` | `Array` | `[]` | Dataset to use in the pivot ; each element should be an object
-`fields` | `Array` | `[]` | Fields definition (see [Pivot field format](#pivot-field-format))
+Property | Type | Default | Description
+---------|------|---------|------------
+`data` | `Object Array` | `[]` | Dataset to use in the pivot
+`fields` | `Array` | `[]` | Fields definition (see [`fields` element format](#fields-element-format))
 `available-field-keys` | `Array` | `[]` | Keys of the fields to show as "available" by default
 `row-field-keys` | `Array` | `[]` | Keys of the fields to use as rows by default
 `col-field-keys` | `Array` | `[]` | Keys of the fields to use as columns by default
@@ -157,85 +132,77 @@ Prop | Type | Default | Description
 `hide-settings-text` | `String` | `'Hide settings'` | Text for the "hide settings" button
 `show-settings-text` | `String` | `'Show settings'` | Text for the "show settings" button
 
-#### Pivot field format
+##### `fields` element format
 
-Each element in the array `fields` must be an Object with this format:
-
-Prop | Type | Description
------|------|------------
+Property | Type | Description
+---------|------|------------
 `key` | `String` | A unique string value to identify the field
 `label` | `String` | Text to display in the draggable element
 `getter` | `Function` | Function to apply on an element of `data` to get the field value
 `sort` | `Function` | Optional - Function to order fields in the pivot table header ; if no value is provided, [javascript-natural-sort](https://github.com/Bill4Time/javascript-natural-sort) will be applied
 `showHeader` | `Boolean` | Optional (default: `true`) - Whether the header should be displayed in the pivot table
 `showFooter` | `Boolean` | Optional (default: `false`) - Whether the footer should be displayed in the pivot table
-`headerSlotNames` | `String Array` | Optional - Names of the slots to use to format the headers in the pivot table
 `headerSlotName` | `String` | Optional - Name of the slot to use to format the header in the pivot table ; if no slot name is provided, the value will be displayed as found in data
-`footerSlotNames` | `String Array` | Optional - Same as above for the footer
+`headerSlotNames` | `String Array` | Optional - Names of the slots to use to format the headers in the pivot table
+`headers` | `Array` | Optional - Definition of the headers (see [`headers` element format](#headers-element-format))
 `footerSlotName` | `String` | Optional - Same as above for the footer
-`headers` | `Array` | Optional - Definition of the headers (see [Headers format](#headers-format))
+`footerSlotNames` | `String Array` | Optional - Same as above for the footer
 `headerAttributeFilter` | `Boolean` | Optional (default: `false`) - Activate dropdown to filter field header attributes
 `valueFilter` | `Boolean` | Optional (default: `false`) - Activate dropdown to filter field values
 `valueFilterSlotName` | `String` | Optional - Name of the slot to use to format the values in the field values selection dropdown
 
-##### Headers format
+##### `headers` element format
 
-Using the `headers` prop allows to display a menu to select headers to display.
-
-Each element in the array `headers` must be an Object with this format:
-
-Prop | Type | Description
------|------|------------
+Property | Type | Description
+---------|------|------------
 `slotName` | `String` | Name of the slot to use to format the header in the pivot table
-`label` | `String` | Label to display in the menu next to the checkbox
-`checked` | `Boolean` | Default value in the menu for the checkbox
+`label` | `String` | If `headerAttributeFilter` is activated, in the field dropdown: label to display next to the checkbox
+`checked` | `Boolean` | If `headerAttributeFilter` is activated, in the field dropdown: default checkbox value
 
-### Slots
+#### Slots
 
-#### Table headers
+Slot Name | Description | Scope
+----------|-------------|------
+`<field header slot name>` | Table header content for a field, referenced from the `field` `headerSlotName` property | `{ value }`
+`<field value filter slot name>` | If field `valueFilter` prop is set to `true`: content in the menu next to the checkbox | `{ value }`
+`value` | Table cell content | `{ value, col, row }`
+`loading` | Content displayed while `data-is-loading` prop is set to `true`
+`computing` | Content displayed while table values are being loaded
 
-To customize table headers/footers, set a slot name on the field using `headerSlotName`/`footerSlotname`, then use the dynamically created slot:
+### `PivotTable` component
 
-```html
-<template v-slot:my-field-header-slot-name="{ value }">{{ value }}</template>
-```
+#### Properties
 
-You can also set multiple slot names using `headerSlotNames`/`footerSlotNames`. In that case, one row/column (depending if the field is a column/row field) header/footer will be generated for each slot, allowing to display multiple information separately.
+Property | Type | Default | Description
+---------|------|---------|------------
+`data` | `Object Array` | `[]` | Dataset to use in the pivot
+`row-fields` | `Array` | `[]` | Fields to use as rows by default (see [`row-fields`/`col-fields` element format](#row-fields-col-fields-element-format))
+`col-fields` | `Array` | `[]` | Fields to use as columns by default (see [`row-fields`/`col-fields` element format](#row-fields-col-fields-element-format))
+`reducer` | `function` | `(sum, item) => sum + 1` | Function applied to reduce `data` in the pivot table
+`no-data-warning-text` | `String` | `'No data to display.'` | Text to display when `data` is empty
+`is-data-loading` | `Boolean` | `false` | Display a loading content instead of the table when the value is `true` (see slots for customization)
 
-#### Cell values
+##### `row-fields`/`col-fields` element format
 
-Pivot table cell values can be customized with the `value` scoped slot:
+Property | Type | Description
+---------|------|------------
+`getter` | `Function` | Function to apply on an element of `data` to get the field value
+`sort` | `Function` | Optional - Function to order fields in the pivot table header ; if no value is provided, [javascript-natural-sort](https://github.com/Bill4Time/javascript-natural-sort) will be applied
+`showHeader` | `Boolean` | Optional (default: `true`) - Whether the header should be displayed in the pivot table
+`showFooter` | `Boolean` | Optional (default: `false`) - Whether the footer should be displayed in the pivot table
+`headerSlotName` | `String` | Optional - Name of the slot to use to format the header in the pivot table ; if no slot name is provided, the value will be displayed as found in data
+`headerSlotNames` | `String Array` | Optional - Names of the slots to use to format the headers in the pivot table
+`footerSlotName` | `String` | Optional - Same as above for the footer
+`footerSlotNames` | `String Array` | Optional - Same as above for the footer
 
-```html
-<template v-slot:value="{ value, col, row }">{{ value.toLocaleString }}</template>
-```
+#### Slots
 
-Attributes:
-- `value`: the value of the cell
-- `col`: an Array with the values of the column headers of the cell
-- `row`: an Array with the values of the row headers of the cell
-
-#### Loading
-
-If the `data` prop is loaded asynchronously, a loading feedback can be displayed by setting the `data-is-loading` prop to `true`. The default feedback is the text "Loading...".
-
-It can be customized with the `loading` slot:
-
-```html
-<template v-slot:loading>Loading data, please wait...</template>
-```
-
-#### Computing
-
-At the creation of the PivotTable component, and when the `data`/`rowFields`/`colFields` props change, a different loading feedback is displayed to the user. The default feedback is the text "Loading table values...".
-
-It can be customized with the `computing` slot:
-
-```html
-<template v-slot:computing>Loading table values, please wait...</template>
-```
-
-This feedback will be displayed together with the table in its previous state.
+Slot Name | Description | Scope
+----------|-------------|------
+`<field header slot name>` | Table header content for a field, referenced from `row-field`/`col-field` `headerSlotName` property | `{ value }`
+`value` | Table cell content | `{ value, col, row }`
+`loading` | Content displayed while `data-is-loading` prop is set to `true`
+`computing` | Content displayed while table values are being loaded
 
 ### Large datasets
 
