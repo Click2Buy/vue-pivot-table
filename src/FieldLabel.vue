@@ -31,7 +31,7 @@
       <!-- Headers filter -->
       <template v-if="field.headerAttributeFilter">
         <h6 class="dropdown-header">Attributes</h6>
-        <div class="px-4 py-2">
+        <div class="dropdown-list px-4 py-2">
           <div v-for="(header, index) in field.headers" class="mb-1">
             <div class="custom-control custom-checkbox">
               <input
@@ -52,7 +52,7 @@
       <!-- Values filter -->
       <template v-if="field.valueFilter">
         <h6 class="dropdown-header">Values</h6>
-        <div class="px-4 py-2">
+        <div class="dropdown-list px-4 py-2">
           <div v-for="(value, index) in field.values" class="mb-1">
             <div class="custom-control custom-checkbox">
               <input
@@ -139,11 +139,16 @@ export default {
   left: 0;
   z-index: 1000;
   float: left;
-  min-width: 175px;
+  min-width: 200px;
   padding: 0.5rem 0;
   margin: 0.125rem 0 0;
   background-color: #fff;
   background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-list {
+  max-height: 175px;
+  overflow: auto;
 }
 </style>
