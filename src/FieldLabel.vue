@@ -52,6 +52,14 @@
       <!-- Values filter -->
       <template v-if="field.valueFilter">
         <h6 class="dropdown-header">Values</h6>
+        <div class="dropdown-item" style="cursor: pointer;" @click="toggleAllValues(!allValuesSelected)">
+          <template v-if="allValuesSelected">
+            {{ unselectAllText }}
+          </template>
+          <template v-else>
+            {{ selectAllText }}
+          </template>
+        </div>
         <div class="dropdown-list px-4 py-2">
           <div v-for="(value, index) in field.values" class="mb-1">
             <div class="custom-control custom-checkbox">
@@ -91,6 +99,12 @@ export default {
     variant: {
       type: String,
       default: 'primary'
+    },
+    selectAllText: {
+      type: String
+    },
+    unselectAllText: {
+      type: String
     }
   },
   data: function() {
@@ -101,11 +115,19 @@ export default {
   computed: {
     hasDropdown: function() {
       return this.field.headerAttributeFilter && this.field.headers || this.field.valueFilter
+    },
+    allValuesSelected: function() {
+      return !Object.values(this.fieldValues).includes(false)
     }
   },
   methods: {
     toggleShowDropdown: function() {
       this.showDropdown = !this.showDropdown
+    },
+    toggleAllValues: function(target) {
+      Object.keys(this.fieldValues).forEach(value => {
+        this.fieldValues[value] = target
+      })
     }
   }
 }

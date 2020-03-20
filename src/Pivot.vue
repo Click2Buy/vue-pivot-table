@@ -18,7 +18,12 @@
           @start="start"
           @end="end">
           <div v-for="key in internal.availableFieldKeys" :key="key" class="field">
-            <field-label :field="fieldsWithValues[key]" v-model="fieldValues[key]" variant="secondary">
+            <field-label
+              :field="fieldsWithValues[key]"
+              v-model="fieldValues[key]"
+              :select-all-text="selectAllText"
+              :unselect-all-text="unselectAllText"
+              variant="secondary">
               <!-- pass down scoped slots -->
               <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
             </field-label>
@@ -47,7 +52,11 @@
           @start="start"
           @end="end">
           <div v-for="key in internal.colFieldKeys" :key="key" class="field">
-            <field-label :field="fieldsWithValues[key]" v-model="fieldValues[key]">
+            <field-label
+              :field="fieldsWithValues[key]"
+              v-model="fieldValues[key]"
+              :select-all-text="selectAllText"
+              :unselect-all-text="unselectAllText">
               <!-- pass down scoped slots -->
               <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
             </field-label>
@@ -68,7 +77,11 @@
             @start="start"
             @end="end">
             <div v-for="key in internal.rowFieldKeys" :key="key" class="field">
-              <field-label :field="fieldsWithValues[key]" v-model="fieldValues[key]">
+              <field-label
+                :field="fieldsWithValues[key]"
+                v-model="fieldValues[key]"
+                :select-all-text="selectAllText"
+                :unselect-all-text="unselectAllText">
                 <!-- pass down scoped slots -->
                 <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
               </field-label>
@@ -149,6 +162,14 @@ export default {
     noDataWarningText: {
       type: String,
       default: 'No data to display.'
+    },
+    selectAllText: {
+      type: String,
+      default: 'Select all'
+    },
+    unselectAllText: {
+      type: String,
+      default: 'Unselect all'
     },
     isDataLoading: {
       type: Boolean,

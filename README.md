@@ -131,6 +131,8 @@ Property | Type | Default | Description
 `cols-label-text` | `String` | `'Columns'` | Text for the columns drag area
 `hide-settings-text` | `String` | `'Hide settings'` | Text for the "hide settings" button
 `show-settings-text` | `String` | `'Show settings'` | Text for the "show settings" button
+`select-all-text` | `String` | `'Select all'` | Text for the "Select all" button in the dropdown value filter
+`unselect-all-text` | `String` | `'Unselect all'` | Text for the "Unselect all" button in the dropdown value filter
 
 ##### `fields` element format
 
