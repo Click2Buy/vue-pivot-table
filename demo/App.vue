@@ -6,7 +6,7 @@
 
     <div class="mb-5">
       <pivot
-        :data="data"
+        :data="asyncData"
         :fields="fields"
         :available-field-keys="availableFieldKeys"
         :row-field-keys="rowFieldKeys"

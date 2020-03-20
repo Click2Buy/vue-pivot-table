@@ -18,7 +18,10 @@
           @start="start"
           @end="end">
           <div v-for="key in internal.availableFieldKeys" :key="key" class="field">
-            <field-label :field="fieldFromKey(key)" variant="secondary" />
+            <field-label :field="fieldsWithValues[key]" v-model="fieldValues[key]" variant="secondary">
+              <!-- pass down scoped slots -->
+              <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
+            </field-label>
           </div>
         </draggable>
       </div>
@@ -44,7 +47,7 @@
           @start="start"
           @end="end">
           <div v-for="key in internal.colFieldKeys" :key="key" class="field">
-            <field-label :field="fieldFromKey(key)">
+            <field-label :field="fieldsWithValues[key]" v-model="fieldValues[key]">
               <!-- pass down scoped slots -->
               <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
             </field-label>
@@ -65,7 +68,7 @@
             @start="start"
             @end="end">
             <div v-for="key in internal.rowFieldKeys" :key="key" class="field">
-              <field-label :field="fieldFromKey(key)">
+              <field-label :field="fieldsWithValues[key]" v-model="fieldValues[key]">
                 <!-- pass down scoped slots -->
                 <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
               </field-label>
@@ -153,46 +156,69 @@ export default {
     }
   },
   data: function() {
-    const fields = this.fields
-    const valueFilterableFields = fields.filter(field => field.valueFilter)
-
-    // If at least one field has valueFilter, get values from data
-    if (valueFilterableFields.length > 0) {
-      // Create new set for each field with value filter
-      valueFilterableFields.forEach(field => {
-        field.valuesSet = new Set()
-      })
-
-      // Iterate on data once
-      this.data.forEach(item => {
-        valueFilterableFields.forEach(field => {
-          field.valuesSet.add(field.getter(item))
-        })
-      })
-
-      // Create object with checked boolean for each value
-      valueFilterableFields.forEach(field => {
-        const values = []
-        Array.from(field.valuesSet).sort(field.sort || naturalSort).forEach(value => {
-          values.push({ label: value, checked: true })
-        })
-
-        this.$set(field, 'values', values)
-      })
-    }
+    const fieldValues = {}
+    this.fields.filter(field => field.valueFilter).forEach(field => {
+      fieldValues[field.key] = {}
+    })
 
     return {
       internal: {
-        fields,
         availableFieldKeys: this.availableFieldKeys,
         rowFieldKeys: this.rowFieldKeys,
         colFieldKeys: this.colFieldKeys
       },
+      fieldValues,
       dragging: false,
       showSettings: true
     }
   },
   computed: {
+    // Fields with values extracted from data (if field has valueFilter)
+    fieldsWithValues: function() {
+      // Create object: field.key => field
+      const fieldsWithValues = {}
+
+      this.fields.forEach(field => {
+        fieldsWithValues[field.key] = field
+      })
+
+      // Add valuesSet
+      const valueFilterableFields = this.fields.filter(field => field.valueFilter)
+
+      // Create valuesSet for each value filterable field
+      valueFilterableFields.forEach(field => {
+        fieldsWithValues[field.key].valuesSet = new Set()
+      })
+
+      // Iterate on data once
+      this.data.forEach(item => {
+        valueFilterableFields.forEach(field => {
+          fieldsWithValues[field.key].valuesSet.add(field.getter(item))
+        })
+      })
+
+      // Creates values sorted from valuesSet
+      valueFilterableFields.forEach(field => {
+        fieldsWithValues[field.key].values = Array.from(fieldsWithValues[field.key].valuesSet).sort(field.sort || naturalSort)
+      })
+
+      return fieldsWithValues
+    },
+    // Fields selected values as set
+    fieldsSelectedValues: function() {
+      const fieldsSelectedValues = {}
+
+      for (let [key, valuesObject] of Object.entries(this.fieldValues)) {
+        fieldsSelectedValues[key] = new Set()
+        for (let [value, checked] of Object.entries(valuesObject)) {
+          if (checked) {
+            fieldsSelectedValues[key].add(value)
+          }
+        }
+      }
+
+      return fieldsSelectedValues
+    },
     // Pivot table props from Pivot props & data
     rowFields: function() {
       const rowFields = []
@@ -233,16 +259,12 @@ export default {
         // Remove items with unchecked values from value filters
         let remove = false
 
-        // TODO: optimize this (stop loop when found? build shared Sets before?)
-        this.internal.fields.forEach(field => {
+        // TODO: optimize this (stop loop when found?)
+        this.fields.forEach(field => {
           if (field.valueFilter) {
-            const selectedValuesSet = new Set()
-            field.values.forEach(value => {
-              if (value.checked) {
-                selectedValuesSet.add(value.label)
-              }
-            })
-            if (!selectedValuesSet.has(field.getter(item))) {
+            const value = field.getter(item)
+            const valueString = value ? value.toString() : 'undefined' // TODO: avoid values stringification (replace fieldValues hashes with arrays)
+            if (!this.fieldsSelectedValues[field.key].has(valueString)) {
               remove = true
             }
           }
@@ -262,10 +284,6 @@ export default {
     }
   },
   methods: {
-    // Get a field from its key
-    fieldFromKey: function(key) {
-      return this.internal.fields.find(field => field.key === key)
-    },
     // Toggle settings
     toggleShowSettings: function() {
       this.showSettings = !this.showSettings
@@ -276,11 +294,29 @@ export default {
     },
     end: function() {
       this.dragging = false
+    },
+    // Update fieldValues
+    updateFieldValues: function() {
+      for (let [key, field] of Object.entries(this.fieldsWithValues)) {
+        if (field.valueFilter) {
+          field.valuesSet.forEach(value => {
+            this.$set(this.fieldValues[key], value, true)
+          })
+        }
+      }
     }
   },
   created: function() {
     // TODO: check if field keys are correctly set/without duplicates
     this.showSettings = this.defaultShowSettings
+  },
+  watch: {
+    data: function() {
+      this.updateFieldValues()
+    }
+  },
+  created: function() {
+    this.updateFieldValues()
   }
 }
 </script>
