@@ -15,6 +15,7 @@
           v-model="internal.availableFieldKeys"
           class="d-flex flex-row gutter-sm drag-area-zone"
           group="fields"
+          handle=".btn-draggable"
           @start="start"
           @end="end">
           <div v-for="key in internal.availableFieldKeys" :key="key" class="field">
@@ -49,6 +50,7 @@
           v-model="internal.colFieldKeys"
           class="d-flex flex-row gutter-sm drag-area-zone"
           group="fields"
+          handle=".btn-draggable"
           @start="start"
           @end="end">
           <div v-for="key in internal.colFieldKeys" :key="key" class="field">
@@ -74,6 +76,7 @@
             v-model="internal.rowFieldKeys"
             class="d-flex flex-column align-items-start gutter-sm drag-area-zone"
             group="fields"
+            handle=".btn-draggable"
             @start="start"
             @end="end">
             <div v-for="key in internal.rowFieldKeys" :key="key" class="field">
