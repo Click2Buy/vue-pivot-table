@@ -224,6 +224,7 @@
 import HashTable from './HashTable'
 import { firstBy } from 'thenby'
 import naturalSort from 'javascript-natural-sort'
+import { cloneDeep } from 'lodash'
 
 export default {
   props: {
@@ -258,8 +259,8 @@ export default {
       rows: [],
       cols: [],
       // Note: we don't use the rowFields/colFields props directly to trigger table render when `computeData` has finished
-      internalRowFields: this.rowFields,
-      internalColFields: this.colFields,
+      internalRowFields: [],
+      internalColFields: [],
       isDataComputing: false,
       computeDataInterval: null
     }
@@ -422,8 +423,8 @@ export default {
           valuesHashTable.set(key, this.reducer(previousValue, item))
         })
 
-        this.internalRowFields = this.rowFields
-        this.internalColFields = this.colFields
+        this.internalRowFields = cloneDeep(this.rowFields)
+        this.internalColFields = cloneDeep(this.colFields)
         this.rows = rows
         this.cols = cols
         this.valuesHashTable = valuesHashTable
