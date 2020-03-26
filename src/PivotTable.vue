@@ -230,15 +230,15 @@ export default {
   props: {
     data: {
       type: Array,
-      default: []
+      default: () => []
     },
     rowFields: {
       type: Array,
-      default: []
+      default: () => []
     },
     colFields: {
       type: Array,
-      default: []
+      default: () => []
     },
     reducer: {
       type: Function,

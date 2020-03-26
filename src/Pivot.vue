@@ -116,23 +116,23 @@ export default {
   props: {
     data: {
       type: Array,
-      default: []
+      default: () => []
     },
     fields: {
       type: Array,
-      default: []
+      default: () => []
     },
     availableFieldKeys: {
       type: Array,
-      default: []
+      default: () => []
     },
     rowFieldKeys: {
       type: Array,
-      default: []
+      default: () => []
     },
     colFieldKeys: {
       type: Array,
-      default: []
+      default: () => []
     },
     reducer: {
       type: Function,
