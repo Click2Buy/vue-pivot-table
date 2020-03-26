@@ -42,10 +42,10 @@
                   <th
                     v-for="(col, colIndex) in sortedCols"
                     :key="JSON.stringify(col)"
-                    :colspan="spanSize('col', sortedCols, colIndex, colFieldIndex)"
-                    v-if="spanSize('col', sortedCols, colIndex, colFieldIndex) !== 0"
+                    :colspan="spanSize(sortedCols, colIndex, colFieldIndex)"
+                    v-if="spanSize(sortedCols, colIndex, colFieldIndex) !== 0"
                     >
-                    <slot :name="headerSlotName" v-bind:value="col[`col-${colFieldIndex}`]">
+                    <slot :name="headerSlotName" v-bind:value="col[colFieldIndex]">
                       Missing slot <code>{{ headerSlotName }}</code>
                     </slot>
                   </th>
@@ -69,14 +69,14 @@
                 <th
                   v-for="(col, colIndex) in sortedCols"
                   :key="JSON.stringify(col)"
-                  :colspan="spanSize('col', sortedCols, colIndex, colFieldIndex)"
-                  v-if="spanSize('col', sortedCols, colIndex, colFieldIndex) !== 0"
+                  :colspan="spanSize(sortedCols, colIndex, colFieldIndex)"
+                  v-if="spanSize(sortedCols, colIndex, colFieldIndex) !== 0"
                   >
-                  <slot v-if="colField.headerSlotName" :name="colField.headerSlotName" v-bind:value="col[`col-${colFieldIndex}`]">
+                  <slot v-if="colField.headerSlotName" :name="colField.headerSlotName" v-bind:value="col[colFieldIndex]">
                     Missing slot <code>{{ colField.headerSlotName }}</code>
                   </slot>
                   <template v-else>
-                    {{ col[`col-${colFieldIndex}`] }}
+                    {{ col[colFieldIndex] }}
                   </template>
                 </th>
                 <!-- Top right dead zone -->
@@ -95,25 +95,25 @@
               <!-- Row headers -->
               <template
                 v-for="(rowField, rowFieldIndex) in internalRowFields"
-                v-if="(rowField.showHeader === undefined || rowField.showHeader) && spanSize('row', sortedRows, rowIndex, rowFieldIndex) !== 0"
+                v-if="(rowField.showHeader === undefined || rowField.showHeader) && spanSize(sortedRows, rowIndex, rowFieldIndex) !== 0"
                 >
                 <!-- Multiple slots -->
                 <template v-if="rowField.headerSlotNames">
                   <th
                     v-for="headerSlotName in rowField.headerSlotNames"
-                    :rowspan="spanSize('row', sortedRows, rowIndex, rowFieldIndex)">
-                    <slot :name="headerSlotName" v-bind:value="row[`row-${rowFieldIndex}`]">
+                    :rowspan="spanSize(sortedRows, rowIndex, rowFieldIndex)">
+                    <slot :name="headerSlotName" v-bind:value="row[rowFieldIndex]">
                       Missing slot <code>{{ headerSlotName }}</code>
                     </slot>
                   </th>
                 </template>
                 <!-- Single slot/no slot -->
-                <th v-else :rowspan="spanSize('row', sortedRows, rowIndex, rowFieldIndex)">
-                  <slot v-if="rowField.headerSlotName" :name="rowField.headerSlotName" v-bind:value="row[`row-${rowFieldIndex}`]">
+                <th v-else :rowspan="spanSize(sortedRows, rowIndex, rowFieldIndex)">
+                  <slot v-if="rowField.headerSlotName" :name="rowField.headerSlotName" v-bind:value="row[rowFieldIndex]">
                     Missing slot <code>{{ rowField.headerSlotName }}</code>
                   </slot>
                   <template v-else>
-                    {{ row[`row-${rowFieldIndex}`] }}
+                    {{ row[rowFieldIndex] }}
                   </template>
                 </th>
               </template>
@@ -129,25 +129,25 @@
               <!-- Row footers (if slots are provided) -->
               <template
                 v-for="(rowField, rowFieldIndex) in internalRowFieldsReverse"
-                v-if="rowField.showFooter && spanSize('row', rows, rowIndex, internalRowFields.length - rowFieldIndex - 1) !== 0"
+                v-if="rowField.showFooter && spanSize(rows, rowIndex, internalRowFields.length - rowFieldIndex - 1) !== 0"
                 >
                 <!-- Multiple slots -->
                 <template v-if="rowField.footerSlotNames">
                   <th
                     v-for="footerSlotName in rowField.footerSlotNames"
-                    :rowspan="spanSize('row', rows, rowIndex, internalRowFields.length - rowFieldIndex - 1)">
-                    <slot :name="footerSlotName" v-bind:value="row[`row-${internalRowFields.length - rowFieldIndex - 1}`]">
+                    :rowspan="spanSize(rows, rowIndex, internalRowFields.length - rowFieldIndex - 1)">
+                    <slot :name="footerSlotName" v-bind:value="row[internalRowFields.length - rowFieldIndex - 1]">
                       Missing slot <code>{{ footerSlotName }}</code>
                     </slot>
                   </th>
                 </template>
                 <!-- Single slot/no slot -->
-                <th v-else :rowspan="spanSize('row', rows, rowIndex, internalRowFields.length - rowFieldIndex - 1)">
-                  <slot v-if="rowField.footerSlotName" :name="rowField.footerSlotName" v-bind:value="row[`row-${internalRowFields.length - rowFieldIndex - 1}`]">
+                <th v-else :rowspan="spanSize(rows, rowIndex, internalRowFields.length - rowFieldIndex - 1)">
+                  <slot v-if="rowField.footerSlotName" :name="rowField.footerSlotName" v-bind:value="row[internalRowFields.length - rowFieldIndex - 1]">
                     Missing slot <code>{{ rowField.footerSlotName }}</code>
                   </slot>
                   <template v-else>
-                    {{ row[`row-${internalRowFields.length - rowFieldIndex - 1}`] }}
+                    {{ row[internalRowFields.length - rowFieldIndex - 1] }}
                   </template>
                 </th>
               </template>
@@ -171,9 +171,9 @@
                   <th
                     v-for="(col, colIndex) in sortedCols"
                     :key="JSON.stringify(col)"
-                    :colspan="spanSize('col', sortedCols, colIndex, internalColFields.length - colFieldIndex - 1)"
-                    v-if="spanSize('col', sortedCols, colIndex, internalColFields.length - colFieldIndex - 1) !== 0">
-                    <slot :name="footerSlotName" v-bind:value="col[`col-${internalColFields.length - colFieldIndex - 1}`]">
+                    :colspan="spanSize(sortedCols, colIndex, internalColFields.length - colFieldIndex - 1)"
+                    v-if="spanSize(sortedCols, colIndex, internalColFields.length - colFieldIndex - 1) !== 0">
+                    <slot :name="footerSlotName" v-bind:value="col[internalColFields.length - colFieldIndex - 1]">
                       Missing slot <code>{{ footerSlotName }}</code>
                     </slot>
                   </th>
@@ -196,13 +196,13 @@
                 <th
                   v-for="(col, colIndex) in sortedCols"
                   :key="JSON.stringify(col)"
-                  :colspan="spanSize('col', sortedCols, colIndex, internalColFields.length - colFieldIndex - 1)"
-                  v-if="spanSize('col', sortedCols, colIndex, internalColFields.length - colFieldIndex - 1) !== 0">
-                  <slot v-if="colField.footerSlotName" :name="colField.footerSlotName" v-bind:value="col[`col-${internalColFields.length - colFieldIndex - 1}`]">
+                  :colspan="spanSize(sortedCols, colIndex, internalColFields.length - colFieldIndex - 1)"
+                  v-if="spanSize(sortedCols, colIndex, internalColFields.length - colFieldIndex - 1) !== 0">
+                  <slot v-if="colField.footerSlotName" :name="colField.footerSlotName" v-bind:value="col[internalColFields.length - colFieldIndex - 1]">
                     Missing slot <code>{{ colField.footerSlotName }}</code>
                   </slot>
                   <template v-else>
-                    {{ col[`col-${internalColFields.length - colFieldIndex - 1}`] }}
+                    {{ col[internalColFields.length - colFieldIndex - 1] }}
                   </template>
                 </th>
                 <!-- Bottom right dead zone -->
@@ -270,9 +270,9 @@ export default {
       let composedSortFunction
       this.internalRowFields.forEach((rowField, rowFieldIndex) => {
         if (rowFieldIndex === 0) {
-          composedSortFunction = firstBy('row-0', { cmp: rowField.sort || naturalSort })
+          composedSortFunction = firstBy(0, { cmp: rowField.sort || naturalSort })
         } else {
-          composedSortFunction = composedSortFunction.thenBy(`row-${rowFieldIndex}`, { cmp: rowField.sort || naturalSort })
+          composedSortFunction = composedSortFunction.thenBy(rowFieldIndex, { cmp: rowField.sort || naturalSort })
         }
       })
 
@@ -282,9 +282,9 @@ export default {
       let composedSortFunction
       this.internalColFields.forEach((colField, colFieldIndex) => {
         if (colFieldIndex === 0) {
-          composedSortFunction = firstBy('col-0', { cmp: colField.sort || naturalSort })
+          composedSortFunction = firstBy(0, { cmp: colField.sort || naturalSort })
         } else {
-          composedSortFunction = composedSortFunction.thenBy(`col-${colFieldIndex}`, { cmp: colField.sort || naturalSort })
+          composedSortFunction = composedSortFunction.thenBy(colFieldIndex, { cmp: colField.sort || naturalSort })
         }
       })
 
@@ -353,16 +353,16 @@ export default {
   methods: {
     // Get value from valuesHashTable
     value: function(row, col) {
-      return this.valuesHashTable.get({...row, ...col}) || 0
+      return this.valuesHashTable.get([...row, ...col]) || 0
     },
     // Get colspan/rowspan size
-    spanSize: function(type, values, valueIndex, fieldIndex) {
+    spanSize: function(values, valueIndex, fieldIndex) {
       // If left value === current value
       // and top value === 0 (= still in the same top bracket)
       // The left td will take care of the display
       if (valueIndex > 0 &&
-        values[valueIndex - 1][`${type}-${fieldIndex}`] === values[valueIndex][`${type}-${fieldIndex}`] &&
-        (fieldIndex === 0 || (this.spanSize(type, values, valueIndex, fieldIndex - 1) === 0))) {
+        values[valueIndex - 1][fieldIndex] === values[valueIndex][fieldIndex] &&
+        (fieldIndex === 0 || (this.spanSize(values, valueIndex, fieldIndex - 1) === 0))) {
         return 0
       }
 
@@ -371,8 +371,8 @@ export default {
       let size = 1
       let i = valueIndex
       while (i + 1 < values.length &&
-        values[i + 1][`${type}-${fieldIndex}`] === values[i][`${type}-${fieldIndex}`] &&
-        (fieldIndex === 0 || (i + 1 < values.length && this.spanSize(type, values, i + 1, fieldIndex - 1) === 0))) {
+        values[i + 1][fieldIndex] === values[i][fieldIndex] &&
+        (fieldIndex === 0 || (i + 1 < values.length && this.spanSize(values, i + 1, fieldIndex - 1) === 0))) {
         i++
         size++
       }
@@ -392,30 +392,30 @@ export default {
 
         this.data.forEach(item => {
           // Update rows/cols
-          const rowKey = {}
-          this.rowFields.forEach((field, index) => {
-            rowKey[`row-${index}`] = field.getter(item)
+          const rowKey = []
+          this.rowFields.forEach(field => {
+            rowKey.push(field.getter(item))
           })
 
           if (!rows.some(row => {
-            return this.rowFields.every((rowField, index) => row[`row-${index}`] === rowKey[`row-${index}`])
+            return this.rowFields.every((rowField, index) => row[index] === rowKey[index])
           })) {
             rows.push(rowKey)
           }
 
-          const colKey = {}
-          this.colFields.forEach((field, index) => {
-            colKey[`col-${index}`] = field.getter(item)
+          const colKey = []
+          this.colFields.forEach(field => {
+            colKey.push(field.getter(item))
           })
 
           if (!cols.some(col => {
-            return this.colFields.every((colField, index) => col[`col-${index}`] === colKey[`col-${index}`])
+            return this.colFields.every((colField, index) => col[index] === colKey[index])
           })) {
             cols.push(colKey)
           }
 
           // Update valuesHashTable
-          const key = { ...rowKey, ...colKey }
+          const key = [ ...rowKey, ...colKey ]
 
           const previousValue = valuesHashTable.get(key) || 0
 
