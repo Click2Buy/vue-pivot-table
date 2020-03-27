@@ -167,9 +167,17 @@ Slot Name | Description | Scope
 ----------|-------------|------
 `<field header slot name>` | Table header content for a field, referenced from the `field` `headerSlotName` property | `{ value }`
 `<field value filter slot name>` | If field `valueFilter` prop is set to `true`: content in the menu next to the checkbox | `{ value }`
-`value` | Table cell content | `{ value, col, row }`
+`value` | Table cell content | `{ value, row, col }` (see [`value` slot scope](#value-slot-scope))
 `loading` | Content displayed while `data-is-loading` prop is set to `true`
 `computing` | Content displayed while table values are being loaded
+
+##### `value` slot scope
+
+Property | Type | Description
+---------|------|------------
+`value` | `Number` | Value of the cell
+`row` | `Array` | Row values of the cell
+`col` | `Array` | Column values of the cell
 
 ### `PivotTable` component
 
@@ -190,6 +198,7 @@ Property | Type | Description
 ---------|------|------------
 `getter` | `Function` | Function to apply on an element of `data` to get the field value
 `sort` | `Function` | Optional - Function to order fields in the pivot table header ; if no value is provided, [javascript-natural-sort](https://github.com/Bill4Time/javascript-natural-sort) will be applied
+`valuesFiltered` | `Set` | Optional - A set of values to filter displayed rows/columns
 `showHeader` | `Boolean` | Optional (default: `true`) - Whether the header should be displayed in the pivot table
 `showFooter` | `Boolean` | Optional (default: `false`) - Whether the footer should be displayed in the pivot table
 `headerSlotName` | `String` | Optional - Name of the slot to use to format the header in the pivot table ; if no slot name is provided, the value will be displayed as found in data
@@ -202,9 +211,17 @@ Property | Type | Description
 Slot Name | Description | Scope
 ----------|-------------|------
 `<field header slot name>` | Table header content for a field, referenced from `row-field`/`col-field` `headerSlotName` property | `{ value }`
-`value` | Table cell content | `{ value, col, row }`
+`value` | Table cell content | `{ value, row, col }` (see [`value` slot scope](#value-slot-scope-1))
 `loading` | Content displayed while `data-is-loading` prop is set to `true`
 `computing` | Content displayed while table values are being loaded
+
+##### `value` slot scope
+
+Property | Type | Description
+---------|------|------------
+`value` | `Number` | Value of the cell
+`row` | `Array` | Row values of the cell
+`col` | `Array` | Column values of the cell
 
 ### Large datasets
 
