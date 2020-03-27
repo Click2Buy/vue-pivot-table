@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2020-03-27
 ### Changed
 - `Pivot` component `fields`, `row-fields` and `col-fields` props were replaced by a global `fields` prop and `available-field-keys`, `row-field-keys`, `col-field-keys` props to affect fields to each draggable area of the Pivot
 - Internal `rows`/`cols` now use Arrays instead of Objects with `row-${index}`/`col-${index}` keys, `valuesHashTable` keys were also updated
