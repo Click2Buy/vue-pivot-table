@@ -95,7 +95,7 @@
 
       <!-- Table -->
       <div class="flex-fill" :style="tableWrapperStyle">
-        <pivot-table :data="filteredData" :row-fields="rowFields" :col-fields="colFields" :reducer="reducer" :no-data-warning-text="noDataWarningText" :is-data-loading="isDataLoading">
+        <pivot-table :data="data" :row-fields="rowFields" :col-fields="colFields" :reducer="reducer" :no-data-warning-text="noDataWarningText" :is-data-loading="isDataLoading">
           <!-- pass down scoped slots -->
           <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
         </pivot-table>
@@ -229,19 +229,19 @@ export default {
       return fieldsWithValues
     },
     // Fields selected values as set
-    fieldsSelectedValues: function() {
-      const fieldsSelectedValues = {}
+    valuesFiltered: function() {
+      const valuesFiltered = {}
 
       for (let [key, valuesObject] of Object.entries(this.fieldValues)) {
-        fieldsSelectedValues[key] = new Set()
-        for (let [value, checked] of Object.entries(valuesObject)) {
-          if (checked) {
-            fieldsSelectedValues[key].add(value)
+        valuesFiltered[key] = new Set()
+        valuesObject.forEach(valueObject => {
+          if (valueObject.checked) {
+            valuesFiltered[key].add(valueObject.value)
           }
-        }
+        })
       }
 
-      return fieldsSelectedValues
+      return valuesFiltered
     },
     // Pivot table props from Pivot props & data
     rowFields: function() {
@@ -250,10 +250,16 @@ export default {
       this.internal.rowFieldKeys.forEach(key => {
         const field = this.fields.find(field => field.key === key)
 
+        // Generate headerSlotNames from headers
         if (field.headers) {
           field.headerSlotNames = field.headers
             .filter(header => header.checked)
             .map(header => header.slotName)
+        }
+
+        // Add selected values
+        if (field.valueFilter) {
+          field.valuesFiltered = this.valuesFiltered[field.key]
         }
 
         rowFields.push(field)
@@ -267,35 +273,22 @@ export default {
       this.internal.colFieldKeys.forEach(key => {
         const field = this.fields.find(field => field.key === key)
 
+        // Generate headerSlotNames from headers
         if (field.headers) {
           field.headerSlotNames = field.headers
             .filter(header => header.checked)
             .map(header => header.slotName)
         }
 
+        // Add selected values
+        if (field.valueFilter) {
+          field.valuesFiltered = this.valuesFiltered[field.key]
+        }
+
         colFields.push(field)
       })
 
       return colFields
-    },
-    filteredData: function() {
-      return this.data.filter(item => {
-        // Remove items with unchecked values from value filters
-        let remove = false
-
-        // TODO: optimize this (stop loop when found?)
-        this.fields.forEach(field => {
-          if (field.valueFilter) {
-            const value = field.getter(item)
-            const valueString = value ? value.toString() : 'undefined' // TODO: avoid values stringification (replace fieldValues hashes with arrays)
-            if (!this.fieldsSelectedValues[field.key].has(valueString)) {
-              remove = true
-            }
-          }
-        })
-
-        return !remove
-      })
     },
     // Drag area class
     dragAreaClass: function() {
@@ -323,8 +316,9 @@ export default {
     updateFieldValues: function() {
       for (let [key, field] of Object.entries(this.fieldsWithValues)) {
         if (field.valueFilter) {
-          field.valuesSet.forEach(value => {
-            this.$set(this.fieldValues[key], value, true)
+          this.fieldValues[key] = []
+          field.values.forEach(value => {
+            this.fieldValues[key].push({ value, checked: true })
           })
         }
       }

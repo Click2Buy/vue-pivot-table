@@ -63,19 +63,19 @@
           </template>
         </div>
         <div class="dropdown-list px-4 py-2">
-          <div v-for="(value, index) in field.values" class="mb-1">
+          <div v-for="(item, index) in fieldValues" class="mb-1">
             <div class="custom-control custom-checkbox">
               <input
                 type="checkbox"
                 class="custom-control-input"
                 :id="`checkbox-${field.key}-value-${index}`"
-                v-model="fieldValues[value]">
+                v-model="item.checked">
               <label class="custom-control-label" :for="`checkbox-${field.key}-value-${index}`">
-                <slot v-if="field.valueFilterSlotName" :name="field.valueFilterSlotName" v-bind:value="value">
+                <slot v-if="field.valueFilterSlotName" :name="field.valueFilterSlotName" v-bind:value="item.value">
                   Missing slot <code>{{ field.valueFilterSlotName }}</code>
                 </slot>
                 <template v-else>
-                  {{ value }}
+                  {{ item.value }}
                 </template>
               </label>
             </div>
@@ -93,7 +93,7 @@ export default {
   },
   props: {
     fieldValues: {
-      type: Object
+      type: Array
     },
     field: {
       type: Object
@@ -119,7 +119,16 @@ export default {
       return this.field.headerAttributeFilter && this.field.headers || this.field.valueFilter
     },
     allValuesSelected: function() {
-      return !Object.values(this.fieldValues).includes(false)
+      let allValuesSelected = true
+
+      for (let valueObject of this.fieldValues) {
+        if (!valueObject.checked) {
+          allValuesSelected = false
+          break
+        }
+      }
+
+      return allValuesSelected
     }
   },
   methods: {
@@ -127,8 +136,8 @@ export default {
       this.showDropdown = !this.showDropdown
     },
     toggleAllValues: function(target) {
-      Object.keys(this.fieldValues).forEach(value => {
-        this.fieldValues[value] = target
+      this.fieldValues.forEach(valueObject => {
+        valueObject.checked = target
       })
     }
   }

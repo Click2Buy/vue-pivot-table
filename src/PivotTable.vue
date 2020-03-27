@@ -16,7 +16,7 @@
         </slot>
       </template>
 
-      <div v-if="data.length === 0" class="alert alert-warning" role="alert">
+      <div v-if="data.length === 0 || (rows.length === 0 && cols.length === 0)" class="alert alert-warning" role="alert">
         {{ noDataWarningText }}
       </div>
 
@@ -224,7 +224,7 @@
 import HashTable from './HashTable'
 import { firstBy } from 'thenby'
 import naturalSort from 'javascript-natural-sort'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEqual } from 'lodash'
 
 export default {
   props: {
@@ -258,11 +258,11 @@ export default {
       valuesHashTable: null,
       rows: [],
       cols: [],
-      // Note: we don't use the rowFields/colFields props directly to trigger table render when `computeData` has finished
+      // Note: we don't use directly rowFields/colFields props to trigger table render when `updateValues` has finished
       internalRowFields: [],
       internalColFields: [],
       isDataComputing: false,
-      computeDataInterval: null
+      computingInterval: null
     }
   },
   computed: {
@@ -291,9 +291,13 @@ export default {
 
       return [...this.cols].sort(composedSortFunction)
     },
-    // Compound property for watch single callback
+    // Property to watch specific field changes
     fields: function() {
-      return [this.colFields, this.rowFields]
+      return [
+        [this.colFields, this.rowFields],
+        [this.colFields.map(field => field.headerSlotNames), this.rowFields.map(field => field.headerSlotNames)],
+        [this.colFields.map(field => field.valuesFiltered), this.rowFields.map(field => field.valuesFiltered)]
+      ]
     },
     // Reversed props for footer iterators
     internalRowFieldsReverse: function() {
@@ -380,68 +384,102 @@ export default {
 
       return size
     },
-    // Called when fields have changed => recompute cols/rows/values
-    computeData: function() {
+    // Update rows/cols/valuesHashTable (optional)
+    // @param {boolean} updateValuesHashTable
+    updateValues: function(updateValuesHashTable = true) {
       this.isDataComputing = true
 
       // Start a task to avoid blocking the page
-      clearInterval(this.computeDataInterval)
-      this.computeDataInterval = setTimeout(() => {
+      clearInterval(this.computingInterval)
+      this.computingInterval = setTimeout(() => {
         const rows = []
         const cols = []
         const valuesHashTable = new HashTable()
 
-        this.data.forEach(item => {
-          // Update rows/cols
-          const rowKey = []
-          this.rowFields.forEach(field => {
-            rowKey.push(field.getter(item))
-          })
+        const fields = [...this.rowFields, ...this.colFields]
 
-          if (!rows.some(row => {
-            return this.rowFields.every((rowField, index) => row[index] === rowKey[index])
-          })) {
-            rows.push(rowKey)
+        this.data.forEach(item => {
+          const rowKey = []
+          const colKey = []
+          let filtered = false
+
+          // Check if item passes fields value filters
+          for (let field of fields) {
+            if (field.valuesFiltered && !field.valuesFiltered.has(field.getter(item))) {
+              filtered = true
+              break
+            }
           }
 
-          const colKey = []
-          this.colFields.forEach(field => {
-            colKey.push(field.getter(item))
-          })
+          // Build item rowKey/colKey if necessary
+          if (!filtered || updateValuesHashTable) {
+            this.rowFields.forEach(field => {
+              rowKey.push(field.getter(item))
+            })
 
-          if (!cols.some(col => {
-            return this.colFields.every((colField, index) => col[index] === colKey[index])
-          })) {
-            cols.push(colKey)
+            this.colFields.forEach(field => {
+              colKey.push(field.getter(item))
+            })
+          }
+
+          // Update rows/cols
+          if (!filtered) {
+            if (!rows.some(row => {
+              return this.rowFields.every((rowField, index) => row[index] === rowKey[index])
+            })) {
+              rows.push(rowKey)
+            }
+
+            if (!cols.some(col => {
+              return this.colFields.every((colField, index) => col[index] === colKey[index])
+            })) {
+              cols.push(colKey)
+            }
           }
 
           // Update valuesHashTable
-          const key = [ ...rowKey, ...colKey ]
+          if (updateValuesHashTable) {
+            const key = [ ...rowKey, ...colKey ]
 
-          const previousValue = valuesHashTable.get(key) || 0
+            const previousValue = valuesHashTable.get(key) || 0
 
-          valuesHashTable.set(key, this.reducer(previousValue, item))
+            valuesHashTable.set(key, this.reducer(previousValue, item))
+          }
         })
 
-        this.internalRowFields = cloneDeep(this.rowFields)
-        this.internalColFields = cloneDeep(this.colFields)
         this.rows = rows
         this.cols = cols
-        this.valuesHashTable = valuesHashTable
+        if (updateValuesHashTable) this.valuesHashTable = valuesHashTable
         this.isDataComputing = false
+        this.updateInternalFields()
       }, 0)
+    },
+    // Update internal fields only
+    updateInternalFields: function() {
+      this.internalRowFields = cloneDeep(this.rowFields)
+      this.internalColFields = cloneDeep(this.colFields)
     }
   },
   watch: {
-    fields: function() {
-      this.computeData()
+    // Check if fields changed
+    fields: function(val, oldVal) {
+      if (!isEqual(val[0], oldVal[0])) {
+        // Fields were moved
+        this.updateValues()
+      } else if (!isEqual(val[1], oldVal[1])) {
+        // Field header value filters changed
+        this.updateInternalFields()
+      } else if (!isEqual(val[2], oldVal[2])) {
+        // Field header slot names changed
+        this.updateValues(false)
+      }
     },
     data: function() {
-      this.computeData()
+      this.updateValues()
     }
   },
   created: function() {
-    this.computeData()
+    this.updateValues()
   }
 }
 </script>
