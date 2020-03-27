@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Pivot`: dropdown on fields to allow user configuration:
   - Field header attributes filter
   - Field values filter
+- `Pivot` field label slot
 
 ## [0.3.0] - 2020-02-19
 ### Added

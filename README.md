@@ -140,6 +140,7 @@ Property | Type | Description
 ---------|------|------------
 `key` | `String` | A unique string value to identify the field
 `label` | `String` | Text to display in the draggable element
+`labelSlotName` | `String` | Optional - Name of the slot to use to format the label content
 `getter` | `Function` | Function to apply on an element of `data` to get the field value
 `sort` | `Function` | Optional - Function to order fields in the pivot table header ; if no value is provided, [javascript-natural-sort](https://github.com/Bill4Time/javascript-natural-sort) will be applied
 `showHeader` | `Boolean` | Optional (default: `true`) - Whether the header should be displayed in the pivot table
@@ -165,6 +166,7 @@ Property | Type | Description
 
 Slot Name | Description | Scope
 ----------|-------------|------
+`<field label slot name>` | Content displayed in the field draggable label
 `<field header slot name>` | Table header content for a field, referenced from the `field` `headerSlotName` property | `{ value }`
 `<field value filter slot name>` | If field `valueFilter` prop is set to `true`: content in the menu next to the checkbox | `{ value }`
 `value` | Table cell content | `{ value, row, col }` (see [`value` slot scope](#value-slot-scope))
