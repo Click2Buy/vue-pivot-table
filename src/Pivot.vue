@@ -13,7 +13,7 @@
         <div class="drag-area-title mb-3">{{ availableFieldsLabelText }}</div>
         <draggable
           v-model="internal.availableFieldKeys"
-          class="d-flex flex-row gutter-sm drag-area-zone"
+          class="d-flex row gutter-sm drag-area-zone"
           group="fields"
           handle=".btn-draggable"
           @start="start"
@@ -48,7 +48,7 @@
         <div class="drag-area-title mb-3">{{ colsLabelText }}</div>
         <draggable
           v-model="internal.colFieldKeys"
-          class="d-flex flex-row gutter-sm drag-area-zone"
+          class="d-flex row gutter-sm drag-area-zone"
           group="fields"
           handle=".btn-draggable"
           @start="start"
