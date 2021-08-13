@@ -21,7 +21,8 @@
     "build-lib": "npm run build-lib:library && npm run build-lib:plugin",
     "build-lib:library": "vue-cli-service build --target lib --name vuePivotTable --filename vue-pivot-table src/library-entry.js --dest library-dist/",
     "build-lib:plugin": "vue-cli-service build --target lib --name vuePivotTable --filename vue-pivot-table src/library-plugin.js --dest plugin-dist/",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "eslint:github-action": "eslint --output-file eslint_report.json --format json src --ext .js,.vue"
   },
   "dependencies": {
     "core-js": "^3.6.5",

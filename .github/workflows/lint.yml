@@ -1,0 +1,44 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  eslint:
+    name: Run ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Node.JS 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: "10.x"
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-${{ env.cache-name }}-
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+      - name: Install Node Dependencies
+        run: npm install
+        env:
+          CI: TRUE
+      - name: Install vue plugin eslint
+        run: npm install eslint-plugin-vue@latest --save-dev
+      - name: Test Code Linting
+        run: npm run eslint:github-action
+        # Continue to the next step even if this fails
+        continue-on-error: true
+      - name: Annotate Code Linting Results
+        uses: ataylorme/eslint-annotate-action@1.1.2
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          report-json: "eslint_report.json"
+        continue-on-error: true
+      - name: Upload ESLint report
+        uses: actions/upload-artifact@v1
+        with:
+          name: eslint_report.json
+          path: eslint_report.json
