@@ -1,49 +1,46 @@
 {
-  "name": "@marketconnect/vue-pivot-table",
+  "name": "@click2buy/vue-pivot-table",
   "description": "A vue component for pivot table",
   "private": false,
-  "version": "1.0.0",
-  "author": "MarketConnect",
+  "version": "1.1.0",
+  "author": "Click2Buy",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MarketConnect/vue-pivot-table"
+    "url": "https://github.com/Click2Buy/vue-pivot-table"
   },
-  "main": "dist/vue-pivot-table.js",
+  "main": "library-dist/vue-pivot-table.common.js",
+  "files": [
+    "library-dist",
+    "plugin-dist",
+    "src"
+  ],
   "scripts": {
-    "dev": "webpack-dev-server --progress",
-    "build": "npm run build:lib & npm run build:browser",
-    "build:lib": "webpack --env.prod --progress --hide-modules",
-    "build:browser": "webpack --env.prod --env.browser --progress --hide-modules"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "build-lib": "npm run build-lib:library && npm run build-lib:plugin",
+    "build-lib:library": "vue-cli-service build --target lib --name vuePivotTable --filename vue-pivot-table src/library-entry.js --dest library-dist/",
+    "build-lib:plugin": "vue-cli-service build --target lib --name vuePivotTable --filename vue-pivot-table src/library-plugin.js --dest plugin-dist/",
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "vue": "^2.6.10",
-    "vuedraggable": "^2.23.2"
+    "core-js": "^3.6.5",
+    "vue": "^2.6.11",
+    "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/plugin-transform-runtime": "^7.6.2",
-    "@babel/preset-env": "^7.6.3",
-    "@babel/runtime": "^7.6.3",
-    "autoprefixer": "^9.6.4",
-    "babel-loader": "^8.0.6",
-    "bootstrap": "^4.3.1",
-    "css-loader": "^0.28.7",
-    "flag-icon-css": "^3.4.6",
-    "friendly-errors-webpack-plugin": "^1.7.0",
-    "html-webpack-plugin": "^3.2.0",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "babel-eslint": "^10.1.0",
+    "bootstrap": "^4.6.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
     "javascript-natural-sort": "^0.7.1",
-    "lodash": "^4.17.15",
-    "node-sass": "^4.12.0",
-    "postcss-loader": "^2.1.6",
-    "sass-loader": "^7.3.1",
-    "svg-url-loader": "^4.0.0",
-    "thenby": "^1.3.0",
-    "vue-loader": "^15.7.1",
-    "vue-template-compiler": "^2.6.10",
-    "webpack": "^4.41.1",
-    "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.8.2",
-    "webpack-merge": "^4.2.2"
+    "lodash": "^4.17.21",
+    "sass": "^1.26.5",
+    "sass-loader": "^8.0.2",
+    "thenby": "^1.3.4",
+    "vue-template-compiler": "^2.6.11"
   }
 }

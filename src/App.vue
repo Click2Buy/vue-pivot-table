@@ -18,7 +18,7 @@
           {{ value | number }}
         </template>
         <template v-slot:countryFlagHeader="{ value }">
-          <span :class="`flag-icon flag-icon-${countryCode(value)}`"></span>
+          {{ countryEmoji(value) }}
         </template>
         <template v-slot:countryNameHeader="{ value }">
           {{ value | capitalize }}
@@ -54,7 +54,7 @@
           {{ value | number }}
         </template>
         <template v-slot:countryFlagHeader="{ value }">
-          <span :class="`flag-icon flag-icon-${countryCode(value)}`"></span>
+          {{ countryEmoji(value) }}
         </template>
         <template v-slot:countryNameHeader="{ value }">
           {{ value | capitalize }}
@@ -84,10 +84,9 @@
 </template>
 
 <script>
-import Pivot from '../src/Pivot'
-import PivotTable from '../src/PivotTable'
+import Pivot from './components/Pivot'
+import PivotTable from './components/PivotTable'
 import data from './data'
-import 'flag-icon-css/css/flag-icon.css'
 
 export default {
   name: 'app',
@@ -163,6 +162,14 @@ export default {
         case 'United States':
           return 'us'
       }
+    },
+    countryEmoji: function(country) {
+      const countryCode = this.countryCode(country)
+      const codePoints = countryCode
+        .toUpperCase()
+        .split('')
+        .map(char =>  127397 + char.charCodeAt())
+      return String.fromCodePoint(...codePoints)
     }
   },
   created: function() {

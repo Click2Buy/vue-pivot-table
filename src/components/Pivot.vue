@@ -324,16 +324,13 @@ export default {
       }
     }
   },
-  created: function() {
-    // TODO: check if field keys are correctly set/without duplicates
-    this.showSettings = this.defaultShowSettings
-  },
   watch: {
     data: function() {
       this.updateFieldValues()
     }
   },
   created: function() {
+    this.showSettings = this.defaultShowSettings
     this.updateFieldValues()
   }
 }

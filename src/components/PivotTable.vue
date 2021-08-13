@@ -221,7 +221,7 @@
 </template>
 
 <script>
-import HashTable from './HashTable'
+import HashTable from '../HashTable'
 import { firstBy } from 'thenby'
 import naturalSort from 'javascript-natural-sort'
 import { cloneDeep, isEqual } from 'lodash'

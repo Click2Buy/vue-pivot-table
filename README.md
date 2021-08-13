@@ -1,13 +1,13 @@
 # vue-pivot-table
 A vue component for pivot table
 
-![vue-pivot-table screenshot](https://raw.githubusercontent.com/MarketConnect/vue-pivot-table/master/screenshot.png)
+![vue-pivot-table screenshot](https://raw.githubusercontent.com/Click2Buy/vue-pivot-table/master/screenshot.png)
 
 [Live demo (jsfiddle)](https://jsfiddle.net/Owumaro/ezhp9fuc/)
 
 ## Install
 
-`npm install --save @marketconnect/vue-pivot-table`
+`npm install --save @click2buy/vue-pivot-table`
 
 ## Components
 
@@ -30,7 +30,7 @@ Vue.use(VuePivot)
 #### Javascript
 
 ```js
-import Pivot from '@marketconnect/vue-pivot-table'
+import { Pivot } from '@click2buy/vue-pivot-table'
 
 export default {
   components: { Pivot },
@@ -74,7 +74,7 @@ export default {
 #### Javascript
 
 ```js
-import PivotTable from '@marketconnect/vue-pivot-table'
+import { PivotTable } from '@click2buy/vue-pivot-table'
 
 export default {
   components: { PivotTable },
@@ -238,10 +238,10 @@ See https://vuejs.org/v2/guide/instance.html#Data-and-Methods.
 npm install
 
 # Serve with hot reload at localhost:8080
-npm run dev
+npm run serve
 
-# Build js libraries in dist folder
-npm run build
+# Build js libraries
+npm run build-lib
 ```
 
 ## Thanks
