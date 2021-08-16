@@ -78,7 +78,7 @@
                 :id="`checkbox-${field.key}-value-${index}`"
                 v-model="item.checked">
               <label class="custom-control-label" :for="`checkbox-${field.key}-value-${index}`">
-                <slot v-if="field.valueFilterSlotName" :name="field.valueFilterSlotName" v-bind:value="item.value">
+                <slot v-if="field.valueFilterSlotName" :name="field.valueFilterSlotName" :value="item.value">
                   Missing slot <code>{{ field.valueFilterSlotName }}</code>
                 </slot>
                 <template v-else>
