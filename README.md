@@ -20,7 +20,7 @@ While the `Pivot` component provides the full experience, the `PivotTable` can b
 ## Browser
 
 ```js
-Vue.use(VuePivot)
+Vue.use(vuePivotTable)
 ```
 
 ## Webpack
