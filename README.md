@@ -123,22 +123,22 @@ Property | Type | Default | Description
 `row-field-keys` | `Array` | `[]` | Keys of the fields to use as rows by default
 `col-field-keys` | `Array` | `[]` | Keys of the fields to use as columns by default
 `reducer` | `function` | `(sum, item) => sum + 1` | Function applied to reduce `data` in the pivot table
-`no-data-warning-text` | `String` | `'No data to display.'` | Text to display when `data` is empty
+`no-data-warning-text` | `String` | `'No data to display.'` | Text to display when `data` is empty
 `is-data-loading` | `Boolean` | `false` | Display a loading content instead of the table when the value is `true` (see slots for customization)
 `default-show-settings` | `Boolean` | `true` | Show settings at component creation
-`available-fields-label-text` | `String` | `'Available fields'` | Text for available fields drag area
-`rows-label-text` | `String` | `'Rows'` | Text for the rows drag area
-`cols-label-text` | `String` | `'Columns'` | Text for the columns drag area
-`hide-settings-text` | `String` | `'Hide settings'` | Text for the "hide settings" button
-`show-settings-text` | `String` | `'Show settings'` | Text for the "show settings" button
-`select-all-text` | `String` | `'Select all'` | Text for the "Select all" button in the dropdown value filter
-`unselect-all-text` | `String` | `'Unselect all'` | Text for the "Unselect all" button in the dropdown value filter
+`available-fields-label-text` | `String` | `'Available fields'` | Text for available fields drag area
+`rows-label-text` | `String` | `'Rows'` | Text for the rows drag area
+`cols-label-text` | `String` | `'Columns'` | Text for the columns drag area
+`hide-settings-text` | `String` | `'Hide settings'` | Text for the "hide settings" button
+`show-settings-text` | `String` | `'Show settings'` | Text for the "show settings" button
+`select-all-text` | `String` | `'Select all'` | Text for the "Select all" button in the dropdown value filter
+`unselect-all-text` | `String` | `'Unselect all'` | Text for the "Unselect all" button in the dropdown value filter
 
 ##### `fields` element format
 
 Property | Type | Description
 ---------|------|------------
-`key` | `String` | A unique string value to identify the field
+`key` | `String` | A unique string value to identify the field
 `label` | `String` | Text to display in the draggable element
 `labelSlotName` | `String` | Optional - Name of the slot to use to format the label content
 `getter` | `Function` | Function to apply on an element of `data` to get the field value
@@ -191,7 +191,7 @@ Property | Type | Default | Description
 `row-fields` | `Array` | `[]` | Fields to use as rows by default (see [`row-fields`/`col-fields` element format](#row-fields-col-fields-element-format))
 `col-fields` | `Array` | `[]` | Fields to use as columns by default (see [`row-fields`/`col-fields` element format](#row-fields-col-fields-element-format))
 `reducer` | `function` | `(sum, item) => sum + 1` | Function applied to reduce `data` in the pivot table
-`no-data-warning-text` | `String` | `'No data to display.'` | Text to display when `data` is empty
+`no-data-warning-text` | `String` | `'No data to display.'` | Text to display when `data` is empty
 `is-data-loading` | `Boolean` | `false` | Display a loading content instead of the table when the value is `true` (see slots for customization)
 
 ##### `row-fields`/`col-fields` element format

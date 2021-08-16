@@ -136,7 +136,7 @@ export default {
     },
     reducer: {
       type: Function,
-      default: (sum, item) => sum + 1
+      default: sum => sum + 1
     },
     defaultShowSettings: {
       type: Boolean,

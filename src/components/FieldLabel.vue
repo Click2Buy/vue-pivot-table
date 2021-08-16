@@ -41,7 +41,7 @@
       <template v-if="field.headerAttributeFilter">
         <h6 class="dropdown-header">Attributes</h6>
         <div class="dropdown-list px-4 py-2">
-          <div v-for="(header, index) in field.headers" class="mb-1">
+          <div v-for="(header, index) in field.headers" :key="index" class="mb-1">
             <div class="custom-control custom-checkbox">
               <input
                 type="checkbox"
@@ -70,7 +70,7 @@
           </template>
         </div>
         <div class="dropdown-list px-4 py-2">
-          <div v-for="(item, index) in fieldValues" class="mb-1">
+          <div v-for="(item, index) in fieldValues" :key="index" class="mb-1">
             <div class="custom-control custom-checkbox">
               <input
                 type="checkbox"
