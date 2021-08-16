@@ -17,16 +17,24 @@
           group="fields"
           handle=".btn-draggable"
           @start="start"
-          @end="end">
-          <div v-for="key in internal.availableFieldKeys" :key="key" class="field">
+          @end="end"
+        >
+          <div
+            v-for="key in internal.availableFieldKeys"
+            :key="key"
+            class="field"
+          >
             <field-label
               :field="fieldsWithValues[key]"
               v-model="fieldValues[key]"
               :select-all-text="selectAllText"
               :unselect-all-text="unselectAllText"
-              variant="secondary">
+              variant="secondary"
+            >
               <!-- pass down scoped slots -->
-              <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
+              <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"
+                ><slot :name="slot" v-bind="scope"
+              /></template>
             </field-label>
           </div>
         </draggable>
@@ -52,15 +60,19 @@
           group="fields"
           handle=".btn-draggable"
           @start="start"
-          @end="end">
+          @end="end"
+        >
           <div v-for="key in internal.colFieldKeys" :key="key" class="field">
             <field-label
               :field="fieldsWithValues[key]"
               v-model="fieldValues[key]"
               :select-all-text="selectAllText"
-              :unselect-all-text="unselectAllText">
+              :unselect-all-text="unselectAllText"
+            >
               <!-- pass down scoped slots -->
-              <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
+              <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"
+                ><slot :name="slot" v-bind="scope"
+              /></template>
             </field-label>
           </div>
         </draggable>
@@ -78,15 +90,21 @@
             group="fields"
             handle=".btn-draggable"
             @start="start"
-            @end="end">
+            @end="end"
+          >
             <div v-for="key in internal.rowFieldKeys" :key="key" class="field">
               <field-label
                 :field="fieldsWithValues[key]"
                 v-model="fieldValues[key]"
                 :select-all-text="selectAllText"
-                :unselect-all-text="unselectAllText">
+                :unselect-all-text="unselectAllText"
+              >
                 <!-- pass down scoped slots -->
-                <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
+                <template
+                  v-for="(_, slot) of $scopedSlots"
+                  v-slot:[slot]="scope"
+                  ><slot :name="slot" v-bind="scope"
+                /></template>
               </field-label>
             </div>
           </draggable>
@@ -95,9 +113,18 @@
 
       <!-- Table -->
       <div class="flex-fill" :style="tableWrapperStyle">
-        <pivot-table :data="data" :row-fields="rowFields" :col-fields="colFields" :reducer="reducer" :no-data-warning-text="noDataWarningText" :is-data-loading="isDataLoading">
+        <pivot-table
+          :data="data"
+          :row-fields="rowFields"
+          :col-fields="colFields"
+          :reducer="reducer"
+          :no-data-warning-text="noDataWarningText"
+          :is-data-loading="isDataLoading"
+        >
           <!-- pass down scoped slots -->
-          <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
+          <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"
+            ><slot :name="slot" v-bind="scope"
+          /></template>
         </pivot-table>
       </div>
     </div>
@@ -105,13 +132,13 @@
 </template>
 
 <script>
-import FieldLabel from './FieldLabel.vue'
-import PivotTable from './PivotTable.vue'
-import Draggable from 'vuedraggable'
-import naturalSort from 'javascript-natural-sort'
+import FieldLabel from "./FieldLabel.vue";
+import PivotTable from "./PivotTable.vue";
+import Draggable from "vuedraggable";
+import naturalSort from "javascript-natural-sort";
 
 export default {
-  name: 'vue-pivot',
+  name: "vue-pivot",
   components: { FieldLabel, PivotTable, Draggable },
   props: {
     data: {
@@ -144,35 +171,35 @@ export default {
     },
     availableFieldsLabelText: {
       type: String,
-      default: 'Available fields'
+      default: "Available fields"
     },
     colsLabelText: {
       type: String,
-      default: 'Columns'
+      default: "Columns"
     },
     rowsLabelText: {
       type: String,
-      default: 'Rows'
+      default: "Rows"
     },
     hideSettingsText: {
       type: String,
-      default: 'Hide settings'
+      default: "Hide settings"
     },
     showSettingsText: {
       type: String,
-      default: 'Show settings'
+      default: "Show settings"
     },
     noDataWarningText: {
       type: String,
-      default: 'No data to display.'
+      default: "No data to display."
     },
     selectAllText: {
       type: String,
-      default: 'Select all'
+      default: "Select all"
     },
     unselectAllText: {
       type: String,
-      default: 'Unselect all'
+      default: "Unselect all"
     },
     isDataLoading: {
       type: Boolean,
@@ -180,10 +207,12 @@ export default {
     }
   },
   data: function() {
-    const fieldValues = {}
-    this.fields.filter(field => field.valueFilter).forEach(field => {
-      fieldValues[field.key] = {}
-    })
+    const fieldValues = {};
+    this.fields
+      .filter(field => field.valueFilter)
+      .forEach(field => {
+        fieldValues[field.key] = {};
+      });
 
     return {
       internal: {
@@ -194,149 +223,153 @@ export default {
       fieldValues,
       dragging: false,
       showSettings: true
-    }
+    };
   },
   computed: {
     // Fields with values extracted from data (if field has valueFilter)
     fieldsWithValues: function() {
       // Create object: field.key => field
-      const fieldsWithValues = {}
+      const fieldsWithValues = {};
 
       this.fields.forEach(field => {
-        fieldsWithValues[field.key] = field
-      })
+        fieldsWithValues[field.key] = field;
+      });
 
       // Add valuesSet
-      const valueFilterableFields = this.fields.filter(field => field.valueFilter)
+      const valueFilterableFields = this.fields.filter(
+        field => field.valueFilter
+      );
 
       // Create valuesSet for each value filterable field
       valueFilterableFields.forEach(field => {
-        fieldsWithValues[field.key].valuesSet = new Set()
-      })
+        fieldsWithValues[field.key].valuesSet = new Set();
+      });
 
       // Iterate on data once
       this.data.forEach(item => {
         valueFilterableFields.forEach(field => {
-          fieldsWithValues[field.key].valuesSet.add(field.getter(item))
-        })
-      })
+          fieldsWithValues[field.key].valuesSet.add(field.getter(item));
+        });
+      });
 
       // Creates values sorted from valuesSet
       valueFilterableFields.forEach(field => {
-        fieldsWithValues[field.key].values = Array.from(fieldsWithValues[field.key].valuesSet).sort(field.sort || naturalSort)
-      })
+        fieldsWithValues[field.key].values = Array.from(
+          fieldsWithValues[field.key].valuesSet
+        ).sort(field.sort || naturalSort);
+      });
 
-      return fieldsWithValues
+      return fieldsWithValues;
     },
     // Fields selected values as set
     valuesFiltered: function() {
-      const valuesFiltered = {}
+      const valuesFiltered = {};
 
       for (let [key, valuesObject] of Object.entries(this.fieldValues)) {
-        valuesFiltered[key] = new Set()
+        valuesFiltered[key] = new Set();
         valuesObject.forEach(valueObject => {
           if (valueObject.checked) {
-            valuesFiltered[key].add(valueObject.value)
+            valuesFiltered[key].add(valueObject.value);
           }
-        })
+        });
       }
 
-      return valuesFiltered
+      return valuesFiltered;
     },
     // Pivot table props from Pivot props & data
     rowFields: function() {
-      const rowFields = []
+      const rowFields = [];
 
       this.internal.rowFieldKeys.forEach(key => {
-        const field = this.fields.find(field => field.key === key)
+        const field = this.fields.find(field => field.key === key);
 
         // Generate headerSlotNames from headers
         if (field.headers) {
           field.headerSlotNames = field.headers
             .filter(header => header.checked)
-            .map(header => header.slotName)
+            .map(header => header.slotName);
         }
 
         // Add selected values
         if (field.valueFilter) {
-          field.valuesFiltered = this.valuesFiltered[field.key]
+          field.valuesFiltered = this.valuesFiltered[field.key];
         }
 
-        rowFields.push(field)
-      })
+        rowFields.push(field);
+      });
 
-      return rowFields
+      return rowFields;
     },
     colFields: function() {
-      const colFields = []
+      const colFields = [];
 
       this.internal.colFieldKeys.forEach(key => {
-        const field = this.fields.find(field => field.key === key)
+        const field = this.fields.find(field => field.key === key);
 
         // Generate headerSlotNames from headers
         if (field.headers) {
           field.headerSlotNames = field.headers
             .filter(header => header.checked)
-            .map(header => header.slotName)
+            .map(header => header.slotName);
         }
 
         // Add selected values
         if (field.valueFilter) {
-          field.valuesFiltered = this.valuesFiltered[field.key]
+          field.valuesFiltered = this.valuesFiltered[field.key];
         }
 
-        colFields.push(field)
-      })
+        colFields.push(field);
+      });
 
-      return colFields
+      return colFields;
     },
     // Drag area class
     dragAreaClass: function() {
-      return this.dragging ? 'drag-area-highlight' : null
+      return this.dragging ? "drag-area-highlight" : null;
     },
     // Table wrapper style
     tableWrapperStyle: function() {
-      const maxWidth = this.showSettings ? 'calc(100% - 200px - 2rem)' : '100%'
-      return `max-width: ${maxWidth};`
+      const maxWidth = this.showSettings ? "calc(100% - 200px - 2rem)" : "100%";
+      return `max-width: ${maxWidth};`;
     }
   },
   methods: {
     // Toggle settings
     toggleShowSettings: function() {
-      this.showSettings = !this.showSettings
+      this.showSettings = !this.showSettings;
     },
     // Update dragging boolean
     start: function() {
-      this.dragging = true
+      this.dragging = true;
     },
     end: function() {
-      this.dragging = false
+      this.dragging = false;
     },
     // Update fieldValues
     updateFieldValues: function() {
       for (let [key, field] of Object.entries(this.fieldsWithValues)) {
         if (field.valueFilter) {
-          this.fieldValues[key] = []
+          this.fieldValues[key] = [];
           field.values.forEach(value => {
-            this.fieldValues[key].push({ value, checked: true })
-          })
+            this.fieldValues[key].push({ value, checked: true });
+          });
         }
       }
     }
   },
   created: function() {
     // TODO: check if field keys are correctly set/without duplicates
-    this.showSettings = this.defaultShowSettings
+    this.showSettings = this.defaultShowSettings;
   },
   watch: {
     data: function() {
-      this.updateFieldValues()
+      this.updateFieldValues();
     }
   },
   created: function() {
-    this.updateFieldValues()
+    this.updateFieldValues();
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -347,31 +380,35 @@ export default {
 }
 
 /* Grid with gutter */
-.gutter, .gutter-y {
+.gutter,
+.gutter-y {
   margin-top: -1rem;
 
   > * {
     margin-top: 1rem;
   }
 }
-.gutter-x, .gutter {
+.gutter-x,
+.gutter {
   margin-left: -1rem;
   > * {
     margin-left: 1rem;
   }
 }
 
-.gutter-sm, .gutter-y-sm {
-  margin-top: -.5rem;
+.gutter-sm,
+.gutter-y-sm {
+  margin-top: -0.5rem;
 
   > * {
-    margin-top: .5rem;
+    margin-top: 0.5rem;
   }
 }
-.gutter-x-sm, .gutter-sm {
-  margin-left: -.5rem;
+.gutter-x-sm,
+.gutter-sm {
+  margin-left: -0.5rem;
   > * {
-    margin-left: .5rem;
+    margin-left: 0.5rem;
   }
 }
 
