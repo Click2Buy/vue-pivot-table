@@ -6,14 +6,13 @@
 
     <div class="mb-5">
       <pivot
-        :data="asyncData"
+        :data="data"
         :fields="fields"
         :available-field-keys="availableFieldKeys"
         :row-field-keys="rowFieldKeys"
         :col-field-keys="colFieldKeys"
         :reducer="reducer"
-        :default-show-settings="defaultShowSettings"
-        :is-data-loading="isDataLoading">
+        :default-show-settings="defaultShowSettings">
         <template v-slot:value="{ value }">
           {{ value | number }}
         </template>
@@ -79,6 +78,43 @@
         </template>
       </pivot-table>
     </div>
+
+    <h2 class="border-bottom pb-2 mb-4">Pivot with advanced reducer</h2>
+
+    <div class="mb-5">
+      <pivot
+        :data="dataGdpFlattened"
+        :fields="fieldsGdp"
+        :available-field-keys="availableFieldKeysGdp"
+        :row-field-keys="rowFieldKeysGdp"
+        :col-field-keys="colFieldKeysGdp"
+        :reducer="reducerGdp"
+        :reducer-initial-value="{ count: 0, gdp: 0 }"
+        :default-show-settings="defaultShowSettings">
+        <template v-slot:value="{ value }">
+          <div v-if="value.count">{{ value.count | number }}</div>
+          <div v-if="value.gdp">{{ value.gdp | amount }}</div>
+        </template>
+        <template v-slot:countryFlagHeader="{ value }">
+          {{ countryEmoji(value) }}
+        </template>
+        <template v-slot:countryNameHeader="{ value }">
+          {{ value | capitalize }}
+        </template>
+        <template v-slot:typeHeader="{ value }">
+          <template v-if="value === 'count'">Population</template>
+          <template v-if="value === 'gdp'">GDP</template>
+        </template>
+        <template v-slot:computing>
+          <div class="position-absolute w-100 h-100 text-center" style="z-index: 1;">
+            <div class="position-sticky bg-white d-inline-block mt-5 p-3" style="top: 0;">
+              <svg aria-hidden="true" data-prefix="fas" data-icon="spinner" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-spinner fa-fw fa-pulse"><path fill="currentColor" d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z" class=""></path></svg>
+              Loading table values...
+            </div>
+          </div>
+        </template>
+      </pivot>
+    </div>
   </div>
 </template>
 
@@ -86,14 +122,22 @@
 import Pivot from './components/Pivot'
 import PivotTable from './components/PivotTable'
 import data from './data'
+import dataGdp from './data-gdp'
+
+const dataGdpFlattened = []
+dataGdp.forEach(item => {
+  dataGdpFlattened.push({ country: item.country, year: item.year, type: 'count', count: item.count })
+  dataGdpFlattened.push({ country: item.country, year: item.year, type: 'gdp', gdp: item.gdp })
+})
 
 export default {
   name: 'app',
   components: { Pivot, PivotTable },
   data: () => {
     return {
-      data: data,
+      data,
       asyncData: [],
+      dataGdpFlattened,
 
       // Pivot params
       fields: [{
@@ -127,7 +171,7 @@ export default {
       availableFieldKeys: [],
       rowFieldKeys: ['country', 'gender'],
       colFieldKeys: ['year'],
-      reducer: (sum, item) => sum + item.count,
+      reducer: (acc, item) => acc + item.count,
       defaultShowSettings: true,
       isDataLoading: false,
 
@@ -144,7 +188,45 @@ export default {
       colFields: [{
         getter: item => item.year,
         label: 'Year'
-      }]
+      }],
+
+      // Pivot with advanced reducer
+      fieldsGdp: [{
+        key: 'country',
+        getter: item => item.country,
+        label: 'Country',
+        headers: [{
+          slotName: 'countryFlagHeader',
+          label: 'Flag',
+          checked: true
+        }, {
+          slotName: 'countryNameHeader',
+          label: 'Name',
+          checked: true
+        }],
+        headerAttributeFilter: true,
+        valueFilter: true
+      }, {
+        key: 'year',
+        getter: item => item.year,
+        label: 'Year',
+        valueFilter: true
+      }, {
+        key: 'type',
+        getter: item => item.type,
+        headerSlotName: 'typeHeader',
+        label: 'Type',
+        valueFilter: true,
+        valueFilterSlotName: 'typeHeader'
+      }],
+      availableFieldKeysGdp: [],
+      rowFieldKeysGdp: ['country', 'type'],
+      colFieldKeysGdp: ['year'],
+      reducerGdp: (acc, item) => {
+        if (item.type === 'count') acc.count += item.count
+        else if (item.type === 'gdp') acc.gdp += item.gdp
+        return acc
+      },
     }
   },
   methods: {
@@ -185,6 +267,13 @@ export default {
     },
     capitalize: function(value) {
       return value.replace(/\b\w/g, l => l.toUpperCase())
+    },
+    amount: function(value) {
+      return value.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 2
+      })
     }
   }
 }

@@ -242,6 +242,9 @@ export default {
       type: Function,
       default: sum => sum + 1
     },
+    reducerInitialValue: {
+      default: 0
+    },
     noDataWarningText: {
       type: String,
       default: 'No data to display.'
@@ -395,7 +398,7 @@ export default {
   methods: {
     // Get value from valuesHashTable
     value: function(row, col) {
-      return this.valuesHashTable.get([...row, ...col]) || 0
+      return this.valuesHashTable.get([...row, ...col]) || this.reducerInitialValue
     },
     // Get colspan/rowspan size
     spanSize: function(values, valueIndex, fieldIndex) {
@@ -477,8 +480,7 @@ export default {
           // Update valuesHashTable
           if (updateValuesHashTable) {
             const key = [ ...rowKey, ...colKey ]
-
-            const previousValue = valuesHashTable.get(key) || 0
+            const previousValue = valuesHashTable.get(key) || cloneDeep(this.reducerInitialValue)
 
             valuesHashTable.set(key, this.reducer(previousValue, item))
           }
