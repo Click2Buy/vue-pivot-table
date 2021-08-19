@@ -222,7 +222,8 @@
 import HashTable from '../HashTable'
 import { firstBy } from 'thenby'
 import naturalSort from 'javascript-natural-sort'
-import { cloneDeep, isEqual } from 'lodash'
+import cloneDeep from 'lodash-es/cloneDeep'
+import isEqual from 'lodash-es/isEqual'
 
 export default {
   props: {

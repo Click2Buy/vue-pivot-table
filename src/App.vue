@@ -6,14 +6,13 @@
 
     <div class="mb-5">
       <pivot
-        :data="asyncData"
+        :data="data"
         :fields="fields"
         :available-field-keys="availableFieldKeys"
         :row-field-keys="rowFieldKeys"
         :col-field-keys="colFieldKeys"
         :reducer="reducer"
-        :default-show-settings="defaultShowSettings"
-        :is-data-loading="isDataLoading">
+        :default-show-settings="defaultShowSettings">
         <template v-slot:value="{ value }">
           {{ value | number }}
         </template>
@@ -92,7 +91,7 @@ export default {
   components: { Pivot, PivotTable },
   data: () => {
     return {
-      data: data,
+      data,
       asyncData: [],
 
       // Pivot params
