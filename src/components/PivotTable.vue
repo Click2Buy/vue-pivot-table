@@ -219,7 +219,7 @@
 </template>
 
 <script>
-import HashTable from '../HashTable'
+import ManyKeysMap from 'many-keys-map'
 import { firstBy } from 'thenby'
 import naturalSort from 'javascript-natural-sort'
 import cloneDeep from 'lodash-es/cloneDeep'
@@ -257,7 +257,7 @@ export default {
   },
   data: function() {
     return {
-      valuesHashTable: null,
+      valuesMap: null,
       rows: [],
       cols: [],
       // Note: we don't use directly rowFields/colFields props to trigger table render when `updateValues` has finished
@@ -397,9 +397,9 @@ export default {
     }
   },
   methods: {
-    // Get value from valuesHashTable
+    // Get value from valuesMap
     value: function(row, col) {
-      return this.valuesHashTable.get([...row, ...col]) || this.reducerInitialValue
+      return this.valuesMap.get([...row, ...col]) || this.reducerInitialValue
     },
     // Get colspan/rowspan size
     spanSize: function(values, valueIndex, fieldIndex) {
@@ -425,9 +425,9 @@ export default {
 
       return size
     },
-    // Update rows/cols/valuesHashTable (optional)
-    // @param {boolean} updateValuesHashTable
-    updateValues: function(updateValuesHashTable = true) {
+    // Update rows/cols/valuesMap (optional)
+    // @param {boolean} updateValuesMap
+    updateValues: function(updateValuesMap = true) {
       this.isDataComputing = true
 
       // Start a task to avoid blocking the page
@@ -435,7 +435,7 @@ export default {
       this.computingInterval = setTimeout(() => {
         const rows = []
         const cols = []
-        const valuesHashTable = new HashTable()
+        const valuesMap = new ManyKeysMap()
 
         const fields = [...this.rowFields, ...this.colFields]
 
@@ -453,7 +453,7 @@ export default {
           }
 
           // Build item rowKey/colKey if necessary
-          if (!filtered || updateValuesHashTable) {
+          if (!filtered || updateValuesMap) {
             this.rowFields.forEach(field => {
               rowKey.push(field.getter(item))
             })
@@ -478,18 +478,18 @@ export default {
             }
           }
 
-          // Update valuesHashTable
-          if (updateValuesHashTable) {
+          // Update valuesMap
+          if (updateValuesMap) {
             const key = [ ...rowKey, ...colKey ]
-            const previousValue = valuesHashTable.get(key) || cloneDeep(this.reducerInitialValue)
+            const previousValue = valuesMap.get(key) || cloneDeep(this.reducerInitialValue)
 
-            valuesHashTable.set(key, this.reducer(previousValue, item))
+            valuesMap.set(key, this.reducer(previousValue, item))
           }
         })
 
         this.rows = rows
         this.cols = cols
-        if (updateValuesHashTable) this.valuesHashTable = valuesHashTable
+        if (updateValuesMap) this.valuesMap = valuesMap
         this.isDataComputing = false
         this.updateInternalFields()
       }, 0)
