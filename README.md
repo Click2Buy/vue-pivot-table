@@ -123,6 +123,7 @@ Property | Type | Default | Description
 `row-field-keys` | `Array` | `[]` | Keys of the fields to use as rows by default
 `col-field-keys` | `Array` | `[]` | Keys of the fields to use as columns by default
 `reducer` | `function` | `(sum, item) => sum + 1` | Function applied to reduce `data` in the pivot table
+`reducer-initial-value` | any | `0` | Initial value used when applying reducer
 `no-data-warning-text` | `String` | `'No data to display.'` | Text to display when `data` is empty
 `is-data-loading` | `Boolean` | `false` | Display a loading content instead of the table when the value is `true` (see slots for customization)
 `default-show-settings` | `Boolean` | `true` | Show settings at component creation
@@ -191,6 +192,7 @@ Property | Type | Default | Description
 `row-fields` | `Array` | `[]` | Fields to use as rows by default (see [`row-fields`/`col-fields` element format](#row-fields-col-fields-element-format))
 `col-fields` | `Array` | `[]` | Fields to use as columns by default (see [`row-fields`/`col-fields` element format](#row-fields-col-fields-element-format))
 `reducer` | `function` | `(sum, item) => sum + 1` | Function applied to reduce `data` in the pivot table
+`reducer-initial-value` | any | `0` | Initial value used when applying reducer
 `no-data-warning-text` | `String` | `'No data to display.'` | Text to display when `data` is empty
 `is-data-loading` | `Boolean` | `false` | Display a loading content instead of the table when the value is `true` (see slots for customization)
 
