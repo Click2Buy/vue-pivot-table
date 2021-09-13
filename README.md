@@ -179,8 +179,7 @@ Slot Name | Description | Scope
 Property | Type | Description
 ---------|------|------------
 `value` | `Number` | Value of the cell
-`row` | `Array` | Row values of the cell
-`col` | `Array` | Column values of the cell
+`labels` | `Array` | An array of objects corresponding to row/col labels - Each object has 2 props `field`/`value` with label field/value
 
 ### `PivotTable` component
 

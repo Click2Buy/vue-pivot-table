@@ -79,7 +79,7 @@
       </pivot-table>
     </div>
 
-    <h2 class="border-bottom pb-2 mb-4">Pivot with advanced reducer</h2>
+    <h2 class="border-bottom pb-2 mb-4">Pivot with mixed-type data</h2>
 
     <div class="mb-5">
       <pivot
@@ -91,9 +91,8 @@
         :reducer="reducerGdp"
         :reducer-initial-value="{ count: 0, gdp: 0 }"
         :default-show-settings="defaultShowSettings">
-        <template v-slot:value="{ value }">
-          <div v-if="value.count">{{ value.count | number }}</div>
-          <div v-if="value.gdp">{{ value.gdp | amount }}</div>
+        <template v-slot:value="{ value, labels }">
+          <mixed-data-value :value="value" :labels="labels" />
         </template>
         <template v-slot:countryFlagHeader="{ value }">
           {{ countryEmoji(value) }}
@@ -121,6 +120,7 @@
 <script>
 import Pivot from './components/Pivot'
 import PivotTable from './components/PivotTable'
+import MixedDataValue from './MixedDataValue'
 import data from './data'
 import dataGdp from './data-gdp'
 
@@ -132,7 +132,7 @@ dataGdp.forEach(item => {
 
 export default {
   name: 'app',
-  components: { Pivot, PivotTable },
+  components: { Pivot, PivotTable, MixedDataValue },
   data: () => {
     return {
       data,
@@ -226,7 +226,7 @@ export default {
         if (item.type === 'count') acc.count += item.count
         else if (item.type === 'gdp') acc.gdp += item.gdp
         return acc
-      },
+      }
     }
   },
   methods: {

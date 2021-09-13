@@ -119,7 +119,7 @@
                 v-for="(col, colIndex) in sortedCols"
                 :key="`value-${rowIndex}-${colIndex}`"
                 class="text-right">
-                <slot v-if="$scopedSlots.value" name="value" :value="value(row, col)" :row="Object.values(row)" :col="Object.values(col)" />
+                <slot v-if="$scopedSlots.value" name="value" :value="value(row, col)" :labels="labels(row, col)" />
                 <template v-else>{{ value(row, col) }}</template>
               </td>
 
@@ -400,6 +400,19 @@ export default {
     // Get value from valuesMap
     value: function(row, col) {
       return this.valuesMap.get([...row, ...col]) || this.reducerInitialValue
+    },
+    // Get labels for a cell
+    labels: function(row, col) {
+      const labels = []
+
+      this.internalRowFields.forEach((rowField, rowFieldIndex) => {
+        labels.push({ field: rowField, value: row[rowFieldIndex] })
+      })
+      this.internalColFields.forEach((colField, colFieldIndex) => {
+        labels.push({ field: colField, value: col[colFieldIndex] })
+      })
+
+      return labels
     },
     // Get colspan/rowspan size
     spanSize: function(values, valueIndex, fieldIndex) {
