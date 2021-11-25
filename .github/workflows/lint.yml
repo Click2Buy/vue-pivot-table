@@ -25,8 +25,6 @@ jobs:
         run: npm install
         env:
           CI: TRUE
-      - name: Install vue plugin eslint
-        run: npm install eslint-plugin-vue@latest --save-dev
       - name: Test Code Linting
         run: npm run eslint:github-action
         # Continue to the next step even if this fails
