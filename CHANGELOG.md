@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.6] - 2021-11-25
+### Changed
+- `value` slot prop `labels` is now cached and should avoid updating component when a header is checked/unchecked.
+
 ## [1.1.5] - 2021-09-13
 ### Changed
 - Replaced `value` slot `row`/`col` slot props with `labels` slot prop

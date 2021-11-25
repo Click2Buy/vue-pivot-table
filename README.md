@@ -226,6 +226,8 @@ Property | Type | Description
 `row` | `Array` | Row values of the cell
 `col` | `Array` | Column values of the cell
 
+Note: if your final table is too large and you use a component in the `value` slot, you might consider using a [functional component](https://fr.vuejs.org/v2/guide/render-function.html) to improve performance.
+
 ### Large datasets
 
 If this component is used with large datasets, consider applying `Object.freeze` on your `data` object to avoid useless change tracking on each data element.
