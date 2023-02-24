@@ -1,3 +1,7 @@
+# NOT MAINTAINED
+
+This project is not maintained anymore. Maybe a Vue 3 version will be in the works in the future. Maybe not.
+
 # vue-pivot-table
 A vue component for pivot table
 

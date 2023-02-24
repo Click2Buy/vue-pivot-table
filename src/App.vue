@@ -12,7 +12,11 @@
         :row-field-keys="rowFieldKeys"
         :col-field-keys="colFieldKeys"
         :reducer="reducer"
-        :default-show-settings="defaultShowSettings">
+        :default-show-settings="defaultShowSettings"
+        @update:available-field-keys="availableFieldKeys = $event"
+        @update:row-field-keys="rowFieldKeys = $event"
+        @update:col-field-keys="colFieldKeys = $event"
+      >
         <template v-slot:value="{ value }">
           {{ value | number }}
         </template>
@@ -230,6 +234,13 @@ export default {
     }
   },
   methods: {
+    test: function() {
+      if (this.rowFieldKeys.length === 1) {
+        this.rowFieldKeys = ['country', 'gender']
+      } else {
+        this.rowFieldKeys = ['country']
+      }
+    },
     countryCode: function(country) {
       switch (country) {
         case 'Australia':

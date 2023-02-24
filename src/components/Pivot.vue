@@ -17,7 +17,9 @@
           group="fields"
           handle=".btn-draggable"
           @start="start"
-          @end="end">
+          @end="end"
+          @sort="onSortAvaibleFieldKeys"
+        >
           <div v-for="key in internal.availableFieldKeys" :key="key" class="field">
             <field-label
               :field="fieldsWithValues[key]"
@@ -52,7 +54,9 @@
           group="fields"
           handle=".btn-draggable"
           @start="start"
-          @end="end">
+          @end="end"
+          @sort="onSortColFieldKeys"
+        >
           <div v-for="key in internal.colFieldKeys" :key="key" class="field">
             <field-label
               :field="fieldsWithValues[key]"
@@ -78,7 +82,9 @@
             group="fields"
             handle=".btn-draggable"
             @start="start"
-            @end="end">
+            @end="end"
+            @sort="onSortRowFieldKeys"
+          >
             <div v-for="key in internal.rowFieldKeys" :key="key" class="field">
               <field-label
                 :field="fieldsWithValues[key]"
@@ -322,6 +328,16 @@ export default {
     end: function() {
       this.dragging = false
     },
+    // On add/update/remove: emit event for parent to update props
+    onSortAvaibleFieldKeys: function() {
+      this.$emit('update:available-field-keys', this.internal.availableFieldKeys)
+    },
+    onSortColFieldKeys: function() {
+      this.$emit('update:col-field-keys', this.internal.colFieldKeys)
+    },
+    onSortRowFieldKeys: function() {
+      this.$emit('update:row-field-keys', this.internal.rowFieldKeys)
+    },
     // Update fieldValues
     updateFieldValues: function() {
       for (let [key, field] of Object.entries(this.fieldsWithValues)) {
@@ -337,6 +353,15 @@ export default {
   watch: {
     data: function() {
       this.updateFieldValues()
+    },
+    availableFieldKeys: function() {
+      this.internal.availableFieldKeys = this.availableFieldKeys
+    },
+    colFieldKeys: function() {
+      this.internal.colFieldKeys = this.colFieldKeys
+    },
+    rowFieldKeys: function() {
+      this.internal.rowFieldKeys = this.rowFieldKeys
     }
   },
   created: function() {
